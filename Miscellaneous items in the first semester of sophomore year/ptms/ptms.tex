@@ -1,0 +1,2327 @@
+% 若编译失败，且生成 .synctex(busy) 辅助文件，可能有两个原因：
+% 1. 需要插入的图片不存在：Ctrl + F 搜索 'figure' 将这些代码注释/删除掉即可
+% 2. 路径/文件名含中文或空格：更改路径/文件名即可
+
+% ------------------------------------------------------------- %
+% >> ------------------ 文章宏包及相关设置 ------------------ << %
+% 设定文章类型与编码格式
+    \documentclass[UTF8]{report}		
+
+% 本文特殊宏包
+    \usepackage{siunitx} % 埃米单位
+
+% 本文的特殊宏定义
+\def\Im{\mathrm{\,Im\,}}
+\def\Re{\mathrm{\,Re\,}}
+\def\Ln{\mathrm{\,Ln\,}}
+\def\Arg{\mathrm{\,Arg\,}}
+\def\Arccos{\mathrm{\,Arccos\,}}
+\def\Arcsin{\mathrm{\,Arcsin\,}}
+\def\Arctan{\mathrm{\,Arctan\,}}
+
+% 通用宏定义
+\def\N{\mathbb{N}}
+\def\F{\mathbb{F}}
+\def\Z{\mathbb{Z}}
+\def\Q{\mathbb{Q}}
+\def\R{\mathbb{R}}
+\def\C{\mathbb{C}}
+\def\T{\mathbb{T}}
+\def\S{\mathbb{S}}
+\def\A{\mathbb{A}}
+\def\I{\mathscr{I}}
+\def\d{\mathrm{d}}
+\def\p{\partial}
+
+
+% 导入基本宏包
+    \usepackage[UTF8]{ctex}     % 设置文档为中文语言
+    \usepackage[colorlinks, linkcolor=blue, anchorcolor=blue, citecolor=blue, urlcolor=blue]{hyperref}  % 宏包：自动生成超链接 (此宏包与标题中的数学环境冲突)
+    % \usepackage{docmute}    % 宏包：子文件导入时自动去除导言区，用于主/子文件的写作方式，\include{./51单片机笔记}即可。注：启用此宏包会导致.tex文件capacity受限。
+    \usepackage{amsmath}    % 宏包：数学公式
+    \usepackage{mathrsfs}   % 宏包：提供更多数学符号
+    \usepackage{amssymb}    % 宏包：提供更多数学符号
+    \usepackage{pifont}     % 宏包：提供了特殊符号和字体
+    \usepackage{extarrows}  % 宏包：更多箭头符号
+    \usepackage{multicol}   % 宏包：支持多栏 
+    \usepackage{graphicx}   % 宏包：插入图片
+    \usepackage{float}      % 宏包：设置图片浮动位置
+    %\usepackage{article}    % 宏包：使文本排版更加优美
+    %\usepackage{tikz}       % 宏包：绘图工具
+    %\usepackage{pgfplots}   % 宏包：绘图工具
+
+% 文章页面margin设置
+    \usepackage[a4paper]{geometry}
+        \geometry{top=1in}  % 1 inch= 2.46 cm, 0.75 inch = 1.85 cm
+        \geometry{bottom=1in}
+        \geometry{left=0.75in}
+        \geometry{right=0.75in}   % 设置上下左右页边距
+        \geometry{marginparwidth=1.75cm}    % 设置边注距离（注释、标记等）
+
+% 配置数学环境
+    \usepackage{amsthm} % 宏包：数学环境配置
+    % theorem-line 环境自定义
+        \newtheoremstyle{MyLineTheoremStyle}% <name>
+            {11pt}% <space above>
+            {11pt}% <space below>
+            {}% <body font> 使用默认正文字体
+            {}% <indent amount>
+            {\bfseries}% <theorem head font> 设置标题项为加粗
+            {：}% <punctuation after theorem head>
+            {.5em}% <space after theorem head>
+            {\textbf{#1}\thmnumber{#2}\ \ (\,\textbf{#3}\,)}% 设置标题内容顺序
+        \theoremstyle{MyLineTheoremStyle} % 应用自定义的定理样式
+        \newtheorem{LineTheorem}{Theorem.\,}
+    % theorem-block 环境自定义
+        \newtheoremstyle{MyBlockTheoremStyle}% <name>
+            {11pt}% <space above>
+            {11pt}% <space below>
+            {}% <body font> 使用默认正文字体
+            {}% <indent amount>
+            {\bfseries}% <theorem head font> 设置标题项为加粗
+            {：\\ \indent}% <punctuation after theorem head>
+            {.5em}% <space after theorem head>
+            {\textbf{#1}\thmnumber{#2}\ \ (\,\textbf{#3}\,)}% 设置标题内容顺序
+        \theoremstyle{MyBlockTheoremStyle} % 应用自定义的定理样式
+        \newtheorem{BlockTheorem}[LineTheorem]{Theorem.\,} % 使用 LineTheorem 的计数器
+    % definition 环境自定义
+        \newtheoremstyle{MySubsubsectionStyle}% <name>
+            {11pt}% <space above>
+            {11pt}% <space below>
+            {}% <body font> 使用默认正文字体
+            {}% <indent amount>
+            {\bfseries}% <theorem head font> 设置标题项为加粗
+            {：\\ \indent}% <punctuation after theorem head>
+            {0pt}% <space after theorem head>
+            {\textbf{#3}}% 设置标题内容顺序
+        \theoremstyle{MySubsubsectionStyle} % 应用自定义的定理样式
+        \newtheorem{definition}{}
+
+%宏包：有色文本框（proof环境）及其设置
+    \usepackage[dvipsnames,svgnames]{xcolor}    %设置插入的文本框颜色
+    \usepackage[strict]{changepage}     % 提供一个 adjustwidth 环境
+    \usepackage{framed}     % 实现方框效果
+        \definecolor{graybox_color}{rgb}{0.95,0.95,0.96} % 文本框颜色。修改此行中的 rgb 数值即可改变方框纹颜色，具体颜色的rgb数值可以在网站https://colordrop.io/ 中获得。（截止目前的尝试还没有成功过，感觉单位不一样）（找到喜欢的颜色，点击下方的小眼睛，找到rgb值，复制修改即可）
+        \newenvironment{graybox}{%
+        \def\FrameCommand{%
+        \hspace{1pt}%
+        {\color{gray}\small \vrule width 2pt}%
+        {\color{graybox_color}\vrule width 4pt}%
+        \colorbox{graybox_color}%
+        }%
+        \MakeFramed{\advance\hsize-\width\FrameRestore}%
+        \noindent\hspace{-4.55pt}% disable indenting first paragraph
+        \begin{adjustwidth}{}{7pt}%
+        \vspace{2pt}\vspace{2pt}%
+        }
+        {%
+        \vspace{2pt}\end{adjustwidth}\endMakeFramed%
+        }
+
+% 外源代码插入设置
+    % matlab 代码插入设置
+    %\usepackage{matlab-prettifier}
+    %    \lstset{
+    %        style=Matlab-editor,  % 继承matlab代码颜色等
+    %    }
+    %\usepackage[most]{tcolorbox} % 引入tcolorbox包 
+    %\usepackage{listings} % 引入listings包
+    %    \tcbuselibrary{listings, skins, breakable}
+    %    \newfontfamily\codefont{Consolas} % 定义需要的 codefont 字体
+    %    \lstdefinestyle{matlabstyle}{
+    %        language=Matlab,
+    %        basicstyle=\small\ttfamily\codefont,    % ttfamily 确保等宽 
+    %        breakatwhitespace=false,
+    %        breaklines=true,
+    %        captionpos=b,
+    %        keepspaces=true,
+    %        numbers=left,
+    %        numbersep=15pt,
+    %        showspaces=false,
+    %        showstringspaces=false,
+    %        showtabs=false,
+    %        tabsize=2
+    %    }
+    %    \newtcblisting{matlablisting}{
+    %        arc=2pt,        % 圆角半径
+    %        top=-5pt,
+    %        bottom=-5pt,
+    %        left=1mm,
+    %        listing only,
+    %        listing style=matlabstyle,
+    %        breakable,
+    %        colback=white   % 选一个合适的颜色
+    %    }
+% table 支持
+    \usepackage{booktabs}   % 宏包：三线表
+    \usepackage{tabularray} % 宏包：表格排版
+    \usepackage{longtable}  % 宏包：长表格
+
+
+%figure 设置
+%    \usepackage{graphicx}  % 支持 jpg, png, eps, pdf 图片 
+%    \usepackage{svg}       % 支持 svg 图片
+%        \svgsetup{
+%             指向 inkscape.exe 的路径
+%            inkscapeexe = C:/aa_MySame/inkscape/bin/inkscape.exe, 
+%            inkscapeexe = C:/aa_MySame/inkscape/bin/inkscape.exe, 
+%             一定程度上修复导入后图片文字溢出几何图形的问题
+%            inkscapelatex = false                 
+%        }
+%    \usepackage{subcaption} % subfigure 子图支持
+
+%图表进阶设置
+%    \usepackage{caption}    % 图注、表注
+%        \captionsetup[figure]{name=图}  
+%        \captionsetup[table]{name=表}
+%        \captionsetup{labelfont=bf, font=small}
+%    \usepackage{float}     % 图表位置浮动设置 
+
+% 圆圈序号自定义
+    \newcommand*\circled[1]{\tikz[baseline=(char.base)]{\node[shape=circle,draw,inner sep=0.8pt, line width = 0.03em] (char) {\small \bfseries #1};}}   % TikZ solution
+
+% 列表设置
+%    \usepackage{enumitem}   % 宏包：列表环境设置
+%        \setlist[enumerate]{itemsep=0pt, parsep=0pt, topsep=0pt, partopsep=0pt, leftmargin=3.5em} 
+%        \setlist[itemize]{itemsep=0pt, parsep=0pt, topsep=0pt, partopsep=0pt, leftmargin=3.5em}
+%        \newlist{circledenum}{enumerate}{1} % 创建一个新的枚举环境  
+%        \setlist[circledenum,1]{  
+%            label=\protect\circled{\arabic*}, % 使用 \arabic* 来获取当前枚举计数器的值，并用 \circled 包装它  
+%            ref=\arabic*, % 如果需要引用列表项，这将决定引用格式（这里仍然使用数字）
+%            itemsep=0pt, parsep=0pt, topsep=0pt, partopsep=0pt, leftmargin=3.5em
+%        }  
+
+% 其它设置
+    % 脚注设置
+        \renewcommand\thefootnote{\ding{\numexpr171+\value{footnote}}}
+    % 参考文献引用设置
+        \bibliographystyle{unsrt}   % 设置参考文献引用格式为unsrt
+        \newcommand{\upcite}[1]{\textsuperscript{\cite{#1}}}     % 自定义上角标式引用
+    % 文章序言设置
+        \newcommand{\cnabstractname}{序言}
+        \newenvironment{cnabstract}{%
+            \par\Large
+            \noindent\mbox{}\hfill{\bfseries \cnabstractname}\hfill\mbox{}\par
+            \vskip 2.5ex
+            }{\par\vskip 2.5ex}
+
+% 文章默认字体设置
+    \usepackage{fontspec}   % 宏包：字体设置
+        \setmainfont{SimSun}    % 设置中文字体为宋体字体
+        \setCJKmainfont[AutoFakeBold=3]{SimSun} % 设置加粗字体为 SimSun 族，AutoFakeBold 可以调整字体粗细
+        \setmainfont{Times New Roman} % 设置英文字体为Times New Roman
+
+% 各级标题自定义设置
+    \usepackage{titlesec}   
+        \titleformat{\chapter}[hang]{\normalfont\huge\bfseries\centering}{第\,\thechapter\,章}{20pt}{}
+        \titlespacing*{\chapter}{0pt}{-20pt}{20pt} % 控制上方空白的大小
+        % section标题自定义设置 
+        \titleformat{\section}[hang]{\normalfont\Large\bfseries}{§\,\thesection\,}{8pt}{}
+        % subsubsection标题自定义设置
+        %\titleformat{\subsubsection}[hang]{\normalfont\bfseries}{}{8pt}{}
+
+% >> ------------------ 文章宏包及相关设置 ------------------ << %
+% ------------------------------------------------------------- %
+
+% ----------------------------------------------------------- %
+% >> --------------------- 文章信息区 --------------------- << %
+% 页眉页脚设置
+    \usepackage{fancyhdr}   %宏包：页眉页脚设置
+        \pagestyle{fancy}
+        \fancyhf{}
+        \cfoot{\thepage}
+        \renewcommand\headrulewidth{1pt}
+        \renewcommand\footrulewidth{0pt}
+        \lhead{2024.8 -- 2025.1} 
+        \chead{yinchao050313@gmail.com}    
+        \rhead{yinchao23@mails.ucas.ac.cn}
+%文档信息设置
+    \title{概率论与数理统计\\Probability theory and mathematical statistics}
+    \author{尹超\\ \footnotesize 中国科学院大学，北京 100049\\ Carter Yin \\ \footnotesize University of Chinese Academy of Sciences, Beijing 100049, China}
+    \date{\footnotesize 2024.8 -- 2025.1}
+% >> --------------------- 文章信息区 --------------------- << %
+% ----------------------------------------------------------- %
+
+% 开始编辑文章
+
+\begin{document} 
+\zihao{5}             % 设置全文字号大小, -4 为小四, 5 为五号
+
+% --------------------------------------------------------------- %
+% >> --------------------- 封面序言与目录 --------------------- << %
+% 封面
+    \maketitle\newpage  
+    \pagenumbering{Roman} % 页码为大写罗马数字
+    \thispagestyle{fancy}   % 显示页码、页眉等
+
+% 序言
+    \begin{cnabstract}\normalsize 
+        本笔记为概率论与数理统计的笔记整理\par
+        讲课教师:\par
+        • 李雷，国科大教授，中科院数学院南楼 511\par
+        • Office Hours: TBD\par
+        • telephone: 82541585\par
+        • email: lilei@ucas.ac.cn\par
+        • Website: https://mooc.ucas.edu.cn/portal\par
+        助教：\par
+        • 王钶，博士研究生, 中科院数学院 – email: wangke22@mails.ucas.ac.cn\par
+\end{cnabstract}    
+\addcontentsline{toc}{chapter}{序言} % 手动添加为目录
+
+% 目录
+    \setcounter{tocdepth}{4}                % 目录深度（为1时显示到section）
+    \tableofcontents                        % 目录页
+    \addcontentsline{toc}{chapter}{目录}    % 手动添加此页为目录
+    \thispagestyle{fancy}                   % 显示页码、页眉等 
+
+% 收尾工作
+    \newpage    
+    \pagenumbering{arabic} 
+
+
+% >> --------------------- 封面序言与目录 --------------------- << %
+% --------------------------------------------------------------- %
+
+
+\chapter{事件的概率}\thispagestyle{fancy} 
+\section{Space}
+
+
+\begin{definition}[Probability Space]
+• 概率模型的三个要素， (\(\Omega\), \(\Sigma\), \(P\))\par
+• Samples space, event sets, probability measure\par
+• \(\Sigma\): the set of subsets
+\end{definition}
+
+\begin{definition}[Samples Space （样本空间），Event]
+    • 样本空间：随机试验中所有基本事件所构成的集合，\(\Omega\)或\(S\)表示 \par
+    • 例1.2.1. 掷一枚骰子观察出现的点数则\(\Omega\) = { 1，2，3，4，5，6 } \par
+    • 把样本空间中的基本事件与空间中的点相对应，则事件与
+集合相对应，因此事件运算与集合运算可以建立一一对应
+关系
+    \end{definition}
+
+\section{Algebra}
+\begin{definition}[Algebra]
+    • Commutative Law \par
+    • \(A \cup B = B \cup A, A \cap B = B \cap A.\) \par
+    • Associative Law\par
+    \((A \cup B) \cup C = A \cup (B \cup C), (A \cap B) \cap C = A \cap (B \cap C).\)\par
+    • \(a + b = b + a, a \times b = b \times a\)\par
+    • \((a + b) + c = a + (b + c), (a \times b) \times c = a \times (b \times c).\)\par
+    • Distributive laws \par
+    \((A \cup B) \cap C = (A \cap C) \cup (B \cap C);\)\par
+    \((A \cap B) \cup C = (A \cup C) \cap (B \cup C).\) \par
+\end{definition}
+
+\begin{definition}[De Morgan's Law]
+    • \(\neg (A \land B) = \neg A \lor \neg B\) \par
+    • \(\neg (A \lor B) = \neg A \land \neg B\) \par
+\end{definition}
+
+\begin{definition}[De Morgan's Law (Generalized)]
+    • \(\neg \left( \bigwedge_{i=1}^{n} A_i \right) = \bigvee_{i=1}^{n} \neg A_i\) \par
+    • \(\neg \left( \bigvee_{i=1}^{n} A_i \right) = \bigwedge_{i=1}^{n} \neg A_i\) \par
+\end{definition}
+
+\begin{definition}[More]
+    • Difference. The set \(A\setminus B\) is the set of points that belong to A and (but) not to B. In symbols: \par
+    • \[
+A \setminus B = A \cap B^c = \{ \omega \mid \omega \in A \text{ and } \omega \notin B \}
+\] \par
+\end{definition}
+
+\section{Definition of Probability}
+\begin{definition}[Probability]
+    • 古典概型：有两个条件，
+    \begin{enumerate}
+        \item （有限性）试验结果只有有限个（记为 \( n \)），
+        \item （等可能性）每个基本事件发生的可能性相同。
+    \end{enumerate}
+    \par• 为计算事件 \( A \) 的概率，设 \( A \) 中包含 \( m \) 个基本事件，则定义事件 \( A \) 的概率为
+    \[
+    P(A) = \frac{m}{n}
+    \]\par
+    • 为方便起见，以 \(\#(B)\) 记事件 \( B \) 中基本事件的个数，因此，
+    \[
+    P(A) = \frac{\#(A)}{\#(\Omega)}
+    \]
+\end{definition}
+
+\begin{definition}[Counting]
+    • 排列 (Permutation): 从 \( n \) 个相异的物件中选 \( r \) (\(1 \leq r \leq n\)) 的不同排列数目
+    \[
+    P(n, r) = \frac{n!}{(n-r)!}
+    \]\par
+    • 组合 (Combination)：从 \( n \) 个相异的物件中选 \( r \) (\(1 \leq r \leq n\)) 的不同组合数目
+    \[
+    C(n, r) = \binom{n}{r} = \frac{n!}{r!(n-r)!}
+    \]\par
+    • 分组：\( n \) 个相异的物件分成 \( k \) (\(1 \leq k \leq n\)) 堆，每堆物件个数为 \( r \)
+    \[
+    \text{分组数目} = \frac{n!}{(r!)^k}
+    \]
+\end{definition}
+
+\begin{definition}[概率的统计定义]
+    • 古典概型的两个条件往往不能满足，此时如何定义概率？\par
+    常用的一种方法是把含有事件 \( A \) 的随机试验独立重复做 \( n \) 次（Bernoulli 试验），设事件 \( A \) 发生了 \( n_A \) 次，称比值
+    \[
+    \frac{n_A}{n}
+    \]\par
+    为事件 \( A \) 发生的频率。当 \( n \) 越来越大时，频率会在某个值 \( P(A) \) 附近波动，且波动越来越小，这个值 \( P(A) \) 就定义为事件 \( A \) 的概率。\par
+    • 为什么不能写为 \[
+        \lim_{n \to \infty} \frac{n_A}{n} = P(A)
+        \]
+\end{definition}
+
+\begin{definition}[主观概率]
+    • 关于概率的统计定义，我们可能会想到，如果试验不能在相同
+的条件下独立重复很多次时该怎么办？还有人们常谈论种种事
+件出现机会的大小，如某人有80％的可能性办成某事·如某人有
+80％的可能性办成某事拐一人则认为仅有50％的可能性。即我
+们常常会拿一个数字去估计这类事件发生的可能性，而心目中
+并不把它与频率挂钩,这种概率称为主观概率，这类概率有相当
+的生活基础。在金融和管理等方面有大量的应用，这一学派称
+为Bayes学派，近来得到越来越多的认可。但是当前用频率来定
+义概率的频率派仍是数理统计的主流,焦点是频率派认为概率是
+客观存在，不可能因人而异。
+\end{definition}
+
+\begin{definition}[概率的公理化定义]
+    • 对概率运算规定一些简单的基本法则：
+    \begin{enumerate}
+        \item 设 \( A \) 是随机事件，则 \( 0 \leq P(A) \leq 1 \)
+        \item 设 \( B \) 为必然事件，则 \( P(B) = 1 \)
+        \item 若事件 \( A \) 和 \( B \) 不相容，则 \( P(A \cup B) = P(A) + P(B) \)
+        \item 为了对可数无穷个事件仍能成立，我们要把上面公式中的两个事件推广到可数无穷个两两不相容的事件序列 \(\{A_i\}_{i=1}^{\infty}\)，则
+        \[
+        P\left(\bigcup_{i=1}^{\infty} A_i\right) = \sum_{i=1}^{\infty} P(A_i)
+        \]
+    \end{enumerate}
+\end{definition}
+
+\begin{definition}[Classical Enunciation of Probability]
+    • The probability of an event is the ratio of the number of cases 
+    favorable to that event to the total number of cases, provided 
+    that all these are equally likely.\par
+    • To translate this into our language: the sample space is a finite 
+    set of possible cases: \(\{\omega_1, \omega_2, \ldots, \omega_m\}\), each \(\omega_i\) being a “case.” An 
+    event \(A\) is a subset \(\{\omega_{i1}, \omega_{i2}, \ldots, \omega_{in}\}\), each \(\omega_{ij}\) being a “favorable 
+    case.” The probability of \(A\) is then the ratio
+    \[
+    P(A) = \frac{|A|}{|\Omega|} = \frac{n}{m}
+    \]
+    where \(|A|\) is the number of favorable cases in event \(A\), and \(|\Omega|\) is the total number of cases in the sample space.
+\end{definition}
+
+\begin{definition}[Definition of Probability]
+    • Definition. A probability measure on the sample space \(\Omega\) is a 
+    function of subsets of \(\Omega\) satisfying three axioms:
+    \begin{enumerate}
+        \item For every set \(A \subset \Omega\), the value of the function is a nonnegative 
+        number: \(P(A) \geq 0\).
+        \item For any two disjoint sets \(A\) and \(B\), the value of the function for 
+        their union \(A \cup B\) is equal to the sum of its value for \(A\) and its 
+        value for \(B\): \(P(A \cup B) = P(A) + P(B)\) provided \(A \cap B = \emptyset\).
+        \item The value of the function for \(\Omega\) (as a subset) is equal to 1: 
+        \(P(\Omega) = 1\).\par
+        \[
+    P(A) = \frac{|A|}{|\Omega|} = \frac{n}{m}
+    \]
+    \end{enumerate}
+\end{definition}
+
+\section{Deductions from the Axioms}
+\begin{definition}[Deductions from the Axioms]
+    • For any set \(A\), we have \(P(A) \leq 1\).\par
+    • Proof:
+    \[
+    A + A^c = \Omega
+    \]
+    \[
+    P(A) + P(A^c) = P(\Omega) = 1
+    \]
+    \[
+    P(A) = 1 - P(A^c) \leq 1
+    \]\par
+    • For any two sets such that \(A \subset B\), we have \(P(A) \leq P(B)\), and \(P(B - A) = P(B) - P(A)\).\par
+    • Proof:\par
+    \[
+    B = A + (B - A)
+    \]
+    \[
+    P(B) = P(A) + P(B - A) \geq P(A)
+    \]\par
+    • \(P(A \cup B) \leq P(A) + P(B)\)
+    \[
+    A \cup B = A + A^c B
+    \]
+    \[
+    P(A \cup B) = P(A) + P(A^c B)
+    \]
+\end{definition}
+
+\begin{definition}[General but Finite Cases]
+    • For any finite number of disjoint sets \(A_1, \ldots, A_n\), we have
+    \[
+    P(A_1 + \cdots + A_n) = P(A_1) + \cdots + P(A_n)
+    \]\par
+    • For any finite number of arbitrary sets \(A_1, \ldots, A_n\), we have
+    \[
+    P(A_1 \cup \cdots \cup A_n) \leq P(A_1) + \cdots + P(A_n)
+    \]\par
+    Proof: induction on \(n\).\par
+\end{definition}
+
+\section{Conditional Probability}
+\begin{definition}[Conditional Probability]
+    • 定义: 设事件 \(A\) 和 \(B\) 是随机试验 \(\Omega\) 中的两个事件，且 \(P(B) > 0\)，
+    称条件概率 \(P(A \mid B)\) 为
+    \[
+    P(A \mid B) = \frac{P(A \cap B)}{P(B)}
+    \]\par
+    事件B发生条件下事件A发生的条件概率
+\end{definition}
+
+\begin{definition}[Multiplication Rule]
+    • 乘法公式: 设 \(A\) 和 \(B\) 是随机试验 \(\Omega\) 中的两个事件，且 \(P(A) > 0\)，
+    则 \(P(A \cap B) = P(A)P(B \mid A)\)\par
+    • 证明: \(P(A \cap B) = P(A)P(B \mid A)\) \par
+    \[
+    P(A \cap B) = P(A)P(B \mid A) = P(B)P(A \mid B)
+    \]\par
+    • For a sequence of events \(A_1, A_2, \ldots, A_n\), we have
+    \[
+    P(A_1 A_2 \cdots A_n) = P(A_1) P(A_2 \mid A_1) P(A_3 \mid A_1 A_2) \cdots P(A_n \mid A_1 A_2 \cdots A_{n-1})
+    \]
+\end{definition}
+
+\section{Total probability and Bayes' Theorem}
+\begin{definition}[Total Probability]
+    • Proposition 2. Suppose that \(\{A_1, A_2, \ldots, A_n\}\) is a partition of the sample space into disjoint sets. Then for any set \(B\) we have
+    \[
+    P(B) = \sum_{i=1}^{n} P(B \mid A_i) P(A_i)
+    \]\par
+    • Proof: \par
+    \[
+    B = B \cap \Omega = B \cap (A_1 \cup A_2 \cup \cdots \cup A_n) = (B \cap A_1) \cup (B \cap A_2) \cup \cdots \cup (B \cap A_n)
+    \]
+    \[
+    P(B) = P(B \cap A_1) + P(B \cap A_2) + \cdots + P(B \cap A_n) = P(\sum_{i=1}^{n} BA_i)
+    \]
+\end{definition}
+
+\begin{definition}[Bayes' Theorem]
+    • Theorem 1. Suppose that \(\{A_1, A_2, \ldots, A_n\}\) is a partition of the sample space into disjoint sets. Then for any set \(B\) such that \(P(B) > 0\), we have
+    \[
+    P(A_i \mid B) = \frac{P(B \mid A_i) P(A_i)}{\sum_{j=1}^{n} P(B \mid A_j) P(A_j)}
+    \]\par
+    • Proof: \par
+    \[
+    P(A_i \mid B) = \frac{P(A_i B)}{P(B)} = \frac{P(B \mid A_i) P(A_i)}{P(B)}
+    \]
+    \[
+    P(B) = \sum_{j=1}^{n} P(B \mid A_j) P(A_j)
+    \]
+\end{definition}
+
+\begin{definition}[Bayesian Calculations]
+    a test positive
+    \[
+    \frac{P(D \mid A)}{P(D^c \mid A)} = \frac{P(D)}{P(D^c)} \frac{P(A \mid D)}{P(A \mid D^c)}
+    \]
+\end{definition}
+
+\section{Independence}
+\begin{definition}[Independence]
+    • 定义: 设 \(A\) 和 \(B\) 是随机试验中的两个事件，若满足
+    \[
+    P(A \cap B) = P(A)P(B)
+    \]
+    则称事件 \(A\) 和 \(B\) 相互独立。\par
+    • 定义: 设 \(A_1, A_2, \ldots, A_n\) 是随机试验中的 \(n\) 个事件，若对于任意的子集 \(\{i_1, i_2, \ldots, i_k\} \subset \{1, 2, \ldots, n\}\)，满足
+    \[
+    P(A_{i_1} \cap A_{i_2} \cap \cdots \cap A_{i_k}) = P(A_{i_1}) P(A_{i_2}) \cdots P(A_{i_k})
+    \]
+    则称事件 \(A_1, A_2, \ldots, A_n\) 相互独立。\par
+    上面有 \(2^n - n - 1\) 个独立性条件。\par
+    上面有 \(2^n\)个等式，减去 \(n\) 个 \(P(A_i) = P(A_i)\) 和一个 \(P(\Omega) = 1\)。
+\end{definition}
+
+
+    %\begin{equation}\label{公式5}
+%    \frac{u_{j}^{k}-u_{j}^{k-1}}{h_t}=a\theta\frac{u_{j+1}^{k}-2u_{j}^{k}+u_{j-1}^{k}}{h_x^2}+a(1-\theta)\frac{u_{j+1}^{k-1}-2u_{j}^{k-1}+u_{j-1}^{k-1}}{h_x^2}
+%\end{equation}
+
+%其中 $\theta \in [0, 1]$ 为权重，其截断误差 $R = a\left(\frac{1}{2}-\theta\right)h_t\left[\frac{\partial^{3}u}{\partial x^{2}\partial t}\right]_{j}^{k}+O(h_t^{2}+h_x^2)$，因此当 $\theta = \frac{1}{2}$ 时，方程具有 $O(h_t^{2}+h_x^2)$ 精度，称为 Crank-Nicolson 格式（CN 格式）。
+
+
+%公式 \ref{公式5} 的增长因子及稳定性条件为：
+
+%\begin{equation}
+%    G(h_t,\sigma)=\frac{1-4(1-\theta)ar\sin^2\frac{\sigma h}2}{1+4\theta ar\sin^2\frac{\sigma h}2}, \ \ 
+%    \begin{cases}
+%        r\leqslant\frac{1}{2a(1-2\theta)}, & \theta \in [0, \frac{1}{2}) \\ 
+%        \text{无条件稳定}, & \theta \in [\frac{1}{2}, 1] \\ 
+%    \end{cases}
+%\end{equation}
+
+
+%\begin{LineTheorem}[这是一个 Line Theorem]\label{这是一个 Line Theorem}
+%    你好你好你好
+%\end{LineTheorem}
+
+%\begin{BlockTheorem}[这是一个 Block Theorem]\label{这是一个 Block Theorem}
+%    你好你好你好
+%\end{BlockTheorem}
+
+
+
+%\begin{graybox}
+%\textbf{定理 \ref{这是一个 Block Theorem} 的证明：}\\
+%你好你好你好
+%\end{graybox}
+
+%\begin{figure}[H]
+%    \centering
+%    \includegraphics[width=0.5\textwidth]{assets/差分格式示意图.pdf}
+%    \caption{\textbf{插入pdf图片}}\label{插入pdf图片}
+%\end{figure}
+
+%\begin{figure}[H]
+%    \centering
+%    \includegraphics[width=0.5\textwidth]{assets/波浪能装置示意图.jpg}
+%    \caption{\textbf{插入 jpg}}\label{插入 jpg}
+%\end{figure}
+
+%\begin{figure}[H]
+%    \centering
+%    \includesvg[width=0.5\textwidth]{assets/draw.io_test.drawio.svg}
+%    \caption{\textbf{插入 svg}}\label{插入 svg}
+%\end{figure}
+
+%表格：
+
+%\begin{table}[H]
+%    \centering
+%    \caption{\textbf{符号含义与约定}}
+%    \label{tab:waterpump}
+%    \begin{tabular}{ccccc}
+%    \toprule
+%    符号 & 符号含义& 单位\\
+%    \midrule
+%    符号1& 含义1& 单位1\\
+%    符号2& 含义2& 单位2\\
+%    符号3& 含义3& 单位3\\
+%    符号4& 含义4& 单位4\\
+%    \bottomrule
+%    \end{tabular}
+%\end{table}
+
+\chapter{Random Variables and their Distributions}\thispagestyle{fancy} 
+\section{Random Variables}
+\begin{definition}[Random Variables]
+    • 随机变量: 设 \(\Omega\) 是随机试验的样本空间，如果对于每一个实数 \(x\)，事件 \(\{ \omega \mid X(\omega) \leq x \}\) 是 \(\Omega\) 的事件，则称 \(X(\omega)\) 为随机变量。\par
+    • 随机变量的取值范围称为随机变量的值域，记为 \(R_X\)。\par
+    • 随机变量的分布函数 \(F(x)\) 定义为
+    \[
+    F(x) = P(X \leq x)
+    \]
+\end{definition}
+
+\begin{definition}[Discrete Random Variables]
+    • 离散型随机变量: 若随机变量 \(X\) 的值域 \(R_X\) 是有限集或可数集，则称 \(X\) 为离散型随机变量。\par
+    • 离散型随机变量的分布函数 \(F(x)\) 为
+    \[
+    F(x) = P(X \leq x) = \sum_{x_i \leq x} P(X = x_i)
+    \]
+\end{definition}
+
+\begin{definition}[The Indicator of An Event]
+    • Indicator function: For an event \(A\), the indicator function \(I_A\) is defined as
+    \[
+    I_A(\omega) = 
+    \begin{cases}
+        1, & \text{if } A \text{ occurs} \\
+        0, & \text{if } A \text{ does not occur}
+    \end{cases}
+    \]
+    \[
+    I_{A \cap B}(\omega) = I_A(\omega) \land I_B(\omega) = I_A(\omega) \cdot I_B(\omega)
+    \]
+    \[
+    I_{A \cup B}(\omega) = I_A(\omega) \lor I_B(\omega)
+    \]
+    where \(a \lor b\) is the maximum of \(a\) and \(b\), and \(a \land b\) is the minimum of \(a\) and \(b\).\par
+    \(I_A(\omega)\) is a random variable.\par
+    \(I_A(\omega)\) is a Bernoulli random variable.
+\end{definition}
+
+\begin{definition}[Bernoulli Trial]
+    • 定义: 设一个随机试验只有两个可能结果 \(A\) 和 \(A^c\)，则称此试验为一 Bernoulli 试验。\par
+    • 定义: 设将一个可能结果为 \(A\) 和 \(A^c\) 的 Bernoulli 试验独立地重复 \(n\) 次，使得事件且每次出现的概率相同，则称此试验为 \(n\) 重 Bernoulli 试验。\par
+    • Bernoulli 试验: 一次随机试验称为 Bernoulli 试验，如果试验只有两个可能结果，记为 \(A\) 和 \(A^c\)，且 \(P(A) = p\)，\(P(A^c) = 1 - p\)，且两次试验之间相互独立。
+    \[
+    P(A) = p, \quad P(A^c) = 1 - p
+    \]
+    • Bernoulli 试验的特点: 二项分布、几何分布、超几何分布、泊松分布等。\par
+    • 0-1 分布: 设随机变量 \(X\) 只取 0 和 1 两值，\(P(X=1)=p\)，\(P(X=0)=1-p\)，则称 \(X\) 服从 0-1 分布或 Bernoulli 分布，记为 \(X \sim B(1, p)\)。\par
+    • 二项分布: 设某事件 \(A\) 在一次试验中发生的概率为 \(p\)，现把试验独立地重复 \(n\) 次。以 \(X\) 记 \(A\) 在这次试验中发生的次数，则 \(X\) 取值 \(0, 1, \ldots, n\)，且有
+    \[
+    P(X = k) = \binom{n}{k} p^k (1 - p)^{n - k}
+    \]
+    称 \(X\) 服从二项分布，记为 \(X \sim \text{Bin}(n, p)\) 或 \(B(n, p)\)。
+\end{definition}
+
+\begin{definition}[二项分布：构造性归纳法]
+    Assume it is correct for k-1. Then
+    \[
+    P(X = k) = P(X = k - 1) \frac{n - k + 1}{k} \frac{p}{1 - p}
+    \]
+    \[
+    P(X = k) = \binom{n}{k} p^k (1 - p)^{n - k}
+    \]
+
+\end{definition}
+
+\begin{definition}[Random number and pseudo-random number]
+    • 随机数: 一般指在一定范围内的均匀分布的随机数。\par
+    • 伪随机数: 由计算机生成的数列，其数值是按照一定规律生成的，但是在一定范围内表现出随机性。\par
+    • 伪随机数的特点: 1. 周期性；2. 重现性；3. 均匀性；4. 独立性。\par
+    • 伪随机数的生成方法: 1. 线性同余法；2. 递推法；3. 逆变换法；4. 拒绝法；5. 接受-拒绝法；6. 分布抽样法；7. 蒙特卡洛法。
+\end{definition}
+
+\begin{definition}[Poisson Distribution]
+    • 泊松分布: 设随机变量 \(X\) 取值为 0, 1, 2, \ldots，且有
+    \[
+    P(X = k) = \frac{\lambda^k}{k!} e^{-\lambda}
+    \]
+    称 \(X\) 服从参数为 \(\lambda\) 的泊松分布，记为 \(X \sim \text{Poisson}(\lambda)\)。\par
+    • 泊松分布的性质: \par
+    1. \(E(X) = \lambda\)；\par
+    2. \(D(X) = \lambda\)；\par
+    3. 泊松分布的和仍然服从泊松分布；\par
+    4. 泊松分布的和服从泊松分布。\par
+    Remember the Taylor expansion of \(e^x\):
+    \[
+    e^x = \sum_{n=0}^{\infty} \frac{x^n}{n!}
+    \]
+
+\end{definition}
+
+\begin{definition}[Derivation of Poisson Distribution from "Introduction to Statistics" by Mood and Graybill]
+    • 假定体积为 \(V\) 的液体包含有一个大数目 \(N\) 的微生物，再假定微生物没有群居的本能，它们能够在液体的任何部分出现，且在体积相等的部分出现的机会相同。现在我们取体积为 \(D\) 的微量液体在显微镜下观察，问在这微量液体中将发现 \(x\) 个微生物的概率是什么？我们假定 \(V\) 远远大于 \(D\)，由于假定了这些微生物是以一致的概率在液体中到处散布，因此任何一个微生物在 \(D\) 中出现的概率都是 \(D/V\)。再由于假定了微生物没有群居的本能，所以一个微生物在 \(D\) 中的出现，不会影响另一个微生物在 \(D\) 中的出现与否。因此微生物中有 \(x\) 个在 \(D\) 中出现的概率就是
+    \[
+    \binom{N}{x} \left(\frac{D}{V}\right)^x \left(1 - \frac{D}{V}\right)^{N-x}
+    \]\par
+    • 令V和N趋向于无穷，且微生物的密度N/V=d保持常数·将上式改写成如下形式：
+        \[
+        \lim_{N \to \infty ,V \to \infty} \binom{N}{x} \left(\frac{d}{V}\right)^x \left(1 - \frac{d}{V}\right)^{N-x} = \frac{N(N-1)(N-2)\dots(N-n+1)}{x!N^x} (\frac{ND}{V})^x( 1 - \frac{ND}{NV})^{N-x}
+        \]\par
+        • 当N变成无限时其极限为
+        \[
+        \lim_{N \to \infty,V \to \infty} \binom{N}{x} \left(\frac{d}{V}\right)^x \left(1 - \frac{d}{V}\right)^{N-x} = \frac{(Dd)^x}{x!} e^{-Dd}
+        \]\par
+        • 这一推导过程还证明了λ是x的平均数，因为所考察的一部分体
+    积D乘以整个的密度d就给出了在D中所预计的平均数目．
+    
+\end{definition}
+
+\begin{definition}[Poisson distribution as a limit of Binomial Distribution]
+    • 当 \(N\) 很大且 \(p\) 很小且趋于一个极限时，Poisson 分布是二项分布的一个很好的近似。而在 \(N\) 未知时，Poisson 分布更显得有用。\par
+    我们有下面的定理：\par
+    • 定理: 在 \(n\) 重 Bernoulli 试验中，以 \(p\) 为成功概率，若 \(n \to \infty\) 且 \(np \to \lambda\) 保持常数，则二项分布 \(B(n, p)\) 的极限为 Poisson 分布 \(P(\lambda)\)。具体来说，\par
+    \[
+    \lim_{n \to \infty} \binom{n}{k} p^k (1 - p)^{n - k} = \frac{\lambda^k e^{-\lambda}}{k!}
+    \]
+    其中 \(\lambda = np\)。
+\end{definition}
+
+\begin{definition}[Geometric Random Variable]
+    • Suppose that independent trials, each having a probability \(p\), \(0 < p < 1\), of being a success, are performed until a success 
+    occurs. If we let \(X\) equal the number of trials required, then
+    \[
+    P(X = k) = (1 - p)^{k-1} p, \quad k = 1, 2, \ldots
+    \]
+    • Generalization: Negative binomial distribution.
+\end{definition}
+
+\begin{definition}[Geometric Random Variable]
+    • Suppose that independent trials, each having a probability \(p\), \(0 < p < 1\), of being a success, are performed until a success 
+    occurs. If we let \(X\) equal the number of trials required, then
+    \[
+    P(X = k) = (1 - p)^{k-1} p, \quad k = 1, 2, \ldots
+    \]
+    • Generalization: Negative binomial distribution.
+\end{definition}
+
+\begin{definition}[The Hypergeometric Random Variable]
+    • Suppose that a sample of size \(n\) is to be chosen randomly 
+    (without replacement) from an urn containing \(N\) balls, of which 
+    \(m\) are white and \(N - m\) are black. If we let \(X\) denote the 
+    number of white balls selected, then
+    \[
+    P(X = i) = \frac{\binom{m}{i} \binom{N - m}{n - i}}{\binom{N}{n}}, \quad i = 0, 1, 2, \ldots, \min(m, n)
+    \]\par
+    • Sampling from a finite population:
+    \begin{itemize}
+        \item Suppose that a sample of size \(n\) is to be chosen randomly from 
+        an urn containing \(N\) balls, of which \(m\) are white and \(N - m\) are 
+        black. If we let \(X\) denote the number of white balls selected:
+        \begin{itemize}
+            \item Sample without replacement: hypergeometric distribution
+            \item Sample with replacement: binomial \(X \sim \text{Binomial}(n, \frac{m}{N})\)
+            \item Sample without replacement: \(N \to \infty, \frac{m}{N} \to p\), binomial \(X \sim \text{Binomial}(n, p)\)
+        \end{itemize}
+    \end{itemize}
+\end{definition}
+
+
+\section{Continuous Random Variables}
+
+\begin{definition}[连续型随机变量]
+    • 离散随机变量只取有限个或可数无限个值\par
+    • 而连续型随机变量取不可数个值, 这就决定了不能用描述离
+散型随机变量的办法来刻划连续型随机变量·
+\end{definition}
+
+
+\begin{definition}[Continuous Random Variables]
+    • 连续型随机变量: 若随机变量 \(X\) 的值域 \(R_X\) 是连续集，则称 \(X\) 为连续型随机变量。\par
+    • 连续型随机变量的分布函数 \(F(x)\) 为
+    \[
+    F(x) = P(X \leq x) = \int_{-\infty}^{x} f(t) \, dt
+    \]\par
+    • 连续型随机变量的密度函数 \(f(x)\) 为
+    \[
+    f(x) = \frac{dF(x)}{dx}
+    \]\par
+   
+  
+\end{definition}
+
+
+\begin{definition}[概率密度函数]
+    • \(X\) 为连续型随机变量，如果存在一个函数 \(f\)，叫做 \(X\) 的概率密度函数，它满足下面的条件：
+    \begin{itemize}
+        \item 对所有的 \(-\infty < x < \infty\)，\(f(x) \geq 0\)
+        \item \(\int_{-\infty}^{\infty} f(x) \, dx = 1\)
+        \item \(-\infty < a < b < \infty\)，\(P(a \leq X \leq b) = \int_{a}^{b} f(x) \, dx\)
+        \item Note: \(P(X = x) = 0\) = \(\int_{x}^{x} f(u)\, du\)
+    \end{itemize}
+\end{definition}
+
+\begin{definition}[分布函数 (Distribution Function)]
+    • \(X\) 为一连续型随机变量, 则
+    \[
+    F(x) = P(X \leq x) = \int_{-\infty}^{x} f(t) \, dt
+    \]\par
+    是 \(X\) 的分布函数, 且
+    \[
+    f(x) = \frac{dF(x)}{dx}
+    \]\par
+    是 \(X\) 的概率密度函数。\par
+    • 分布函数 \(F(x)\) 具有下列性质：
+    \begin{itemize}
+        \item \(0 \leq F(x) \leq 1\)
+        \item \(F(x)\) 是非减函数
+        \item \(F(x)\) 是右连续的
+        \item \(F(x)\) 在正无穷处趋于 1，在负无穷处趋于 0
+        \item \(P(a < X \leq b) = F(b) - F(a) = \int_{a}^{b} f(x) \, dx\)
+    \end{itemize}
+\end{definition}
+
+\begin{definition}[正态分布(Normal distribution)]
+    • 如果一个随机变量\(x\)具有概率密度函数
+    \[
+    f(x) = \frac{1}{\sqrt{2\pi}\sigma} e^{-\frac{(x - \mu)^2}{2\sigma^2}}
+    \]
+    其中 \(-\infty < x < \infty\), \(\sigma > 0\), \(-\infty < \mu < \infty\)，则称 \(X\) 服从参数为 \(\mu\) 和 \(\sigma^2\) 的正态分布，记为 \(X \sim N(\mu, \sigma^2)\)。\par
+    • 正态分布的性质: \par
+    1. \(E(X) = \mu\)；\par
+    2. \(D(X) = \sigma^2\)；\par
+    3. 正态分布的和仍然服从正态分布；\par
+    4. 正态分布的和服从正态分布。\par
+    • 正态分布的标准化: \par
+    1. 若 \(X \sim N(\mu, \sigma^2)\)，则 \(Z = \frac{X - \mu}{\sigma} \sim N(0, 1)\)。\par
+    2. 若 \(X \sim N(0, 1)\)，则 \(X = \mu + \sigma Z \sim N(\mu, \sigma^2)\)。\par
+    • 正态分布的性质: \par
+    1. 若 \(X \sim N(\mu, \sigma^2)\)，则 \(aX + b \sim N(a\mu + b, a^2\sigma^2)\)。\par
+    2. 若 \(X \sim N(\mu_1, \sigma_1^2)\)，\(Y \sim N(\mu_2, \sigma_2^2)\)，且 \(X\) 与 \(Y\) 相互独立，则 \(X + Y \sim N(\mu_1 + \mu_2, \sigma_1^2 + \sigma_2^2)\)。\par
+    3. 若 \(X \sim N(\mu, \sigma^2)\)，则 \(X^2 \sim \chi^2(1)\)。
+
+    • 具有参数 \(\mu = 0\)，\(\sigma = 1\) 的正态分布称为标准正态分布。用 \(\phi(x)\) 和 \(\Phi(x)\) 表示标准正态分布 \(N(0, 1)\) 的密度函数和分布函数。\par
+    • 以 \(F(x)\) 记正态分布 \(N(\mu, \sigma^2)\) 的概率分布函数，则恒有
+    \[
+    F(x) = \Phi\left(\frac{x - \mu}{\sigma}\right)
+    \]
+    所以任一正态分布的概率分布函数都可通过标准正态分布的分布函数计算出来。\par
+    density function: \(\frac{1}{\sigma}\phi\left(\frac{x-\mu}{\sigma}\right)\)\par
+    • 中心极限定理 (Central limit theorem): \par
+    当 \(n\) 足够大时，独立同分布的随机变量的和近似服从正态分布。\par
+    If \(X \sim N(\mu, \sigma^2)\), then \(Z = \frac{X - \mu}{\sigma} \sim N(0, 1)\). 
+\end{definition}
+
+\begin{definition}[Uniform distribution]
+    • If a random variable \(X\) has a density function
+    \[
+    f(x) = 
+    \begin{cases}
+        \frac{1}{b - a}, & a < x \leq b \\
+        0, & \text{otherwise}
+    \end{cases}
+    \]\par
+    \[F(x) = 
+    \begin{cases}
+        0, & x \leq a \\
+        \frac{x - a}{b - a}, & a < x \leq b \\
+        1, & x > b
+    \end{cases}
+    \]
+    then \(X\) is said to have a uniform distribution on the interval \((a, b)\), denoted by \(X \sim U(a, b)\).\par
+    • The mean and variance of \(X \sim U(a, b)\) are
+    \[
+    E(X) = \frac{a + b}{2}, \quad D(X) = \frac{(b - a)^2}{12}
+    \]
+\end{definition}
+
+\begin{definition}[指数分布(Exponential distribution)]
+    • If a random variable \(X\) has a density function
+    \[
+    f(x) = 
+    \begin{cases}
+        \lambda e^{-\lambda x}, & x \geq 0 \\
+        0, & x < 0
+    \end{cases}
+    \]
+    then \(X\) is said to have an exponential distribution with parameter \(\lambda\), denoted by \(X \sim \text{Exp}(\lambda)\)
+    (其中$\lambda > 0$为常数，则称$X$服从参数为$\lambda$的指数分布。)
+    \[E(X) = \frac{1}{\lambda}, \quad D(X) = \frac{1}{\lambda^2}
+    \]\par
+    指数分布的分布函数为
+    \[
+    F(x) =
+    \begin{cases}
+        1 - e^{-\lambda x}, & x \geq 0 \\
+        0, & x < 0
+    \end{cases}
+    \]
+\end{definition}
+
+\begin{definition}[Memoryless distribution]
+    • A continuous random variable \(X\) is said to be memoryless if
+    \[
+    P(X > s + t \mid X > s) = P(X > t)
+    \]
+    for all \(s, t > 0\).\par
+    • Exponential distribution is memoryless.
+\end{definition}
+
+\begin{definition}[多维分布]
+    • 把多个随机变量放在一起组成向量，称为多维随机变量或者随机向量。\par
+    • Example: 从一副扑克牌中抽牌时，可以用纸牌的花色和数字来说明其特征。\par
+    • Example: 考虑一个打靶的试验，在靶面上取定一个直角坐标系。则命中的位置可由其坐标 \(X, Y\) 来刻画。\(X\) 和 \(Y\) 都是随机变量。\par
+    • 定义：设 \(X = (X_1, \ldots, X_n)\)，如果每个 \(X_i\) 都是一个随机变量，称 \(X\) 为 \(n\) 维随机变量或者随机向量。
+\end{definition}
+
+\begin{definition}[Representation of Dice by Indicators]
+    • Example: Let \(X\) be the sum of the numbers on two dice. We can represent the sum as
+    \[
+    X = I_1 + I_2 + \ldots + I_6
+    \]
+    where \(I_i\) is the indicator of the event that the number on the \(i\)-th die is face up.
+\end{definition}
+
+\begin{definition}[Marginal distribution (边缘分布)]
+    • Definition: Let \(X\) and \(Y\) be two random variables with joint density function \(f(x, y)\). The marginal density functions of \(X\) and \(Y\) are
+    \[
+    f_X(x) = \int_{-\infty}^{\infty} f(x, y) \, dy
+    \]
+    \[
+    f_Y(y) = \int_{-\infty}^{\infty} f(x, y) \, dx
+    \]
+    • Example: Let \(X\) and \(Y\) be two random variables with joint density function
+    \[
+    f(x, y) = 
+    \begin{cases}
+        2, & 0 < x < y < 1 \\
+        0, & \text{otherwise}
+    \end{cases}
+    \]
+    Then the marginal density functions of \(X\) and \(Y\) are
+    \[
+    f_X(x) = \int_{x}^{1} 2 \, dy = 2(1 - x)
+    \]
+    \[
+    f_Y(y) = \int_{0}^{y} 2 \, dx = 2y
+    \]\par
+    • \(X = (X_1, \ldots, X_n)\) 为 \(n\) 维离散随机变量，有概率分布 \(F(X)\)。任意一个子集的分布是 \(m\) 维边缘分布。\par
+    • 二维离散随机变量 \((X, Y)\) 的边缘概率质量函数为
+    \[
+    P_X(x_i) = P(X = x_i) = \sum_{j=1}^{m} P(X = x_i, Y = y_i) = \sum_{j=1}^{m} p_{ij} = p_i
+    \]
+    \[
+    P_Y(y_j) = P(Y = y_j) = \sum_{i=1}^{n} P(X = x_i, Y = y_j) = \sum_{i=1}^{n} p_{ij} = p_j
+    \]
+\end{definition}
+
+\begin{definition}[Conditional Distribution]
+    一个随机变量（或向量）的条件概率分布，就是在给定（或己知）某种条件（某种信息）下该随机变量（向量）的概率分布\par
+离散型随机变量的条件分布\par
+
+设 \(X\) 和 \(Y\) 是两个离散型随机变量，它们的联合分布律为
+\[
+P(X = x_i, Y = y_j) = p_{ij}, \quad i = 1, 2, \ldots, n; j = 1, 2, \ldots, m
+\]
+则在 \(Y = y_j\) 的条件下，\(X\) 的条件分布律为
+\[
+P(X = x_i \mid Y = y_j) = \frac{P(X = x_i, Y = y_j)}{P(Y = y_j)} = \frac{p_{ij}}{p_j}
+\]
+\[
+P(Y = y_j \mid X = x_j) = \frac{P(X = x_i, Y = y_j)}{P(X = x_i)} = \frac{p_{ij}}{p_i}
+\]
+\end{definition}
+
+\begin{definition}[多维连续型随机向量：概率密度函数]
+    • \(n\) 维连续型随机向量 \(X = (X_1, X_2, \ldots, X_n)\) 的概率密度函数 \(f(x_1, x_2, \ldots, x_n)\) 是满足下列条件的函数：
+    \begin{itemize}
+        \item 对所有的 \((x_1, x_2, \ldots, x_n)\)，\(f(x_1, x_2, \ldots, x_n) \geq 0\)
+        \item \(\int_{-\infty}^{\infty} \int_{-\infty}^{\infty} \ldots \int_{-\infty}^{\infty} f(x_1, x_2, \ldots, x_n) \, dx_1 \, dx_2 \ldots dx_n = 1\)
+        \item 对任意的 \(n\) 维区域 \(G\)，有
+        \[
+        P((X_1, X_2, \ldots, X_n) \in G) = \int \int \ldots \int_G f(x_1, x_2, \ldots, x_n) \, dx_1 \, dx_2 \ldots dx_n
+        \]
+    \end{itemize}
+    \begin{itemize}
+        \item 连续型随机向量 \(X = (X_1, \dots, X_n)\)，如果存在 \(\mathbb{R}^n\) 上的非负函数 \(f(x_1, x_2, \dots, x_n)\)，使得对任意的 \(-\infty < a_1 \leq b_1 < \infty, \dots, -\infty < a_n \leq b_n < \infty\)，
+        \[
+        P(a_1 \leq X_1 \leq b_1, a_2 \leq X_2 \leq b_2, \dots, a_n \leq X_n \leq b_n) = \int_{a_n}^{b_n} \int_{a_{n-1}}^{b_{n-1}} \dots \int_{a_1}^{b_1} f(x_1, x_2, \dots, x_n) \, dx_1 \, dx_2 \dots \, dx_n
+        \]
+        则称 \(f\) 为 \(X\) 的概率密度函数，\(X\) 为连续型随机向量。
+    \end{itemize}
+    \end{definition}
+
+\begin{definition}[多维连续型随机向量：概率分布函数]
+    • \(n\) 维连续型随机向量 \(X = (X_1, X_2, \ldots, X_n)\) 的概率分布函数 \(F(x_1, x_2, \ldots, x_n)\) 是满足下列条件的函数：
+    \begin{itemize}
+        \item 对所有的 \((x_1, x_2, \ldots, x_n)\)，\(0 \leq F(x_1, x_2, \ldots, x_n) \leq 1\)
+        \item 对任意的 \(n\) 维区域 \(G\)，有
+        \[
+        P((X_1, X_2, \ldots, X_n) \in G) = \int \int \ldots \int_G f(x_1, x_2, \ldots, x_n) \, dx_1 \, dx_2 \ldots dx_n
+        \]
+    \end{itemize}
+    \begin{itemize}
+        \item 概率分布函数: \(F(x) = P(X_1 \leq x_1, X_2 \leq x_2, \ldots, X_n \leq x_n)\)
+        \item 1. \(F(x_1, x_2, \ldots, x_n)\) 对每个单元单调非降
+        \item 2. 对任意的 \(1 \leq j \leq n\),
+        \[
+        \lim_{x_j \to -\infty} F(x_1, x_2, \ldots, x_n) = 0,
+        \]
+        \item 3. 
+        \[
+        \lim_{x_1 \to -\infty, x_2 \to -\infty, \ldots, x_n \to -\infty} F(x_1, x_2, \ldots, x_n) = 0, \quad \lim_{x_1 \to +\infty, x_2 \to +\infty, \ldots, x_n \to +\infty} F(x_1, x_2, \ldots, x_n) = 1
+        \]
+        \[
+        F(x_1, x_2, \ldots, x_n) = \int_{-\infty}^{x_n} \int_{-\infty}^{x_{n-1}} \ldots \int_{-\infty}^{x_1} f(t_1, t_2, \ldots, t_n) \, dt_1 \, dt_2 \ldots \, dt_n
+        \]
+    \end{itemize} 
+\end{definition}
+
+\begin{definition}[2-D Uniform distribution]
+    • \(X = (X_1, X_2)\) 的概率密度函数
+    \[
+    f(x_1, x_2) =
+    \begin{cases}
+        \frac{1}{S}, & (x_1, x_2) \in D \\
+        0, & \text{otherwise}
+    \end{cases}
+    \]\par
+    \[
+    S = \text{Area}(D) = \iint_D \, dx_1 \, dx_2 
+    \]
+    • 二维均匀分布的边缘分布：\par
+    1. \(f_{X_1}(x_1) = \int_{-\infty}^{\infty} f(x_1, x_2) \, dx_2 = \frac{1}{S} \int_{-\infty}^{\infty} dx_2 = \frac{1}{S}\)\par
+    2. \(f_{X_2}(x_2) = \int_{-\infty}^{\infty} f(x_1, x_2) \, dx_1 = \frac{1}{S} \int_{-\infty}^{\infty} dx_1 = \frac{1}{S}\)\par
+    • 二维均匀分布的条件分布：\par
+    1. \(f_{X_1 \mid X_2}(x_1 \mid x_2) = \frac{f(x_1, x_2)}{f_{X_2}(x_2)} = \frac{1/S}{1/S} = 1\)\par
+    2. \(f_{X_2 \mid X_1}(x_2 \mid x_1) = \frac{f(x_1, x_2)}{f_{X_1}(x_1)} = \frac{1/S}{1/S} = 1\)\par
+\end{definition}
+
+\begin{definition}[Bivariate normal distribution]
+    • If a random vector \(X = (X_1, X_2)\) has a joint density function
+    \[
+    f(x_1, x_2) = \frac{1}{2\pi \sigma_1 \sigma_2 \sqrt{1 - \rho^2}} \exp\left\{-\frac{1}{2(1 - \rho^2)} \left[\frac{(x_1 - \mu_1)^2}{\sigma_1^2} - 2\rho \frac{(x_1 - \mu_1)(x_2 - \mu_2)}{\sigma_1 \sigma_2} + \frac{(x_2 - \mu_2)^2}{\sigma_2^2}\right]\right\}
+    \]
+    then \(X\) is said to have a bivariate normal distribution with parameters \(\mu_1, \mu_2, \sigma_1^2, \sigma_2^2, \rho\)\par
+    \[
+    (X_1, X_2) \sim N\left(\binom{\mu_1}{\mu_2}, \begin{pmatrix}
+        \sigma_1^2 & \rho\sigma_1\sigma_2 \\
+        \rho\sigma_1\sigma_2 & \sigma_2^2
+        \end{pmatrix}\right)
+    \] \par
+    • The marginal density functions of \(X_1\) and \(X_2\) are
+    \[
+    f_{X_1}(x_1) = \frac{1}{\sqrt{2\pi} \sigma_1} \exp\left\{-\frac{(x_1 - \mu_1)^2}{2\sigma_1^2}\right\}
+    \]
+    \[
+    f_{X_2}(x_2) = \frac{1}{\sqrt{2\pi} \sigma_2} \exp\left\{-\frac{(x_2 - \mu_2)^2}{2\sigma_2^2}\right\}
+    \]\par
+    • The conditional density functions of \(X_1\) and \(X_2\) given \(X_2 = x_2\) and \(X_1 = x_1\) are
+    \[
+    f_{X_1 \mid X_2}(x_1 \mid x_2) = \frac{f(x_1, x_2)}{f_{X_2}(x_2)}
+    \]
+    \[
+    f_{X_2 \mid X_1}(x_2 \mid x_1) = \frac{f(x_1, x_2)}{f_{X_1}(x_1)}
+    \]\par
+    $X_1 \sim N(\mu_1, \sigma_1^2), X_2 \sim N(\mu_2, \sigma_2^2)$
+    \begin{figure}[ht]
+        \centering
+        \includegraphics[width=1\textwidth]{C:/Users/78003/Desktop/ptms/1.png}
+        \caption{\textbf{Bivariate normal distribution}}
+        \label{fig:insert_png}
+    \end{figure}
+\end{definition}
+
+
+\begin{figure}[ht]
+        \centering
+        \includegraphics[width=1\textwidth]{C:/Users/78003/Desktop/ptms/2.png}
+        \caption{\textbf{Marginal Distribution1}}
+        \label{fig:Marginal Distribution1}
+\end{figure}
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=1\textwidth]{C:/Users/78003/Desktop/ptms/3.png}
+    \caption{\textbf{Marginal Distribution2}}
+    \label{fig:Marginal Distribution2}
+\end{figure}
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=1\textwidth]{C:/Users/78003/Desktop/ptms/4.png}
+    \caption{\textbf{conditional distribution1}}
+    \label{fig:conditional distribution1}
+\end{figure}
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=1\textwidth]{C:/Users/78003/Desktop/ptms/5.png}
+    \caption{\textbf{conditional distribution2}}
+    \label{fig:conditional distribution2}
+\end{figure}
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=1\textwidth]{C:/Users/78003/Desktop/ptms/6.png}
+    \caption{\textbf{conditional distribution3}}
+    \label{fig:conditional distribution3}
+\end{figure}
+
+\cleardoublepage
+
+\section{随机变量的独立性}
+\begin{definition}[随机变量的独立性]
+    • 离散型随机变量 \(X_1, \ldots, X_n\) 相互独立，若它们的联合分布律等于各自的边缘分布律的乘积，即
+    \[
+    P(X_1 = x_1, X_2 = x_2, \ldots, X_n = x_n) = P(X_1 = x_1) \cdot P(X_2 = x_2) \cdot \ldots \cdot P(X_n = x_n)
+    \]\par
+    • 连续型随机变量 \(X_1, \ldots, X_n\) 相互独立，若它们的联合密度等于各自的边缘密度的乘积，即
+    \[
+    f_{X_1, X_2, \ldots, X_n}(x_1, x_2, \ldots, x_n) = f_{X_1}(x_1) \cdot f_{X_2}(x_2) \cdot \ldots \cdot f_{X_n}(x_n)
+    \]\par
+    • 最一般的情况，随机变量 \(X_1, \ldots, X_n\) 相互独立，若它们的联合分布函数等于各自边缘分布函数的乘积，即
+    \[
+    F_{X_1, X_2, \ldots, X_n}(x_1, x_2, \ldots, x_n) = F_{X_1}(x_1) \cdot F_{X_2}(x_2) \cdot \ldots \cdot F_{X_n}(x_n)
+    \]\par
+    对于二维正态分布（Bivariate normal distribution）\par
+    \(X_1\) 和 \(X_2\) 相互独立，当且仅当 \(\rho = 0\)\par
+    边缘分布：\(X_1 \sim N(\mu_1, \sigma_1^2)\)\par
+    条件分布：\(X_1 \mid X_2 = x_2 \sim N\left(\mu_1 + \rho \frac{\sigma_1}{\sigma_2}(x_2 - \mu_2), \sigma_1^2(1 - \rho^2)\right)\)
+\end{definition}
+
+\section{随机变量的函数的概率分布}
+
+\begin{definition}[随机变量的函数的概率分布]
+    • 设 \(X\) 是一个随机变量，\(Y = g(X)\) 是 \(X\) 的函数，\(g(x)\) 是连续函数，\(X\) 的概率密度函数为 \(f_X(x)\)，则 \(Y\) 的概率密度函数为
+    \[
+    f_Y(y) = f_X(x) \left| \frac{dx}{dy} \right|
+    \]
+    其中 \(x = g^{-1}(y)\)。\par
+    • Example: 设 \(X \sim U(0, 1)\)，求 \(Y = -\ln X\) 的概率密度函数。\par
+    1. \(Y = -\ln X \Rightarrow X = e^{-Y}\)\par
+    2. \(f_Y(y) = f_X(x) \left| \frac{dx}{dy} \right| = 1 \cdot e^{-y} = e^{-y}\)\par
+    3. \(Y \sim \text{Exp}(1)\)\par
+    • Example: 设 \(X \sim N(0, 1)\)，求 \(Y = X^2\) 的概率密度函数。\par
+    1. \(Y = X^2 \Rightarrow X = \pm \sqrt{y}\)\par
+    2. \(f_Y(y) = f_X(x) \left| \frac{dx}{dy} \right| = \frac{1}{\sqrt{2\pi}} e^{-\frac{x^2}{2}} \left| \frac{1}{2\sqrt{y}} \right| + \frac{1}{\sqrt{2\pi}} e^{-\frac{x^2}{2}} \left| -\frac{1}{2\sqrt{y}} \right| = \frac{1}{\sqrt{2\pi y}} e^{-\frac{y}{2}}\)\par
+    3. \(Y \sim \chi^2(1)\)
+\end{definition}
+
+\begin{definition}[Random vector case (discrete)]
+    • 特别当 \(\xi\) 和 \(\eta\) 是相互独立的非负整值随机变量，各有分布律：
+    \[
+    P(\xi = k) = a_k, \quad k = 0, 1, 2, \ldots
+    \]
+    \[
+    P(\eta = l) = b_l, \quad l = 0, 1, 2, \ldots
+    \]\par
+    则它们的联合分布律为：
+    \[
+    P(\xi = k, \eta = l) = P(\xi = k) \cdot P(\eta = l) = a_k \cdot b_l
+    \]\par
+    if \(\xi\) + \(\eta\) = n then
+    \[
+    P(\xi + \eta = n) = \sum_{k=0}^{n}a_k \cdot b_{n - k}
+    \] \par
+    称此公式为离散卷积公式。
+\end{definition}
+
+\begin{definition}[Example]
+    设 $X \sim \text{Bin}(n,p)$，$Y \sim \text{Bin}(m,p)$，且 $X$ 与 $Y$ 相互独立，则 $X+Y \sim \text{Bin}(n+m,p)$。\par
+    这种性质称为再生性。
+    \textbf{Proof:}\par
+    1. 离散卷积公式：\par
+    \[
+    P(X+Y=k) = \sum_{i=0}^{k} P(X=i) P(Y=k-i) = \sum_{i=0}^{k} \binom{n}{i} p^{i} (1-p)^{n-i} \binom{m}{k-i} p^{k-i} (1-p)^{m-(k-i)}
+    \]
+    \[
+    = \sum_{i=0}^{k} \binom{n}{i} \binom{m}{k-i} p^{k} (1-p)^{n+m-k}
+    \]
+    \[
+    = \binom{n+m}{k} p^{k} (1-p)^{n+m-k}
+    \]\par
+    2. 由此可知 $X+Y \sim \text{Bin}(n+m,p)$。\par
+    3. 概率推理，构造独立同分布的 $Z_i \sim \text{Bernoulli}(p)$，则 $\tilde{X} = \sum_{i=1}^{n} Z_i$，$\tilde{Y} = \sum_{i=1}^{m} Z_{n+i}$，那么 $\tilde{X}+\tilde{Y} = \sum_{i=1}^{n+m} Z_i \sim \text{Bin}(n+m,p)$。\par
+    $\tilde{X}$ 和 $\tilde{Y}$ 的分布与 $X$ 和 $Y$ 相同，所以 $X+Y$ 与 $\tilde{X}+\tilde{Y}$ 的分布相同。
+\end{definition}
+
+\begin{definition}[Generalization]
+    • 可推广至多项和，设 $X_i \sim \text{Bin}(n_i, p)$，$i=1,2,\ldots,m$，且 $X_1, X_2, \ldots, X_m$ 相互独立，则 $\sum_{i=1}^{m} X_i \sim \text{Bin}(\sum_{i=1}^{m} n_i, p)$。\par
+    • 可推广至泊松分布，设 $X_i \sim \text{P}(\lambda_i)$，$i=1,2,\ldots,m$，且 $X_1, X_2, \ldots, X_m$ 相互独立，则 $\sum_{i=1}^{m} X_i \sim \text{P}(\sum_{i=1}^{m} \lambda_i)$。\par
+    • 可推广至正态分布，设 $X_i \sim \text{N}(\mu_i, \sigma_i^2)$，$i=1,2,\ldots,m$，且 $X_1, X_2, \ldots, X_m$ 相互独立，则 $\sum_{i=1}^{m} X_i \sim \text{N}(\sum_{i=1}^{m} \mu_i, \sum_{i=1}^{m} \sigma_i^2)$。\par
+      特别地，若 $X_1, \ldots, X_n$ 为独立同分布，且 $X_i \sim \text{Bin}(1, p)$，$i=1, \ldots, m$，则 $\sum_{i=1}^{m} X_i \sim \text{Bin}(m, p)$，此结论揭示了二项分布与 0-1 分布之间的密切关系。
+\end{definition}
+
+\begin{definition}[连续型随机变量密度变换公式]
+    • 定理（密度变换公式）设随机变量 $X$ 有概率密度函数 $f(x)$，$x \in (a,b)$（$a,b$ 可以是 $\infty$），而 $y=g(x)$ 在 $x \in (a,b)$ 上是严格单调的连续函数，存在唯一的反函数 $x=h(y)$，$y \in (\alpha,\beta)$ 并且 $h'(y)$ 存在且连续，那么 $Y=g(X)$ 也是连续型随机变量且有概率密度函数
+    \[
+    p(y) = f(h(y)) \left|h'(y)\right| , \quad y \in (\alpha, \beta)
+    \]\par
+    注意：$f(x)dx = f(h(y))d(h(y)) = f(h(y))\left|h'(y)\right|dy$
+    \par
+    注意：$P(x < X \leq x+\delta x) \approx f(x) \delta x$，$P(y < Y \leq y+\delta y) \approx p(y) \delta y$\par
+    • A Generalization\par
+    • Note: 当 $g$ 不是在全区间上单调而是逐段单调时，密度变换公式为下面的形式：
+    • 设随机变量 $X$ 的密度函数为 $p_X(x)$，$x \in (a,b)$，如果可以把 $(a,b)$ 分割为一些（有限个或可列个）互不重叠的子区间的和 $(a,b)=\bigcup_j I_j$，使得函数 $y = g(x)$ 在每个子区间上有唯一的反函数 $x = h_j(y)$，并且 $h_j'(y)$ 存在且连续，那么 $Y = g(x)$ 也是连续型随机变量且有概率密度函数
+    \[
+    p_Y(y) = \sum_{j} p_X(h_j(y)) \left|h_j'(y)\right| , \quad y \in (\alpha, \beta)
+    \]
+\end{definition}
+
+\section{Vector Case}
+
+\begin{definition}[Vector Case: $n = 2$]
+    • 设 $(X_1, X_2)$ 是二维连续型随机向量，具有联合密度函数 $p(x_1, x_2)$，设 $Y_j = f_j(X_1, X_2)$，$j=1,2$。若 $(X_1, X_2)$ 和 $(Y_1, Y_2)$ 一一对应，逆映射 $X_j = h_j(Y_1, Y_2)$，$j=1,2$。\par
+    假定每个 $h_j(Y_1, Y_2)$ 有一阶连续偏导数，则 $(Y_1, Y_2)$ 也是连续型随机向量，且有联合密度函数
+    \[
+    q(y_1, y_2) =
+    \begin{cases}
+         p(h_1(y_1, y_2), h_2(y_1, y_2)) \left| J \right|, & (y_1, y_2) \in D \\
+         0, & \text{otherwise}
+    \end{cases}
+    \]
+    其中 $D$ 为随机向量 $(X_1, X_2)$ 所有可能取值的集合。$J$ 为雅可比行列式，即
+    \[
+    J = \left|
+    \begin{array}{cc}
+        \frac{\partial h_1}{\partial y_1} & \frac{\partial h_1}{\partial y_2} \\
+        \frac{\partial h_2}{\partial y_1} & \frac{\partial h_2}{\partial y_2}
+    \end{array}
+    \right|
+    \]
+\end{definition}
+
+\begin{definition}[General Case]
+    • 设 $(X_1, X_2, \ldots, X_n)$ 是 $n$ 维连续型随机向量，具有联合密度函数 $p(x_1, x_2, \ldots, x_n)$，设 $Y_j = f_j(X_1, X_2, \ldots, X_n)$，$j=1,2,\ldots,m$。若 $(X_1, X_2, \ldots, X_n)$ 和 $(Y_1, Y_2, \ldots, Y_m)$ 一一对应，逆映射 $X_j = h_j(Y_1, Y_2, \ldots, Y_m)$，$j=1,2,\ldots,n$。\par
+    假定每个 $h_j(Y_1, Y_2, \ldots, Y_m)$ 有一阶连续偏导数，则 $(Y_1, Y_2, \ldots, Y_m)$ 也是连续型随机向量，且有联合密度函数
+    \[
+    q(y_1, y_2, \ldots, y_m) =
+    \begin{cases}
+         p(h_1(y_1, y_2, \ldots, y_m), h_2(y_1, y_2, \ldots, y_m), \ldots, h_n(y_1, y_2, \ldots, y_m)) \left| J \right|, & (y_1, y_2, \ldots, y_m) \in D \\
+         0, & \text{otherwise}
+    \end{cases}
+    \]
+    其中 $D$ 为随机向量 $(X_1, X_2, \ldots, X_n)$ 所有可能取值的集合。$J$ 为雅可比行列式，即
+    \[
+    J = \left|
+    \begin{array}{cccc}
+        \frac{\partial h_1}{\partial y_1} & \frac{\partial h_1}{\partial y_2} & \ldots & \frac{\partial h_1}{\partial y_m} \\
+        \frac{\partial h_2}{\partial y_1} & \frac{\partial h_2}{\partial y_2} & \ldots & \frac{\partial h_2}{\partial y_m} \\
+        \vdots & \vdots & \ddots & \vdots \\
+        \frac{\partial h_n}{\partial y_1} & \frac{\partial h_n}{\partial y_2} & \ldots & \frac{\partial h_n}{\partial y_m}
+    \end{array}
+    \right|
+    \]
+\end{definition}
+
+\section{两个随机变量}
+
+\begin{definition}[两个随机变量之和的概率分布]
+    • 设 $(X,Y)$ 的联合概率密度为 $f(x,y)$，则 $X+Y$ 的概率密度 $p(z)$ 为
+    \[
+    p(z) = \int_{-\infty}^{\infty} f(x,z-x)dx = \int_{-\infty}^{\infty} f(z-y,y)dy
+    \]
+    • 例：设 $X, Y$ 独立，$X \sim N(0,1)$，$Y \sim N(0,1)$，求 $X+Y$ 的概率密度。\par
+    1. $f(x,y) = f(x)f(y) = \frac{1}{\sqrt{2\pi}}e^{-\frac{x^2}{2}} \cdot \frac{1}{\sqrt{2\pi}}e^{-\frac{y^2}{2}} = \frac{1}{2\pi}e^{-\frac{x^2+y^2}{2}}$\par
+    2. $p(z) = \int_{-\infty}^{\infty} \frac{1}{2\pi}e^{-\frac{x^2+(z-x)^2}{2}}dx = \frac{1}{\sqrt{2\pi}}e^{-\frac{z^2}{2}}$\par
+    特别，当 $X$ 与 $Y$ 独立时，分别记 $X$ 和 $Y$ 的概率密度为 $f_1(x)$ 和 $f_2(y)$，则 $X+Y$ 的概率密度为
+    \[
+    p(z) = \int_{-\infty}^{\infty} f_1(x)f_2(z-x)dx = \int_{-\infty}^{\infty} f_1(z-y)f_2(y)dy \triangleq  f_1 * f_2(z) = f_2 * f_1(z)
+    \]\par
+    称此公式为卷积公式。\par
+    • 例：设 $X$ 服从期望为 2 的指数分布，$Y \sim U(0,1)$，且 $X$ 和 $Y$ 相互独立。求 $X-Y$ 的概率密度和 $P(X \leq Y)$。\par
+    1. $f_1(x) = \frac{1}{2}e^{-\frac{x}{2}}$，$f_2(y) = 1$，$f_1 * f_2(z) = \int_{0}^{1} \frac{1}{2}e^{-\frac{z+y}{2}}dy = \frac{1}{2}e^{-\frac{z}{2}}(1 - e^{-\frac{1}{2}})$\par
+    2. $P(X \leq Y) = \int_{0}^{1} \int_{0}^{y} \frac{1}{2}e^{-\frac{x}{2}}dxdy = \int_{0}^{1} (1-e^{-\frac{y}{2}})dy = 1 - \frac{1}{2}(1 - e^{-1}) = \frac{1}{2}(1 + e^{-1})$
+\end{definition}
+
+\section{正态分布变量的和的再生性、封闭性}
+
+\begin{definition}[正态分布变量的和的再生性、封闭性]
+    • 设 $X_1 \sim N(\mu_1, \sigma_1^2)$，$X_2 \sim N(\mu_2, \sigma_2^2)$，且 $X_1$ 与 $X_2$ 相互独立，则 $X_1 + X_2 \sim N(\mu_1 + \mu_2, \sigma_1^2 + \sigma_2^2)$。\par
+    • 推广至 $n$ 个独立正态分布变量之和：设 $X_i \sim N(\mu_i, \sigma_i^2)$，$i=1,2,\ldots,n$，且 $X_1, X_2, \ldots, X_n$ 相互独立，则 $\sum_{i=1}^{n} X_i \sim N(\sum_{i=1}^{n} \mu_i, \sum_{i=1}^{n} \sigma_i^2)$。\par
+    • 推广至 $n$ 个独立正态分布变量之和的封闭性：设 $X_i \sim N(\mu_i, \sigma_i^2)$，$i=1,2,\ldots,n$，且 $X_1, X_2, \ldots, X_n$ 相互独立，则 $\sum_{i=1}^{n} X_i \sim N(\sum_{i=1}^{n} \mu_i, \sum_{i=1}^{n} \sigma_i^2)$。\par
+    • 推广至 $n$ 个独立正态分布变量之和的再生性：设 $X_i \sim N(\mu_i, \sigma_i^2)$，$i=1,2,\ldots,n$，且 $X_1, X_2, \ldots, X_n$ 相互独立，则 $\sum_{i=1}^{n} X_i \sim N(\sum_{i=1}^{n} \mu_i, \sum_{i=1}^{n} \sigma_i^2)$。\par
+    \begin{figure}[ht]
+        \centering
+        \includegraphics[width=1\textwidth]{C:/Users/78003/Desktop/ptms/7.png}
+        \caption{\textbf{7}}
+        \label{fig:7}
+    \end{figure}
+    \begin{figure}[ht]
+        \centering
+        \includegraphics[width=1\textwidth]{C:/Users/78003/Desktop/ptms/8.png}
+        \caption{\textbf{7}}
+        \label{fig:7}
+    \end{figure}
+\end{definition}
+\newpage
+\begin{definition}[随机变量之商的概率密度]
+    如果 $(X, Y)$ 是二维连续型随机变量，它们的联合密度函数为 $f(x, y)$，则它们的商 $X/Y$ 是连续型随机变量，且有密度函数\par
+    \[
+    p_{\frac{X}{Y}}(z) = \int_{-\infty}^{\infty} |t| f(zt, t) dt, \forall z \in \mathbb{R}
+    \]
+    \[
+    p_{\frac{Y}{X}}(z) = \int_{-\infty}^{\infty} |t| f(t, zt) dt, \forall z \in \mathbb{R}
+    \]\par
+    Example: 设随机变量 $\epsilon$ 和 $\eta$ 相互独立，同服从参数 $\lambda=1$ 的指数分布，求 $\epsilon/\eta$ 的概率密度。\par
+    1. $f(x, y) = e^{-x} e^{-y} = e^{-(x+y)}$\par
+    2. $p_{\frac{\epsilon}{\eta}}(z) = \int_{0}^{\infty} |t| e^{-zt} e^{-t} dt = \int_{0}^{\infty} t e^{-(z+1)t} dt = \frac{1}{(z+1)^2}, z > 0$\par
+    3. $p_{\frac{\eta}{\epsilon}}(z) = \int_{0}^{\infty} |t| e^{-t} e^{-zt} dt = \int_{0}^{\infty} t e^{-(1+z)t} dt = \frac{1}{(z+1)^2}, z > 0$\par
+    4. $p_{\frac{\epsilon}{\eta}}(z) = p_{\frac{\eta}{\epsilon}}(z), z > 0$\par
+    5. $\epsilon/\eta$ 服从参数 $\lambda=1$ 的指数分布。\par
+    注意：当 $X$ 和 $Y$ 相互独立时，分别记 $X$ 和 $Y$ 的概率密度为 $f_1(x)$ 和 $f_2(y)$，则 $X/Y$ 的概率密度为\par
+    \[
+    p_{\frac{X}{Y}}(z) = \int_{-\infty}^{\infty} |t| f_1(zt) f_2(t) dt = \int_{-\infty}^{\infty} |t| f_1(t) f_2(zt) dt \triangleq f_1 * f_2(z) = f_2 * f_1(z)
+    \]
+    称此公式为卷积公式。\par
+\end{definition}
+
+\begin{definition}[t distribution]
+    • 设 $X_1 \sim N(\mu, \sigma^2)$，$X_2 \sim \chi^2_n$，且 $X_1$ 与 $X_2$ 相互独立。令 $Y = \frac{X_1}{\left(\frac{X_2}{n}\right)^{0.5}}$，\par
+    则 $Y$ 服从自由度为 $n$ 的 t 分布。即\par
+    \[
+    Y \sim t_n
+    \]
+\end{definition}
+
+\begin{definition}[F distribution]
+    • $X_1 \sim \chi^2_m$，$X_2 \sim \chi^2_n$，且 $X_1$ 与 $X_2$ 相互独立。令 $Y = \frac{\frac{X_1}{m}}{\frac{X_2}{n}}$，\par
+    则 $Y$ 服从自由度为 $m$ 和 $n$ 的 F 分布。即\par
+    \[
+    Y \sim F_{m, n}
+    \]
+\end{definition}
+
+\section{极小值和极大值的分布}
+    \begin{figure}[ht]
+        \centering
+        \includegraphics[width=1\textwidth]{C:/Users/78003/Desktop/ptms/9.png}
+        \caption{\textbf{9}}
+        \label{fig:9}
+    \end{figure}
+
+\section{Extreme Value Distribution}
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=1\textwidth]{C:/Users/78003/Desktop/ptms/10.png}
+    \caption{\textbf{10}}
+    \label{fig:10}
+\end{figure}
+
+\chapter{}\thispagestyle{fancy} 
+
+Definition of Expectation: 
+discrete random variables
+• 设 $X$ 为一离散型随机变量，其分布律为 $P(X = x_i) = p_i$，则期望值 $E(X)$ 定义为
+\[
+E(X) = \sum_{i} x_i p_i
+\]
+
+Definition of Expectation: 
+continuous random variables
+• 如果连续型随机变量 $X$ 具有密度函数 $f(x)$，则期望值 $E(X)$ 定义为
+\[
+E(X) = \int_{-\infty}^{\infty} x f(x) \, dx
+\]
+
+Probability as Expectation
+• 给定事件 $A$，我们定义其指示函数为随机变量 $I_A$，其中
+\[
+I_A(\omega) = 
+\begin{cases} 
+1 & \text{if} \quad \omega \in  A \\ 
+0 & \text{if} \quad \omega \in  A^c
+\end{cases}
+\]
+则事件 $A$ 的概率可以表示为期望值
+\[
+P(A) = E[I_A(\omega)]
+\]\\
+
+Examples\par
+• Binomial: $X \sim B(n, p)$，$E(X) = np$\par
+• Poisson: $X \sim P(\lambda)$，$E(X) = \lambda$\par
+• Normal: $X \sim N(\mu, \sigma^2)$，$E(X) = \mu$\par
+• Uniform distribution: $X \sim U(a, b)$，$E(X) = \frac{a + b}{2}$\par
+• Exponential Distribution: $X \sim \text{Exp}(\lambda)$，$E(X) = \frac{1}{\lambda}$\par
+
+\vspace{1cm}
+
+
+随机变量函数的期望
+• 设随机变量 $X$ 为离散型，有分布 $P(X = a_i) = p_i$，则
+\[
+E[g(X)] = \sum_{i=1}^{\infty} g(a_i) p_i, \quad \sum_{i=1}^{\infty} |g(a_i)| p_i < \infty
+\]
+或者 $X$ 为连续型，有概率密度函数 $f(x)$，则
+\[
+E[g(X)] = \int_{-\infty}^{\infty} g(x) f(x) \, dx, \quad \int_{-\infty}^{\infty} |g(x)| f(x) \, dx < \infty
+\]
+这是一个定理，而不是定义。
+
+• The theorem is valid when X is a random vector. \par
+• This theorem can be used to prove the previous results of expectation of sums and products.
+
+\vspace{1cm}
+
+Proof: \par
+• 设 $X$ 的分布律: $P(X = x_i) = p_i$\par
+• $Y = g(X)$，则 $Y$ 的分布律为
+\[
+P(Y = y_j) = P(g(X) = y_j) = \sum_{x_i : g(x_i) = y_j} P(X = x_i) = \sum_{i : g(x_i) = y_j} p_i
+\]
+Proof: 
+\[
+\sum_{i} g(x_i) p_i = \sum_{j} \sum_{i : g(x_i) = y_j} g(x_i) p_i = \sum_{j} \sum_{i : g(x_i) = y_j} y_j p_i = \sum_{j} y_j \sum_{i : g(x_i) = y_j} p_i = \sum_{j} y_j P[g(X) = y_j] = E(Y) = E[g(X)]
+\]
+
+Properties of Expectation\par
+• Linearity: 若干个随机变量线性组合的期望，等于各变量期望的线性组合。假设 $c_1, c_2, \ldots, c_n$ 为常数，则有
+\[
+E\left(\sum_{i=1}^{n} c_i X_i\right) = \sum_{i=1}^{n} c_i E(X_i)
+\]
+这里假定各变量的期望都存在。
+
+Independence
+• 若干个独立随机变量之积的期望，等于各变量的期望之积，即
+\[
+E\left(\prod_{i=1}^{n} X_i\right) = \prod_{i=1}^{n} E(X_i)
+\]
+这里假定各变量相互独立且期望都存在。
+
+Example
+• 飞机场载客汽车上有 20 位乘客离开机场后共有 10 个车站可以下车，若某个车站没有人下车则该车站不停车。设乘客在每个车站下车的可能性相等，而且 20 位乘客下车的选择都相互独立。以 $X$ 表示停车的次数，求 $E(X)$。
+\[
+Y_i = 
+\begin{cases} 
+1 & \text{if some passenger(s) gets off at the i-th stop} \\ 
+0 & \text{if no passenger gets off at the i-th stop} 
+\end{cases}
+\]
+\[
+X = \sum_{i=1}^{10} Y_i
+\]
+\[
+E[X] = \sum_{i=1}^{10} E[Y_i] = \sum_{i=1}^{10} P(Y_i = 1) = \sum_{i=1}^{10} \left(1 - P(Y_i = 0)\right) = \sum_{i=1}^{10} \left[1 - P \left(\bigcap_{j=1}^{20} \left(Z_j \neq i\right)\right)\right]
+\]
+
+Conditional Expectation\par
+• 设 $X$ 和 $Y$ 为随机变量，若 $(X, Y)$ 为离散型，且在给定 $X=x$ 之下，$Y$ 有条件分布 $P(Y = a_i | X = x) = p_i$，$i = 1, 2, \ldots$，或者 $(X, Y)$ 为连续型，且在给定 $X=x$ 之下 $Y$ 的条件密度函数 $f(y|x)$，则
+\[
+E(Y|X = x) = 
+\begin{cases} 
+\int_{-\infty}^{\infty} y f(y|x) \, dy & \text{(X, Y 为连续型)} \\ 
+\sum_{i} a_i P(Y = a_i | X = x) & \text{(X, Y 为离散型)}
+\end{cases}
+\]
+$E(Y|X)$ 是随机变量/向量 $X$ 的函数。
+
+\textbf{全期望公式}\par
+• 设 $X$ 和 $Y$ 为两个随机变量，则有
+\[
+E(X) = E[E(X|Y)]
+\]
+
+Example
+• 一窃贼被关在有 3 个门的地牢里，其中第一个门通向自由，出这门走 3 个小时便可以回到地面，第 2 个门通向另一个地道，走 5 个小时将返回到地牢；第 3 个门通向更长的地道，走 7 个小时也回到地牢。若窃贼每次选择 3 个门的可能性总相同，求他为获得自由而奔走的平均时间。假设窃贼没有记忆。
+
+Median\par
+• 称 $\mu$ 为连续型随机变量 $X$ 的中位数，如果
+\[
+P(X \leq \mu) = \frac{1}{2}, \quad P(X \geq \mu) = \frac{1}{2}
+\]
+• 对于离散型随机变量，中位数可能不是唯一的。\par
+• 中位数具有鲁棒性，不易受极端值影响。\par
+\vspace{1cm}
+\textbf{方差、标准差和矩}\par
+Variance, Standard Deviation and Moment\par
+• 刻画随机变量在其中心位置附近散布程度的数字特征，其中最重要的是方差。在实际应用中，方差不仅是信息度量的标准，也是风险度量的标准。\par
+• 定义设 $X$ 为随机变量，分布为 $F$，则称
+\[
+\text{Var}(X) = E[(X - E[X])^2] = \sigma^2
+\]
+为 $X$ 或分布 $F$ 的方差，其平方根
+\[
+\text{SD}(X) = \sqrt{\text{Var}(X)} = \sigma
+\]
+称为 $X$ 或分布 $F$ 的标准差。
+\[
+\text{Var}(X) = E[X^2] - (E[X])^2
+\]
+
+Properties
+• 设 $c$ 为常数，则有
+\[
+0 \leq \text{Var}(X) = E[X^2] - (E[X])^2, \quad \text{Var}(X) \leq E[X^2]
+\]
+\[
+\text{Var}(cX) = c^2 \text{Var}(X)
+\]
+\[
+\text{Var}(X) = 0 \text{ 当且仅当 } P(X = c) = 1, \text{ 其中 } c = E[X]
+\]
+• 对任何常数 $c$ 有
+\[
+\text{Var}(X) \leq E[(X - c)^2] \text{ 其中等号成立当且仅当 } c = E[X]
+\]
+• 如果随机变量 $X$ 和 $Y$ 相互独立，$a, b$ 为常数，则
+\[
+\text{Var}(aX + bY) = a^2 \text{Var}(X) + b^2 \text{Var}(Y)
+\]
+
+Examples\par
+• Binomial: $X \sim B(n, p)$，$\text{Var}(X) = np(1 - p)$\par
+• Poisson: $X \sim P(\lambda)$，$\text{Var}(X) = \lambda$\par
+• Uniform distribution: $X \sim U(a, b)$，$\text{Var}(X) = \frac{(b - a)^2}{12}$\par
+• Exponential Distribution: $X \sim \text{Exp}(\lambda)$，$\text{Var}(X) = \frac{1}{\lambda^2}$\par
+• Normal: $X \sim N(\mu, \sigma^2)$，$\text{Var}(X) = \sigma^2$\par
+
+\vspace{1cm}
+
+标准化随机变量\par
+• $X^* = \frac{X - E[X]}{\sqrt{\text{Var}(X)}}$ 为 $X$ 的标准化随机变量。易见 $E(X^*) = 0$，$\text{Var}(X^*) = 1$。\par
+• 我们引入标准化随机变量是为了消除由于计量单位的不同而给随机变量带来的影响。\par
+• 标准正态分布\par
+• Location-scale family\par
+
+\vspace{1cm}
+
+\textbf{矩（Moment）}\par
+• 定义：设 $X$ 为随机变量，$c$ 为常数，$r$ 为正整数，则称 $E[(X - c)^r]$ 为 $X$ 关于 $c$ 点的 $r$ 阶矩。\par
+  - 当 $c = 0$ 时，$\alpha_r = E[X^r]$ 称为 $X$ 的 $r$ 阶原点矩。\par
+  - 当 $c = E[X]$ 时，$\mu_r = E[(X - E[X])^r]$ 称为 $X$ 的 $r$ 阶中心矩。\par
+• 容易看出，一阶原点矩就是期望，二阶中心矩就是 $X$ 的方差。\par
+
+\vspace{1cm}
+
+\textbf{协方差 (Covariance)}\par
+• 定义：称 $ \text{Cov}(X, Y) = E[(X - E[X])(Y - E[Y])]$ 为 $X$ 和 $Y$ 的协方差。\par
+• Properties:\par
+  - $\text{Cov}(X, Y) = \text{Cov}(Y, X)$\par
+  - $\text{Cov}(X, X) = \text{Var}(X)$\par
+  - $\text{Cov}(X, Y) = E[XY] - E[X]E[Y]$\par
+  - 若 $X$ 和 $Y$ 相互独立，则 $\text{Cov}(X, Y) = 0$\par
+  - $\text{Cov}(X_1 + X_2, Y) = \text{Cov}(X_1, Y) + \text{Cov}(X_2, Y)$\par
+  - $\text{Cov}(a_1 X_1 + a_2 X_2, b_1 Y_1 + b_2 Y_2) = \sum_{i=1}^{2} \sum_{j=1}^{2} a_i b_j \text{Cov}(X_i, Y_j)$\par
+
+\vspace{1cm}
+
+\textbf{相关系数 (Correlation)}\par
+• 定义: 设随机变量 $X, Y$，称 $\rho_{X,Y} = \frac{\text{Cov}(X, Y)}{\sqrt{\text{Var}(X) \text{Var}(Y)}}$ 为 $X$ 和 $Y$ 的相关系数。当 $\rho_{X,Y} = 0$ 时，则称 $X$ 和 $Y$ 不相关。\par
+• 由定义容易看出，若令 $X^* = \frac{X - E[X]}{\sqrt{\text{Var}(X)}}$ 和 $Y^* = \frac{Y - E[Y]}{\sqrt{\text{Var}(Y)}}$ 分别为 $X$ 和 $Y$ 相应的标准化随机变量，则 $\rho_{X,Y} = \text{Cov}(X^*, Y^*)$。因此，形式上可以把相关系数视为“标准尺度下的协方差"，从这个角度上说，相关系数可以更好地反映两个随机变量间的关系，而不受它们各自所用度量单位的影响。\par
+
+\vspace{1cm}
+
+\textbf{Example}\par
+• 设随机变量 $(X, Y) \sim N\left(\begin{pmatrix} \mu_1 \\ \mu_2 \end{pmatrix}, \begin{pmatrix} \sigma_1^2 & \rho \sigma_1 \sigma_2 \\ \rho \sigma_1 \sigma_2 & \sigma_2^2 \end{pmatrix}\right)$，则 $\rho_{X,Y} = \rho$。\par
+• 为了简化计算，我们可以考虑标准化后的 $X^*$ 和 $Y^*$。\par
+
+解答
+
+1. 首先，标准化 $X$ 和 $Y$：
+\[
+X^* = \frac{X - \mu_1}{\sigma_1}, \quad Y^* = \frac{Y - \mu_2}{\sigma_2}
+\]
+
+2. 计算标准化后的协方差：
+\[
+\text{Cov}(X^*, Y^*) = \text{Cov}\left(\frac{X - \mu_1}{\sigma_1}, \frac{Y - \mu_2}{\sigma_2}\right) = \frac{1}{\sigma_1 \sigma_2} \text{Cov}(X, Y)
+\]
+
+3. 由于 $(X, Y)$ 服从二维正态分布，协方差 $\text{Cov}(X, Y) = \rho \sigma_1 \sigma_2$，因此：
+\[
+\text{Cov}(X^*, Y^*) = \frac{1}{\sigma_1 \sigma_2} \cdot \rho \sigma_1 \sigma_2 = \rho
+\]
+
+4. 计算标准化后的方差：
+\[
+\text{Var}(X^*) = \text{Var}\left(\frac{X - \mu_1}{\sigma_1}\right) = \frac{1}{\sigma_1^2} \text{Var}(X) = \frac{1}{\sigma_1^2} \sigma_1^2 = 1
+\]
+\[
+\text{Var}(Y^*) = \text{Var}\left(\frac{Y - \mu_2}{\sigma_2}\right) = \frac{1}{\sigma_2^2} \text{Var}(Y) = \frac{1}{\sigma_2^2} \sigma_2^2 = 1
+\]
+
+5. 计算相关系数：
+\[
+\rho_{X,Y} = \frac{\text{Cov}(X, Y)}{\sqrt{\text{Var}(X) \text{Var}(Y)}} = \frac{\rho \sigma_1 \sigma_2}{\sqrt{\sigma_1^2 \sigma_2^2}} = \rho
+\]
+
+因此，标准化后的 $X^*$ 和 $Y^*$ 的相关系数仍然是 $\rho$。
+
+\vspace{1cm}
+
+\textbf{Properties of Correlation Coefficients}\par
+• 若 $X$ 和 $Y$ 相互独立，则 $\rho_{X,Y} = 0$。\par
+• $|\rho_{X,Y}| \leq 1$，等号成立当且仅当 $X$ 和 $Y$ 之间存在严格的线性关系，即\par
+  - 当 $\rho_{X,Y} = 1$ 时，存在 $a > 0$，$b \in \mathbb{R}$，使得 $X = aY + b$（正相关）\par
+  - 当 $\rho_{X,Y} = -1$ 时，存在 $a < 0$，$b \in \mathbb{R}$，使得 $X = aY + b$（负相关）\par
+• Note: $\rho_{X,Y}$ 也常称作 $X$ 和 $Y$ 的线性相关系数，只能刻画 $X$ 和 $Y$ 间的线性相依程度，$|\rho_{X,Y}|$ 越接近 1，就表示 $X$ 和 $Y$ 间的线性相关程度越高；$|\rho_{X,Y}| = 0$ 时，只是表示 $X$ 和 $Y$ 间不存在线性相关，但可以存在非线性的函数关系。\par
+
+\vspace{1cm}
+
+\textbf{线性相关和非线性相关}\par
+• 设 $X \sim U\left(-\frac{1}{2}, \frac{1}{2}\right)$，而 $Y = \cos(X)$，则
+\[
+\text{Cov}(X, Y) = E[XY] = \int_{-\frac{1}{2}}^{\frac{1}{2}} x \cos(x) \, dx = 0
+\]
+• 所以 $X$ 和 $Y$ 不相关，但是 $X$ 和 $Y$ 之间存在着非线性的函数关系。\par
+
+\vspace{1cm}
+
+\textbf{不相关与独立性之间的关系}\par
+• 定理：对随机变量 $X$ 和 $Y$，如果 $X$ 和 $Y$ 相互独立，那么它们一定不相关；但是如果它们不相关却未必相互独立。\par
+• Note: 只在正态情形下不相关与独立等价。我们举二维正态的例子来说明，不妨设 
+\[
+(X, Y) \sim N\left(\begin{pmatrix} \mu_1 \\ \mu_2 \end{pmatrix}, \begin{pmatrix} \sigma_1^2 & \rho \sigma_1 \sigma_2 \\ \rho \sigma_1 \sigma_2 & \sigma_2^2 \end{pmatrix}\right)
+\]
+，则 $X$ 和 $Y$ 独立等价于 $\rho_{X,Y} = \rho = 0$，从而等价于 $X$ 和 $Y$ 不相关。\par
+
+\vspace{1cm}
+
+\textbf{其他一些数字特征与相关函数}\par
+• 平均绝对差 $E[|X - E[X]|]$\par
+• 矩母函数 $E[e^{tX}]$，其中 $t \in \mathbb{R}$，moment generating function\par
+• 特征函数 $E[e^{itX}]$，其中 $t \in \mathbb{R}$，$i$ 为虚数，Characteristic function\par
+• 定义: 如果 $X$ 为一离散型随机变量，其分布律为 $P(X = a_k) = p_k$，$k \in \mathbb{N}$，那么
+\[
+E[e^{itX}] = \sum_{k=1}^{\infty} p_k e^{it a_k}
+\]
+• 如果连续型随机变量 $X$ 具有密度函数 $f(x)$，那么
+\[
+E[e^{itX}] = \int_{-\infty}^{\infty} f(x) e^{itx} \, dx
+\]
+• 概率质量函数/密度函数可以通过其特征函数唯一确定，反之亦然，通过逆傅里叶变换。
+
+\vspace{1cm}
+
+\textbf{矩母函数、特征函数用于计算}\par
+• 矩母函数: $M(t) = E[e^{tX}]$\par
+$M^{(k)}(t) = E[X^k e^{tX}]$，$M^{(k)}(0) = E[X^k]$\par
+• $H(t) = \log M(t)$，$H'(0) = E[X]$，$H''(0) = \text{Var}(X)$\par
+• 特征函数: $G(t) = E[e^{it}]$\par
+$G^{(k)}(t) = E[i^k X^k e^{it}]$，$G^{(k)}(0) = i^k E[X^k]$\par
+• 积分运算变为微分运算\par
+• Example：exponential distribution\par
+
+\vspace{1cm}
+
+\textbf{Characteristic function of Poisson Random Variable}\par
+• $E[e^{itX}] = \sum_{k=0}^{\infty} \frac{(\lambda e^{it})^k}{k!} e^{-\lambda} = e^{-\lambda} \sum_{k=0}^{\infty} \frac{(\lambda e^{it})^k}{k!} = e^{-\lambda} e^{\lambda e^{it}} = e^{\lambda (e^{it} - 1)}$\par
+• Note we use the Taylor expansion of the complex function $e^z$.\par
+
+\vspace{1cm}
+
+Sum of Random variables, Convolution, \par
+Characteristic function\par
+• 设 $X$ 与 $Y$ 独立，分别记 $X$ 和 $Y$ 的概率密度为 $f_1(x)$ 和 $f_2(y)$，则 $Z = X + Y$ 的概率密度为
+\[
+p(z) = \int_{-\infty}^{\infty} f_1(x) f_2(z - x) \, dx = \int_{-\infty}^{\infty} f_1(z - y) f_2(y) \, dy \triangleq f_1 * f_2(z) = f_2 * f_1(z)
+\]
+• $f_1(x)$ 和 $f_2(y)$ 的特征函数分别是 $G_1(t)$ 和 $G_2(t)$，则 $Z$ 的特征函数是 $G_1(t) \cdot G_2(t)$。\par
+
+\vspace{1cm}
+
+大数定律\par
+• 大数定律, 什么意义下的极限\par
+依概率收敛, weak convergence\par
+定义: 如果对任何 $\epsilon > 0$，都有
+\[
+\lim_{n \to \infty} P(|\xi_n - \xi| > \epsilon) = 0, \quad \lim_{n \to \infty} P(|\xi_n - \xi| < \epsilon) = 1
+\]
+那么我们就称随机变量序列 $\{\xi_n, n \in \mathbb{N}\}$ 依概率收敛到随机变量 $\xi$，记为 $\xi_n \xrightarrow{\text{p}} \xi$。
+
+• 设 $\{X_n\}$ 是一列独立同分布 (i.i.d.) 的随机变量序列，具有公共的数学期望 $\mu$ 和方差 $\sigma^2$，则 
+\[
+\bar{X} = \frac{1}{n} \sum_{k=1}^{n}X_k \xrightarrow{\text{p}} \mu
+\]
+即$\{X_n\}$ 服从弱大数定律。
+
+\vspace{1cm}
+
+Example\par
+• 如果以 $\{\zeta_n\}$ 表示 $n$ 重 Bernoulli(p) 试验中的成功次数，则有
+\[
+\frac{\zeta_n}{n} \xrightarrow{\text{p}} p
+\]
+• 如果用 $f_n = \frac{\zeta_n}{n}$ 表示成功出现的频率，则上例说明了 $f_n \xrightarrow{\text{p}} p$，即频率（依概率）收敛到概率。
+
+\vspace{1cm}
+
+Proof of Weak Law of Large Numbers:\par
+Chebyshev 不等式\par
+• 设随机变量 $X$ 的方差存在，则
+\[
+P(|X - E[X]| \geq \epsilon) \leq \frac{\text{Var}(X)}{\epsilon^2}, \forall \epsilon > 0
+\]
+• More General, Markov 不等式:
+若 $Y$ 为只取非负值的随机变量，则对任何 $\epsilon > 0$，有
+\[
+P(Y \geq \epsilon) \leq \frac{E[Y]}{\epsilon}
+\]
+
+\vspace{1cm}
+
+\textbf{A version of Strong Law of Large Numbers}\par
+• Let $X_n$ be i.i.d. random variables，$E[|f(X_n)|] < \infty$，Then we have
+\[
+\frac{f(X_1) + f(X_2) + \cdots + f(X_n)}{n} \to E[f(X_1)]
+\]
+almost surely.
+Based on this, we can compute expectation, or integrals by simulations, or Monte Carlo.
+
+\vspace{1cm}
+
+\textbf{Law of Large Numbers}
+• Let $X_n$ be i.i.d. random variables，$E[|f(X_n)|] < \infty$，Then we have
+\[
+\frac{f(X_1) + f(X_2) + \cdots + f(X_n)}{n} \to E[f(X_1)]
+\]
+almost surely.\par
+• Perspectives: \par
+  - Monte Carlo simulations\par 
+  - The probabilistic meaning of faith \par
+  - Average over space and average over time \par
+  - $n$ is sufficiently large\par
+
+\vspace{1cm}
+
+\textbf{中心极限定理 (Central Limit Theorem)}\par
+• 定理: 设 $\{X_n\}$ 为 i.i.d. 的随机变量序列，具有公共的数学期望 $\mu$ 和方差 $\sigma^2$。则 $X_1 + X_2 + \cdots + X_n$ 的标准化形式
+\[
+\frac{1}{\sqrt{n}\sigma} (X_1 + X_2 + \cdots + X_n - n\mu)
+\]
+满足中心极限定理。即对任意 $x \in \mathbb{R}$，有
+\[
+\lim_{n \to \infty} F_n(x) = \Phi(x)
+\]
+其中 $F_n(x)$ 为 $\frac{1}{\sqrt{n}\sigma} (X_1 + X_2 + \cdots + X_n - n\mu)$ 的分布函数，而 $\Phi(x)$ 为标准正态分布 $N(0,1)$ 的分布函数，记为
+\[
+\frac{1}{\sqrt{n}\sigma} (X_1 + X_2 + \cdots + X_n - n\mu) \xrightarrow{d} N(0,1)
+\]
+
+\textbf{de Moivre-Laplace Theorem}\par
+• 设 $X_n, n \in \mathbb{N}$ 为 Bernoulli 试验，相互独立且具有相同的分布
+\[
+P(X_1 = 1) = 1 - P(X_1 = 0) = p, \quad 0 < p < 1
+\]
+则有
+\[
+\frac{1}{\sqrt{np(1-p)}} (X_1 + X_2 + \cdots + X_n - np) \xrightarrow{d} N(0,1)
+\]
+即
+\[
+\lim_{n \to \infty} P\left(\frac{X_1 + X_2 + \cdots + X_n - np}{\sqrt{np(1-p)}} \leq x\right) = \Phi(x), \quad \forall x \in \mathbb{R}
+\]
+
+\vspace{1cm}
+
+\textbf{Central Limit Theorem}\par
+• Summation version:
+\[
+P\left(\frac{1}{\sqrt{n}\sigma} (X_1 + X_2 + \cdots + X_n - n\mu) \leq x\right) \to \Phi(x)
+\]
+• Average version:
+\[
+P\left(\sqrt{n} \frac{\overline{X} - \mu}{\sigma} \leq x\right) \to \Phi(x)
+\]\par
+
+\vspace{1cm}
+
+Example
+• 设一考生参加100道题的英语标准化考试，每道题均为有四个备选答案的选择题，有且仅有一个答案是正确的，每道题他都随机地选择一个答案，假设评分标准为：选对得一分，选错或不选不得分。试给出该考生最终得分大于等于25的概率。
+
+解答
+
+1. 设 $X_i$ 表示第 $i$ 道题的得分，$X_i$ 是一个 Bernoulli 随机变量，$P(X_i = 1) = \frac{1}{4}$，$P(X_i = 0) = \frac{3}{4}$。\par
+2. 设 $S = \sum_{i=1}^{100} X_i$ 表示考生的总得分。$S$ 服从参数为 $n = 100$ 和 $p = \frac{1}{4}$ 的二项分布，即 $S \sim \text{Binomial}(100, \frac{1}{4})$。\par
+3. 我们需要计算 $P(S \geq 25)$。
+
+利用中心极限定理进行近似计算：
+
+1. 计算期望和方差：
+\[
+E[S] = np = 100 \times \frac{1}{4} = 25
+\]
+\[
+\text{Var}(S) = np(1-p) = 100 \times \frac{1}{4} \times \frac{3}{4} = 18.75
+\]
+
+2. 标准化：
+\[
+Z = \frac{S - E[S]}{\sqrt{\text{Var}(S)}} = \frac{S - 25}{\sqrt{18.75}}
+\]
+
+3. 计算 $P(S \geq 25)$：
+\[
+P(S \geq 25) = P\left(\frac{S - 25}{\sqrt{18.75}} \geq \frac{25 - 25}{\sqrt{18.75}}\right) = P(Z \geq 0)
+\]
+
+4. 根据标准正态分布的性质，$P(Z \geq 0) = 0.5$。
+
+因此，该考生最终得分大于等于25的概率为0.5。\par
+
+\vspace{1cm}
+
+Example\par
+• 每天有1000个旅客需要乘坐火车从芝加哥到洛杉矶，这两个城市之间有两条竞争的铁路它们的火车同时开出同时到达并且具有同样的设备。设这1000个人乘坐那一条铁路的火车是相互独立而且又是任意的，于是每列火车的乘客数目可视为概率为 $\frac{1}{2}$ 的1000重 Bernoulli 试验中成功的次数。如果一列火车设置 $s < n$ 个座位，那么一旦有多于 $s$ 个旅客来乘车就容纳不下了。令这个事件发生的概率为 $f_s$。利用中心极限定理，有
+\[
+f_s \approx 1 - \Phi\left(\frac{2s - 1000}{\sqrt{1000}}\right)
+\]
+• 要求 $s$ 使得 $f_s < 0.01$，即在100次中有99次是有足够的座位的，查表容易求出 $s = 537$。这样，两列火车所有的座位数为1074，其中只有74个空位，可见由于竞争而带来的损失是很小的。
+
+\vspace{1cm}
+
+Comparison of Limit theorems\par
+• Law of large numbers\par
+\[
+\overline{X} - \mu = o_p(1)
+\]\par
+• Central limit theorem
+\[
+\overline{X} - \mu = O_p\left(\frac{1}{\sqrt{n}}\right)
+\]\par
+• Law of the iterated logarithm
+\[
+\limsup_{n \to \infty} \frac{\overline{X} - \mu}{\sqrt{2 \log \log n}} = 1
+\]
+
+\vspace{1cm}
+
+Wright-Fisher Model\par
+• In a diploid population, $N$ individuals, $2N$ copies of each gene.\par
+• A gene with two alleles, A or B. An individual can have two copies of the same allele or two different alleles.\par
+• Assumption: generations do not overlap; each copy of the gene found in the new generation is drawn independently at random from all copies of the gene in the old generation.\par
+• Last generation: allele frequency of A is $p$.\par
+• The probability of obtaining $k$ copies of the allele A in the next generation is
+\[
+P(k) = \binom{2N}{k} p^k (1 - p)^{2N - k}
+\]\par
+• Can be formulated as a Markov Chain.\par
+• An allele can disappear due to genetic drift.\par
+
+\vspace{1cm}
+
+Problems in population genetics\par
+• Hardy–Weinberg principle: for sufficiently large populations, the allele frequencies remain constant from one generation to the next.\par
+• Neutral or not.\par
+• Selection.\par
+• Linkage.\par
+
+\vspace{1cm}
+
+Genetic Drift\par
+• Last generation: allele frequency of A is $p$.\par
+• The probability of obtaining $k$ copies of the allele A is
+\[
+P(k) = \binom{2N}{k} p^k (1 - p)^{2N - k}
+\]\par
+• Neutral.\par
+• Selection, Linkage.\par
+• Hardy–Weinberg principle: for sufficiently large populations, the allele frequencies remain constant from one generation to the next.\par
+
+\vspace{1cm}
+
+Coalescence\par
+• Setup: haploid, population size $2N_e$, and consider one gene locus.\par
+• Assumption: generations do not overlap; each copy of the gene found in the new generation is drawn independently at random from all copies of the gene in the old generation.\par
+• Problem: two random samples from one generation, trace backwards in time to the generation when they coalesce in their most recent common ancestor (MRCA).\par
+• Under the random setting, trace backward one generation, the probability that they share the same parent is $\frac{1}{2N_e}$. Let this coalescence time be $T_c$，then $T_c$ follows a geometric distribution.
+\[
+P(T_c = t) = \left(1 - \frac{1}{2N_e}\right)^{t-1} \frac{1}{2N_e} \to \frac{1}{2N_e} e^{-\frac{t-1}{2N_e}}
+\]
+• $E[T_c] \approx 2N_e$，$SD[T_c] \approx 2N_e$。
+
+\vspace{1cm}
+
+Data Compression\par
+• Lossless coding: important files.\par
+• Lossy coding: images, audio files.\par
+
+\vspace{1cm}
+
+Lossless Coding\par
+• Prefix coding: A code is a prefix code if no target bit string in the mapping is a prefix of the target bit string of a different source symbol in the same mapping.\par
+  - Note: if we represent a prefix code in a binary tree, they are all on the leafs.\par
+• Instantaneous code, or context-free code: symbols can be decoded instantaneously after their entire code word is received.\par
+• Kraft inequality: Suppose we have $n$ symbols $\{a_1, a_2, \ldots, a_K\}$。A binary prefix code assigns $n_i$ bits to $a_i$，then
+\[
+\sum_{i=1}^{K} \frac{1}{2^{n_i}} \leq 1
+\]
+
+\vspace{1cm}
+
+Lossless coding and probabilistic models\par
+• Lossless coding: 无损失编码，文件压缩，zip software。\par
+• 最优编码 (optimal coding)。\par
+• Shannon，1948，A Mathematical Theory of Communication。\par
+
+\vspace{1cm}
+
+Shannon’s lossless coding theorem\par
+• Let a discrete random variable $X$ take on the values $\{a_1, a_2, \ldots, a_K\}$ with respective probabilities $\{p(a_1), p(a_2), \ldots, p(a_K)\}$。Then, for any coding of $X$ that assigns $n_i$ bits to $a_i$，the average coding length,
+\[
+\sum_{i=1}^{K} n_i p(a_i) \geq - \sum_{i=1}^{K} \log p(a_i) p(a_i) = H(X)
+\]
+$H(X)$ is called the entropy of the r.v. $X$。\par
+• $\{-\log_2 p(a_i), i = 1, \ldots, K\}$，the optimal coding length of $\{a_1, a_2, \ldots, a_K\}$ based on the model of $X$。\par
+
+• Proof: Let $q_i = \frac{1}{2^{n_i}} \sum_{j=1}^{K} \frac{1}{2^{n_j}}$，$i = 1, \ldots, K$，then
+\[
+-\sum_{i=1}^{K} p_i \log_2 p_i \leq -\sum_{i=1}^{K} p_i \log_2 q_i
+\]
+That is, the Kullback-Leibler divergence $D(p||q)$ is nonnegative
+\[
+-\sum_{i=1}^{K} p_i \log_2 \frac{q_i}{p_i} = D(p||q) \geq 0
+\]
+In addition, we need the Kraft inequality.\par
+Note: $\log x \leq x - 1$。\par
+
+\vspace{1cm}
+
+Where does the probability model come from?\par
+• Suppose $n = 3$，we can code the 1-symbol or 1-letter words, $\{a_1, a_2, a_3\}$，or we can code 2-letter words (9 words)，etc.\par
+• The word frequencies change correspondingly。\par
+• The code lengths of words generally are not constant, namely, variable-length。\par
+• Given a model, quite some (sub)-optimal coding are available now such as Huffman coding。\par
+
+\vspace{1cm}
+
+信息的单位：bit(比特)\par
+• Toss a fair coin, Bernoulli trial ($p$)，$p = \frac{1}{2}$。\par
+• Entropy $= -0.5 \times \log_2 0.5 - 0.5 \times \log_2 0.5 = 1$ bit。\par
+
+\vspace{1cm}
+
+Lempel-Ziv Algorithm\par
+• Example, binary sequence
+\[
+001101100011010101001001001101000001010010110010110
+\]
+• Parse into “word”
+\[
+0, 01, 1, 011, 00, 0110, 10, 101, 001, 0010, 01101, 000, 00101, 001011, 0010110
+\]
+• Optimality: code lengths of all words have the same length. Notice that each word occurs only once, chance $\frac{1}{N}$。\par
+• When $N \to \text{large}$，word lengths $\to \text{large}$ while code length of each word remain unchanged。\par
+• The coding is data-dependent。
+
+\chapter{}
+
+\section{总体 (Population)}
+\subsection{定义}
+• Example：要研究某大学学生的学习情况，则该校的全体学生构成问题的总体，每一个学生则是该总体中的一个个体。
+\subsection{类型}
+• 有限总体\par
+• 无限总体：用概率分布 $F(x)$ 来描述。
+\subsection{说明}
+• 总体总是有限的，有限总体相应的分布只能是离散的，其具体形式将与个体总数有关且缺乏一个简洁的数学形式，这会使有力的概率方法无法使用。引进无限总体的概念，在概率论上相当于用一个连续分布去逼近离散分布，当总体所含个体极多时，这种逼近所带来的误差，从应用的观点看已可以忽略不计。更好的是，事实证明：几种常见且在概率论上较易处理的分布，如指数分布和正态分布等，尤其是正态分布，对许多实用问题的总体分布给出了足够好的近似，而围绕着这些分布建立了深入而有效的统计方法。
+
+\section{样本 (Sample)}
+\subsection{定义}
+• 样本是按一定的规定从总体中抽出的一部分个体，所谓“按一定的规定”，就是指总体中的每一个个体有同等的被抽出的机会，以及在这个基础上设立的某种附加条件。
+\subsection{示例}
+• 设一批产品包含 $N$ 个，内有废品 $M$ 个，$M$ 未知。因而废品率也未知，现从其中抽出 $n$ 个逐一检查它们是否为废品，据此去估计 $p$。\par
+  - Sample with replacement，Binomial $(n, p)$\par
+  - Sample without replacement, hypergeometric distribution\par
+
+\section{I.I.D. Sample (简单随机样本)}
+\subsection{定义}
+• 为了使抽取的样本能很好地反映总体的信息，必须考虑抽样方法。最常用的一种抽样方法叫作“简单随机抽样"，它要求满足下列两条：\par
+  1. 代表性：总体中的每一个体都有同等机会被抽入样本，这意味着样本中每个个体与所考察的总体具有相同分布。因此，任一样本中的个体都具有代表性。\par
+  2. 独立性：样本中每一个体取什么值并不影响其它个体取什么值。这意味着，样本中各个体 $X_1, X_2, \ldots, X_n$ 是相互独立的随机变量。\par
+• 由简单随机抽样获得的样本 $(X_1, X_2, \ldots, X_n)$ 称为简单随机样本。\par
+
+\subsection{性质}
+• 定义：设有一总体 $F(x)$，$(X_1, X_2, \ldots, X_n)$ 为从 $F$ 中抽取的容量为 $n$ 的样本，若 $X_1, X_2, \ldots, X_n$ 相互独立，且有相同分布，即同有分布 $F$：
+\[
+F(x_1, \ldots, x_n) = \prod_{i=1}^{n} F(x_i)
+\]
+\[
+f(x_1, \ldots, x_n) = \prod_{i=1}^{n} f(x_i)
+\]
+
+\section{统计推断}
+• 从总体中抽取一定大小的样本去推断总体的概率分布的方法称为统计推断。\par
+• 当样本的分布形式已知，但含有未知参数时，有关其参数的推断，称为参数统计推断。
+
+\section{统计量 (Statistic)}
+\subsection{定义}
+• 完全由样本所决定的量，叫做统计量。这里要注意的是“完全”这两个字，它表明：统计量只依赖于样本，而不能依赖于任何其他未知的量。特别是，它不能依赖于总体分布中所包含的未知参数。
+
+\subsection{常用统计量}
+• $X_1, X_2, \ldots, X_n$ 为从总体 $F(t)$ 中抽取的容量为 $n$ 的样本：\par
+  - 样本均值: $\overline{X} = \frac{1}{n} \sum_{i=1}^{n} X_i$，$\overline{x} = \frac{1}{n} \sum_{i=1}^{n} x_i$\par
+  - 样本方差: $S^2 = \frac{1}{n-1} \sum_{i=1}^{n} (X_i - \overline{X})^2$，$s^2 = \frac{1}{n-1} \sum_{i=1}^{n} (x_i - \overline{x})^2$\par
+  - 样本矩: $a_k = \frac{1}{n} \sum_{i=1}^{n} X_i^k$，$m_k = \frac{1}{n} \sum_{i=1}^{n} (X_i - \overline{X})^k$\par
+  - 经验分布：$F_n(t) = \frac{1}{n} \sum_{i=1}^{n} I(t \geq X_i)$，This is a r.v.
+
+\section{次序统计量 (Order Statistics) 及其有关统计量}
+• $X_1, X_2, \ldots, X_n$ 为从总体 $F(t)$ 中抽取的容量为 $n$ 的样本：\par
+  - Sorting: $X_{(1)} \leq X_{(2)} \leq \cdots \leq X_{(n)}$，次序统计量\par
+  - 样本中位数：$m_{1/2} = \begin{cases} X_{(\frac{n+1}{2})}, & n \text{ is odd} \\ \frac{1}{2} [X_{(\frac{n}{2})} + X_{(\frac{n}{2}+1)}], & n \text{ is even} \end{cases}$\par
+  - 极值：$X_{(1)}, X_{(n)}$
+
+\section{三大分布}
+• $\chi^2$\par
+• $t$\par
+• $F$ 分布\par
+All rooted in normal distribution $N(0,1)$
+
+
+\section{分布}
+\subsection{$\chi^2$ 分布}
+• 设 $X_1, X_2, \ldots, X_n$ 为独立同分布的随机变量，且 $X_i \sim N(0,1)$，则
+\[
+X = \sum_{i=1}^{n} X_i^2
+\]
+服从自由度为 $n$ 的 $\chi^2$ 分布，记为 $\chi^2_n$。\par
+• $X \sim \Gamma\left(\frac{n}{2}, \frac{1}{2}\right)$。\par
+• 当自由度 $n$ 越大，密度曲线越趋于对称；$n$ 越小，曲线越不对称。当 $n=1,2$ 时，曲线是单调下降趋于 0；当 $n \geq 3$ 时，曲线有单峰，从 0 开始先单调上升，在一定位置达到峰值，然后单调下降趋向于 0。
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.6\textwidth]{chi.png}
+\end{figure}
+
+
+\subsection{Gamma 分布}
+• Gamma 分布 $\Gamma(\alpha, \lambda)$ 的概率密度函数为
+\[
+f(x) = \begin{cases} 
+\frac{\lambda^\alpha x^{\alpha-1} e^{-\lambda x}}{\Gamma(\alpha)}, & x \geq 0 \\
+0, & x < 0
+\end{cases}
+\]
+• 设 $Y_1, Y_2, \ldots, Y_n$ 为独立同分布的随机变量，且 $Y_i \sim \text{Exp}(\lambda)$，则
+\[
+Y = \sum_{i=1}^{n} Y_i \sim \Gamma(n, \lambda)
+\]
+• Gamma 函数：$\Gamma(\alpha) = \int_{0}^{\infty} x^{\alpha-1} \lambda^{\alpha}e^{-\lambda x} \, dx$
+
+\subsection{Quantiles, Percentiles, 分位点}
+• 设 $X \sim F(x)$，若 $P(X > c) = \alpha$，则 $c$ 成为此分布的上侧（upper）$\alpha$ 分位点。
+
+\subsection{t 分布 (Student distribution)}
+• 设 $X \sim N(0,1)$，$Y \sim \chi^2_n$，且 $X$ 与 $Y$ 独立。令
+\[
+T = \frac{X}{\sqrt{Y/n}}
+\]
+则 $T \sim t_n$，自由度为 $n$，其密度函数为
+\[
+t_n(x) = \frac{\Gamma\left(\frac{n+1}{2}\right)}{\sqrt{n\pi} \Gamma\left(\frac{n}{2}\right)} \left(1 + \frac{x^2}{n}\right)^{-\frac{n+1}{2}}
+\]
+• $E[T] = 0$，$\text{Var}(T) = \frac{n}{n-2}$。
+• 当 $n \to \infty$ 时，$t_n$ 分布趋近于标准正态分布 $N(0,1)$。
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.6\textwidth]{t.png}
+\end{figure}
+
+
+\subsection{F 分布}
+• 设 $X \sim \chi^2_m$，$Y \sim \chi^2_n$，且 $X$ 与 $Y$ 独立。令
+\[
+F = \frac{(X/m)}{(Y/n)}
+\]
+则 $F \sim F_{m,n}$，自由度为 $m$ 和 $n$，其密度函数为
+\[
+f_{m,n}(x) = \frac{\Gamma\left(\frac{m+n}{2}\right)}{\Gamma\left(\frac{m}{2}\right) \Gamma\left(\frac{n}{2}\right)} m^{\frac{m}{2}} n^{\frac{n}{2}} x^{\frac{m}{2}-1} \left(n + mx\right)^{-\frac{m+n}{2}}
+\]
+• 若 $Z \sim F_{m,n}$，则 $1/Z \sim F_{n,m}$。\par
+• 若 $T \sim t_n$，则 $T^2 \sim F_{1,n}$。\par
+• $F_{m,n}(1-\alpha) = 1/F_{n,m}(\alpha)$。
+
+\section{正态总体样本均值和样本方差的分布}
+• 设 $X_1, X_2, \ldots, X_n$ 为独立同分布的随机变量，且 $X_i \sim N(\mu, \sigma^2)$，则
+\[
+\overline{X} = \frac{1}{n} \sum_{i=1}^{n} X_i, \quad S^2 = \frac{1}{n-1} \sum_{i=1}^{n} (X_i - \overline{X})^2
+\]
+• $\overline{X} \sim N\left(\mu, \frac{\sigma^2}{n}\right)$。\par
+• $(n-1)S^2/\sigma^2 \sim \chi^2_{n-1}$。\par
+• $\overline{X}$ 和 $S^2$ 独立。\par
+• 定理：$T = \frac{\sqrt{n} (\overline{X} - \mu)}{S} \sim t_{n-1}$。
+
+\section{Sample Mean and Sample Variance}
+• Sample Mean: $\overline{X} = \frac{1}{n} \sum_{i=1}^{n} X_i$\par
+• Sample Variance: $S^2 = \frac{1}{n-1} \sum_{i=1}^{n} (X_i - \overline{X})^2$\par
+• 设 $X_1, X_2, \ldots, X_n$ 为独立同分布的随机变量，且 $X_i \sim N(\mu, \sigma^2)$，则有以下结论：\par
+  - 定理：随机变量 $\overline{X}$ 和随机向量 $(X_1 - \overline{X}, X_2 - \overline{X}, \ldots, X_n - \overline{X})$ 独立。\par
+  - $\overline{X}$ 是正态随机变量。\par
+  - $X_1 - \overline{X}, X_2 - \overline{X}, \ldots, X_n - \overline{X}$ 是正态随机向量。\par
+  - $\text{Cov}(\overline{X}, X_1 - \overline{X}) = 0$。
+
+\subsection{Sample Mean and Sample Variance, continued}
+• $\overline{X}$ 和 $S^2$ 独立分布。
+• $(n-1)S^2/\sigma^2 \sim \chi^2_{n-1}$。
+\[
+\frac{1}{\sigma^2} \sum_{i=1}^{n} (X_i - \mu)^2 = \sum_{i=1}^{n} \left(\frac{X_i - \mu}{\sigma}\right)^2 \sim \chi^2_n
+\]
+\[
+\frac{1}{\sigma^2} \sum_{i=1}^{n} (X_i - \mu)^2 = \frac{1}{\sigma^2} \sum_{i=1}^{n} (X_i - \overline{X} + \overline{X} - \mu)^2
+\]
+\[
+= \frac{1}{\sigma^2} \sum_{i=1}^{n} (X_i - \overline{X})^2 + \left(\frac{\sqrt{n} (\overline{X} - \mu)}{\sigma}\right)^2
+\]
+• 由于正交性，上述等式成立。\par
+• 第一项和第二项是独立的，$\left(\frac{\sqrt{n} (\overline{X} - \mu)}{\sigma}\right)^2 \sim \chi^2_1$，因此第二项是 $\chi^2_{n-1}$。
+
+% ----------------------------------------------------------- %
+% >> ---------------------- 参考文献 ---------------------- << %
+%\nocite{*}
+%\bibliography{re}
+%\thispagestyle{fancy} 
+%\addcontentsline{toc}{chapter}{参考文献}
+% >> ---------------------- 参考文献 ---------------------- << %
+% ----------------------------------------------------------- %
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+% ------------------------------------------------------------ %
+% >> ------------------------ 附录 ------------------------ << %
+
+% 附录设置
+%\newpage
+%\appendix
+% chapter 标题自定义设置
+%\titleformat{\chapter}[hang]{\normalfont\huge\bfseries\centering}{}{20pt}{}
+%\titlespacing*{\chapter}{0pt}{-25pt}{8pt} % 控制上方空白的大小
+% section 标题自定义设置 
+%\titleformat{\section}[hang]{\normalfont\centering\Large\bfseries}{\thesection}{8pt}{}
+
+% 附录 A
+%\chapter*{附录 A. 中英文对照表}\addcontentsline{toc}{chapter}{附录 A. 中英文对照表}   
+%\thispagestyle{fancy} 
+%\setcounter{section}{0}   
+%\renewcommand\thesection{A.\arabic{section}}   
+%\renewcommand{\thefigure}{A.\arabic{figure}} 
+%\renewcommand{\thetable}{A.\arabic{table}}
+
+%\section{中英文对照表}
+%\begin{multicols}{2}  
+
+%    \begin{table}[H]\centering
+%    \caption{\textbf{中英文对照表}}
+%    \begin{tabular}{cccccccc}\toprule
+%        English & 中文 \\
+%        \midrule
+%        voltage            & 电压 \\
+%        current            & 电流 \\
+%        power              & 功率 \\
+%        resistance         & 电阻 \\
+%        conductance        & 电导 \\
+%        inductance         & 电感 \\
+%        capacitance        & 电容 \\
+%        frequency          & 频率 \\
+%        circuit            & 电路 \\
+%        circuit element    & 电流元件 \\
+%        signal             & 信号 \\
+%        circuit analysis   & 电路分析 \\
+%        circuit synthesis  & 电路综合 \\
+%        circuit design     & 电路设计 \\
+%        circuit topology   & 电路拓扑 \\
+%        \bottomrule
+%    \end{tabular}
+%    \end{table}
+    
+%    \begin{table}[H]\centering
+%        \caption{\textbf{中英文对照表}}
+%        \begin{tabular}{cccccccc}\toprule
+%            English & 中文 \\
+%            \midrule
+%            voltage            & 电压 \\
+%            current            & 电流 \\
+%            power              & 功率 \\
+%            resistance         & 电阻 \\
+%            conductance        & 电导 \\
+%            inductance         & 电感 \\
+%            capacitance        & 电容 \\
+%            frequency          & 频率 \\
+%            circuit            & 电路 \\
+%            circuit element    & 电流元件 \\
+%            signal             & 信号 \\
+%            circuit analysis   & 电路分析 \\
+%            circuit synthesis  & 电路综合 \\
+%            circuit design     & 电路设计 \\
+%            circuit topology   & 电路拓扑 \\
+%            \bottomrule
+%        \end{tabular}
+%    \end{table}
+%\end{multicols} 
+    
+%\section{支撑材料列表} 
+
+%\begin{center}
+%  这里插入一张图片（类似思维导图那种）
+%\end{center}
+
+
+% 附录 B
+%\chapter*{附录 B. 代码}\addcontentsline{toc}{chapter}{附录 B. 代码}   
+%\thispagestyle{fancy} 
+%\setcounter{section}{0}   
+%\renewcommand\thesection{B.\arabic{section}}   
+%\renewcommand{\thefigure}{B.\arabic{figure}} 
+%\renewcommand{\thetable}{B.\arabic{table}}
+
+% 注意：listing环境中手动输入的代码需要顶格写
+
+%\begin{matlablisting}
+% MATLAB code here
+%x = 0:0.1:2*pi;
+%y = sin(x);
+%plot(x, y);
+%xlabel('x');
+%ylabel('sin(x)');
+%title('Sine Function');
+% ... (MATLAB code here，最好是插入文件)
+% MATLAB code here
+%x = 0:0.1:2*pi;
+%y = sin(x);
+%plot(x, y);
+%xlabel('x');
+%ylabel('sin(x)');
+%title('Sine Function');
+% ... (MATLAB code here，最好是插入文件)
+% MATLAB code here
+%x = 0:0.1:2*pi;
+%y = sin(x);
+%plot(x, y);
+%xlabel('x');
+%ylabel('sin(x)');
+%title('Sine Function');
+% ... (MATLAB code here，最好是插入文件)
+% MATLAB code here
+%x = 0:0.1:2*pi;
+%y = sin(x);
+%plot(x, y);
+%xlabel('x');
+%ylabel('sin(x)');
+%title('Sine Function');
+% ... (MATLAB code here，最好是插入文件)
+% MATLAB code here
+%x = 0:0.1:2*pi;
+%y = sin(x);
+%plot(x, y);
+%xlabel('x');
+%ylabel('sin(x)');
+%title('Sine Function');
+% ... (MATLAB code here，最好是插入文件)
+% MATLAB code here
+%x = 0:0.1:2*pi;
+%y = sin(x);
+%plot(x, y);
+%xlabel('x');
+%ylabel('sin(x)');
+%title('Sine Function');
+% ... (MATLAB code here，最好是插入文件)% ... (MATLAB code here，最好是插入文件)% ... (MATLAB code here，最好是插入文件)% ... (MATLAB code here，最好是插入文件)% ... (MATLAB code here，最好是插入文件)A
+% MATLAB code here
+%x = 0:0.1:2*pi;
+%y = sin(x);
+%plot(x, y);
+%xlabel('x');
+%ylabel('sin(x)');
+%title('Sine Function');
+% ... (MATLAB code here，最好是插入文件)
+%\end{matlablisting}
+
+% >> ------------------------ 附录 ------------------------ << %
+% ------------------------------------------------------------ %
+
+\end{document}
+
+
+
+% VScode 常用快捷键：
+
+% F2:                       变量重命名
+% Ctrl + Enter:             行中换行
+% Alt + up/down:            上下移行
+% 鼠标中键 + 移动:           快速多光标
+% Shift + Alt + up/down:    上下复制
+% Ctrl + left/right:        左右跳单词
+% Ctrl + Backspace/Delete:  左右删单词    
+% Shift + Delete:           删除此行
+% Ctrl + J:                 打开 VScode 下栏(输出栏)
+% Ctrl + B:                 打开 VScode 左栏(目录栏)
+% Ctrl + `:                 打开 VScode 终端栏
+% Ctrl + 0:                 定位文件
+% Ctrl + Tab:               切换已打开的文件(切标签)
+% Ctrl + Shift + P:         打开全局命令(设置)
+
+% Latex 常用快捷键
+
+% Ctrl + Alt + J:           由代码定位到PDF
+% 
+
+
+% Git提交规范：
+% update: Linear Algebra 2 notes
+% add: Linear Algebra 2 notes
+% import: Linear Algebra 2 notes
+% delete: Linear Algebra 2 notes
+

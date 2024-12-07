@@ -1,0 +1,544 @@
+% 若编译失败，且生成 .synctex(busy) 辅助文件，可能有两个原因：
+% 1. 需要插入的图片不存在：Ctrl + F 搜索 'figure' 将这些代码注释/删除掉即可
+% 2. 路径/文件名含中文或空格：更改路径/文件名即可
+
+% ------------------------------------------------------------- %
+% >> ------------------ 文章宏包及相关设置 ------------------ << %
+% 设定文章类型与编码格式
+\documentclass[UTF8]{report}		
+
+% 本文特殊宏包
+    \usepackage{siunitx} % 埃米单位
+
+% 本文的特殊宏定义
+\def\Im{\mathrm{\,Im\,}}
+\def\Re{\mathrm{\,Re\,}}
+\def\Ln{\mathrm{\,Ln\,}}
+\def\Arg{\mathrm{\,Arg\,}}
+\def\Arccos{\mathrm{\,Arccos\,}}
+\def\Arcsin{\mathrm{\,Arcsin\,}}
+\def\Arctan{\mathrm{\,Arctan\,}}
+
+% 通用宏定义
+\def\N{\mathbb{N}}
+\def\F{\mathbb{F}}
+\def\Z{\mathbb{Z}}
+\def\Q{\mathbb{Q}}
+\def\R{\mathbb{R}}
+\def\C{\mathbb{C}}
+\def\T{\mathbb{T}}
+\def\S{\mathbb{S}}
+\def\A{\mathbb{A}}
+\def\I{\mathscr{I}}
+\def\d{\mathrm{d}}
+\def\p{\partial}
+
+
+% 导入基本宏包
+    \usepackage[UTF8]{ctex}     % 设置文档为中文语言
+    \usepackage[colorlinks, linkcolor=blue, anchorcolor=blue, citecolor=blue, urlcolor=blue]{hyperref}  % 宏包：自动生成超链接 (此宏包与标题中的数学环境冲突)
+    % \usepackage{docmute}    % 宏包：子文件导入时自动去除导言区，用于主/子文件的写作方式，\include{./51单片机笔记}即可。注：启用此宏包会导致.tex文件capacity受限。
+    \usepackage{amsmath}    % 宏包：数学公式
+    \usepackage{mathrsfs}   % 宏包：提供更多数学符号
+    \usepackage{amssymb}    % 宏包：提供更多数学符号
+    \usepackage{pifont}     % 宏包：提供了特殊符号和字体
+    \usepackage{extarrows}  % 宏包：更多箭头符号
+    \usepackage{multicol}   % 宏包：支持多栏 
+    \usepackage{graphicx}   % 宏包：插入图片
+    \usepackage{float}      % 宏包：设置图片浮动位置
+    %\usepackage{article}    % 宏包：使文本排版更加优美
+    \usepackage{tikz}       % 宏包：绘图工具
+    %\usepackage{pgfplots}   % 宏包：绘图工具
+    \usepackage{enumerate}  % 宏包：列表环境设置
+    \usepackage{enumitem}   % 宏包：列表环境设置
+
+% 文章页面margin设置
+    \usepackage[a4paper]{geometry}
+        \geometry{top=1in}  % 1 inch= 2.46 cm, 0.75 inch = 1.85 cm
+        \geometry{bottom=1in}
+        \geometry{left=0.75in}
+        \geometry{right=0.75in}   % 设置上下左右页边距
+        \geometry{marginparwidth=1.75cm}    % 设置边注距离（注释、标记等）
+
+% 配置数学环境
+    \usepackage{amsthm} % 宏包：数学环境配置
+    % theorem-line 环境自定义
+        \newtheoremstyle{MyLineTheoremStyle}% <name>
+            {11pt}% <space above>
+            {11pt}% <space below>
+            {}% <body font> 使用默认正文字体
+            {}% <indent amount>
+            {\bfseries}% <theorem head font> 设置标题项为加粗
+            {：}% <punctuation after theorem head>
+            {.5em}% <space after theorem head>
+            {\textbf{#1}\thmnumber{#2}\ \ (\,\textbf{#3}\,)}% 设置标题内容顺序
+        \theoremstyle{MyLineTheoremStyle} % 应用自定义的定理样式
+        \newtheorem{LineTheorem}{Theorem.\,}
+    % theorem-block 环境自定义
+        \newtheoremstyle{MyBlockTheoremStyle}% <name>
+            {11pt}% <space above>
+            {11pt}% <space below>
+            {}% <body font> 使用默认正文字体
+            {}% <indent amount>
+            {\bfseries}% <theorem head font> 设置标题项为加粗
+            {：\\ \indent}% <punctuation after theorem head>
+            {.5em}% <space after theorem head>
+            {\textbf{#1}\thmnumber{#2}\ \ (\,\textbf{#3}\,)}% 设置标题内容顺序
+        \theoremstyle{MyBlockTheoremStyle} % 应用自定义的定理样式
+        \newtheorem{BlockTheorem}[LineTheorem]{Theorem.\,} % 使用 LineTheorem 的计数器
+    % definition 环境自定义
+        \newtheoremstyle{MySubsubsectionStyle}% <name>
+            {11pt}% <space above>
+            {11pt}% <space below>
+            {}% <body font> 使用默认正文字体
+            {}% <indent amount>
+            {\bfseries}% <theorem head font> 设置标题项为加粗
+            { \indent}% <punctuation after theorem head>
+            {0pt}% <space after theorem head>
+            {\textbf{#3}}% 设置标题内容顺序
+        \theoremstyle{MySubsubsectionStyle} % 应用自定义的定理样式
+        \newtheorem{definition}{}
+
+%宏包：有色文本框（proof环境）及其设置
+    \usepackage[dvipsnames,svgnames]{xcolor}    %设置插入的文本框颜色
+    \usepackage[strict]{changepage}     % 提供一个 adjustwidth 环境
+    \usepackage{framed}     % 实现方框效果
+        \definecolor{graybox_color}{rgb}{0.95,0.95,0.96} % 文本框颜色。修改此行中的 rgb 数值即可改变方框纹颜色，具体颜色的rgb数值可以在网站https://colordrop.io/ 中获得。（截止目前的尝试还没有成功过，感觉单位不一样）（找到喜欢的颜色，点击下方的小眼睛，找到rgb值，复制修改即可）
+        \newenvironment{graybox}{%
+        \def\FrameCommand{%
+        \hspace{1pt}%
+        {\color{gray}\small \vrule width 2pt}%
+        {\color{graybox_color}\vrule width 4pt}%
+        \colorbox{graybox_color}%
+        }%
+        \MakeFramed{\advance\hsize-\width\FrameRestore}%
+        \noindent\hspace{-4.55pt}% disable indenting first paragraph
+        \begin{adjustwidth}{}{7pt}%
+        \vspace{2pt}\vspace{2pt}%
+        }
+        {%
+        \vspace{2pt}\end{adjustwidth}\endMakeFramed%
+        }
+
+% 外源代码插入设置
+    % matlab 代码插入设置
+    %\usepackage{matlab-prettifier}
+    %    \lstset{
+    %        style=Matlab-editor,  % 继承matlab代码颜色等
+    %    }
+    %\usepackage[most]{tcolorbox} % 引入tcolorbox包 
+    %\usepackage{listings} % 引入listings包
+    %    \tcbuselibrary{listings, skins, breakable}
+    %    \newfontfamily\codefont{Consolas} % 定义需要的 codefont 字体
+    %    \lstdefinestyle{matlabstyle}{
+    %        language=Matlab,
+    %        basicstyle=\small\ttfamily\codefont,    % ttfamily 确保等宽 
+    %        breakatwhitespace=false,
+    %        breaklines=true,
+    %        captionpos=b,
+    %        keepspaces=true,
+    %        numbers=left,
+    %        numbersep=15pt,
+    %        showspaces=false,
+    %        showstringspaces=false,
+    %        showtabs=false,
+    %        tabsize=2
+    %    }
+    %    \newtcblisting{matlablisting}{
+    %        arc=2pt,        % 圆角半径
+    %        top=-5pt,
+    %        bottom=-5pt,
+    %        left=1mm,
+    %        listing only,
+    %        listing style=matlabstyle,
+    %        breakable,
+    %        colback=white   % 选一个合适的颜色
+    %    }
+% table 支持
+    \usepackage{booktabs}   % 宏包：三线表
+    \usepackage{tabularray} % 宏包：表格排版
+    \usepackage{longtable}  % 宏包：长表格
+
+
+%figure 设置
+%    \usepackage{graphicx}  % 支持 jpg, png, eps, pdf 图片 
+%    \usepackage{svg}       % 支持 svg 图片
+%        \svgsetup{
+%             指向 inkscape.exe 的路径
+%            inkscapeexe = C:/aa_MySame/inkscape/bin/inkscape.exe, 
+%            inkscapeexe = C:/aa_MySame/inkscape/bin/inkscape.exe, 
+%             一定程度上修复导入后图片文字溢出几何图形的问题
+%            inkscapelatex = false                 
+%        }
+%    \usepackage{subcaption} % subfigure 子图支持
+
+%图表进阶设置
+%    \usepackage{caption}    % 图注、表注
+%        \captionsetup[figure]{name=图}  
+%        \captionsetup[table]{name=表}
+%        \captionsetup{labelfont=bf, font=small}
+%    \usepackage{float}     % 图表位置浮动设置 
+
+% 圆圈序号自定义
+    \newcommand*\circled[1]{\tikz[baseline=(char.base)]{\node[shape=circle,draw,inner sep=0.8pt, line width = 0.03em] (char) {\small \bfseries #1};}}   % TikZ solution
+
+% 列表设置
+%    \usepackage{enumitem}   % 宏包：列表环境设置
+%        \setlist[enumerate]{itemsep=0pt, parsep=0pt, topsep=0pt, partopsep=0pt, leftmargin=3.5em} 
+%        \setlist[itemize]{itemsep=0pt, parsep=0pt, topsep=0pt, partopsep=0pt, leftmargin=3.5em}
+%        \newlist{circledenum}{enumerate}{1} % 创建一个新的枚举环境  
+%        \setlist[circledenum,1]{  
+%            label=\protect\circled{\arabic*}, % 使用 \arabic* 来获取当前枚举计数器的值，并用 \circled 包装它  
+%            ref=\arabic*, % 如果需要引用列表项，这将决定引用格式（这里仍然使用数字）
+%            itemsep=0pt, parsep=0pt, topsep=0pt, partopsep=0pt, leftmargin=3.5em
+%        }  
+
+% 其它设置
+    % 脚注设置
+        \renewcommand\thefootnote{\ding{\numexpr171+\value{footnote}}}
+    % 参考文献引用设置
+        \bibliographystyle{unsrt}   % 设置参考文献引用格式为unsrt
+        \newcommand{\upcite}[1]{\textsuperscript{\cite{#1}}}     % 自定义上角标式引用
+    % 文章序言设置
+        \newcommand{\cnabstractname}{序言}
+        \newenvironment{cnabstract}{%
+            \par\Large
+            \noindent\mbox{}\hfill{\bfseries \cnabstractname}\hfill\mbox{}\par
+            \vskip 2.5ex
+            }{\par\vskip 2.5ex}
+
+% 文章默认字体设置
+    \usepackage{fontspec}   % 宏包：字体设置
+        \setmainfont{SimSun}    % 设置中文字体为宋体字体
+        \setCJKmainfont[AutoFakeBold=3]{SimSun} % 设置加粗字体为 SimSun 族，AutoFakeBold 可以调整字体粗细
+        \setmainfont{Times New Roman} % 设置英文字体为Times New Roman
+
+% 各级标题自定义设置
+    \usepackage{titlesec}   
+        \titleformat{\chapter}[hang]{\normalfont\huge\bfseries\centering}{第\,\thechapter\,章}{20pt}{}
+        \titlespacing*{\chapter}{0pt}{-20pt}{20pt} % 控制上方空白的大小
+        % section标题自定义设置 
+        \titleformat{\section}[hang]{\normalfont\Large\bfseries}{§\,\thesection\,}{8pt}{}
+        % subsubsection标题自定义设置
+        %\titleformat{\subsubsection}[hang]{\normalfont\bfseries}{}{8pt}{}
+
+% >> ------------------ 文章宏包及相关设置 ------------------ << %
+% ------------------------------------------------------------- %
+
+% ----------------------------------------------------------- %
+% >> --------------------- 文章信息区 --------------------- << %
+% 页眉页脚设置
+    \usepackage{fancyhdr}   %宏包：页眉页脚设置
+        \pagestyle{fancy}
+        \fancyhf{}
+        \cfoot{\thepage}
+        \renewcommand\headrulewidth{1pt}
+        \renewcommand\footrulewidth{0pt}
+        \lhead{2024.10.20/2024.10.29/2024.11.24} 
+        \chead{化学与社会作业}    
+        \rhead{yinchao23@mails.ucas.ac.cn}
+%文档信息设置
+\title{化学与社会}
+\author{尹超 \quad 许书闻 \quad 郑子辰\\ 中国科学院大学，北京 100049 \\ \large University of Chinese Academy of Sciences, Beijing 100049, China}
+\date{2024.10.20/2024.10.29/2024.11.24}
+% >> --------------------- 文章信息区 --------------------- << %
+% ----------------------------------------------------------- %
+
+% 开始编辑文章
+\begin{document}
+\zihao{5}
+
+
+% --------------------------------------------------------------- %
+% >> --------------------- 封面序言与目录 --------------------- << %
+% 封面
+\maketitle\newpage  
+\pagenumbering{Roman} % 页码为大写罗马数字
+\thispagestyle{fancy}   % 显示页码、页眉等
+
+% 序言
+%\begin{cnabstract}\normalsize 
+%    这是化学与社会第一次的作业，主要介绍了人造碳链纤维和超强纤维的制备方法、性能和用途。人造碳链纤维包括聚丙烯腈（PAN）基碳纤维和沥青基碳纤维，具有高强度、耐高温等特点，广泛应用于航空航天、汽车、体育器材等领域。超强纤维包括凯夫拉（Kevlar）和碳纤维，具有高度结晶的分子结构，用于防弹衣、消防服、运动器材等。本文引用了相关文献，对这些纤维的制备方法、性能和用途进行了详细介绍。
+%\end{cnabstract}    
+%\addcontentsline{toc}{chapter}{序言} % 手动添加为目录
+
+% 目录
+\setcounter{tocdepth}{4}                % 目录深度（为1时显示到section）
+\tableofcontents                        % 目录页
+\addcontentsline{toc}{chapter}{目录}    % 手动添加此页为目录
+\thispagestyle{fancy}                   % 显示页码、页眉等 
+
+% 收尾工作
+\newpage    
+\pagenumbering{arabic} 
+
+
+
+% >> --------------------- 封面序言与目录 --------------------- << %
+% --------------------------------------------------------------- %
+
+\chapter{第一次作业}
+
+\section{人造碳链纤维}
+
+\subsection{聚丙烯腈（PAN）基碳纤维}
+\textbf{制备}：
+\begin{itemize}
+    \item \textbf{聚合}：通过自由基聚合合成聚丙烯腈。
+    \item \textbf{纺丝}：将聚丙烯腈溶解于适当的溶剂（如二甲基亚砜），然后通过喷丝板纺丝。
+    \item \textbf{氧化处理}：在250-300°C的氮气气氛中进行氧化处理，形成稳定的化学结构。
+    \item \textbf{碳化}：在更高温度（约1000-3000°C）下进行碳化，去除非碳元素，最终形成碳纤维。
+\end{itemize}
+
+\textbf{性能}：
+\begin{itemize}
+    \item 强度：拉伸强度达到3-6 GPa，模量可达200-400 GPa。
+    \item 耐高温：可在高达300°C的环境下工作。
+\end{itemize}
+
+\textbf{用途}：
+\begin{itemize}
+    \item 航空航天：用于飞机机翼、航天器外壳等。
+    \item 汽车：用于高性能汽车的车身材料，提升强度与减轻重量。
+    \item 体育器材：如网球拍、自行车框架等。
+\end{itemize}
+
+\textbf{文献引用}：
+\begin{quote}
+F. W. Becker et al., "Preparation and properties of polyacrylonitrile-based carbon fibers," \textit{Journal of Materials Science}, vol. 39, no. 4, pp. 1333-1342, 2004.
+\end{quote}
+
+\subsection{沥青基碳纤维}
+\textbf{制备}：
+\begin{itemize}
+    \item \textbf{预处理}：沥青在高温下进行氧化，改变其分子结构。
+    \item \textbf{纺丝}：将处理后的沥青熔融纺丝。
+    \item \textbf{热处理}：在高温下进行碳化，得到碳纤维。
+\end{itemize}
+
+\textbf{性能}：
+\begin{itemize}
+    \item 强度：拉伸强度约为1.5-3 GPa，模量在50-150 GPa之间。
+    \item 韧性：相较于PAN基碳纤维，沥青基碳纤维具有更高的韧性。
+\end{itemize}
+
+\textbf{用途}：
+\begin{itemize}
+    \item 建筑：用于混凝土加固材料。
+    \item 复合材料：在电池、电极等领域的应用。
+\end{itemize}
+
+\textbf{文献引用}：
+\begin{quote}
+Y. S. Lee et al., "Properties and applications of pitch-based carbon fibers," \textit{Carbon}, vol. 43, no. 14, pp. 3009-3015, 2005.
+\end{quote}
+
+\section{超强纤维}
+
+\subsection{什么是超强纤维}
+
+\begin{definition}
+
+    超强纤维是指具有非常高的拉伸强度和刚度的纤维材料，通常用于需要极高性能和可靠性的应用。这些纤维能够在较低的重量下承受极大的负载，因而在各种高科技领域得到广泛应用。超强纤维的主要特点包括：
+    
+    \begin{itemize}
+        \item \textbf{高拉伸强度}：超强纤维的拉伸强度通常可达到几千兆帕（MPa），比传统材料如钢铁强度高出许多倍。
+        \item \textbf{高模量}：模量是材料抵抗变形的能力，超强纤维通常具有高模量，使其在应用中能够保持良好的刚性和形状稳定性。
+        \item \textbf{轻质}：与金属材料相比，超强纤维的密度较低，能够有效减轻整体结构的重量，特别适合航空航天和汽车工业。
+        \item \textbf{耐温性和耐化学性}：许多超强纤维具有较好的耐温性和化学稳定性，使其在极端环境下仍能保持良好的性能。
+        \item \textbf{优异的韧性}：超强纤维通常具有很好的韧性，能够吸收能量并防止断裂。
+    \end{itemize}
+    
+\end{definition}
+
+
+\subsection{凯夫拉（Kevlar）}
+\textbf{结构}：凯夫拉是芳纶纤维，具有高度结晶的分子结构，分子链呈现平行排列，有助于增强强度和刚性。
+
+\textbf{制备方法}：
+\begin{itemize}
+    \item 通过对芳香胺和二异氰酸酯进行聚合反应而成，形成的聚合物溶液随后纺丝成纤维。
+    \item 经过热处理以增强其强度和稳定性。
+\end{itemize}
+
+\textbf{用途}：
+\begin{itemize}
+    \item 防弹衣、消防服：因其抗冲击性和高强度，广泛用于安全防护。
+    \item 运动器材：在高性能轮胎和自行车框架中得到应用。
+\end{itemize}
+
+\textbf{文献引用}：
+\begin{quote}
+K. K. Choi et al., "The effect of processing conditions on the structure and properties of Kevlar fibers," \textit{Textile Research Journal}, vol. 70, no. 11, pp. 1002-1010, 2000.
+\end{quote}
+
+\subsection{碳纤维}
+\textbf{结构}：由石墨化的碳原子构成，纤维直径一般在5-10微米，具有良好的弯曲刚度和强度。
+
+\textbf{制备方法}：
+\begin{itemize}
+    \item 通过聚丙烯腈或沥青的热解，形成无定形或小晶粒的碳结构。
+    \item 碳化过程中，随着温度的提高，碳的排列逐渐变得有序。
+\end{itemize}
+
+\textbf{用途}：
+\begin{itemize}
+    \item 航空航天：用于飞机部件、航天器材料。
+    \item 体育用品：如高档滑雪板、网球拍等。
+\end{itemize}
+
+\textbf{文献引用}：
+\begin{quote}
+D. C. Dunlop et al., "Advances in carbon fiber technology: Structure and applications," \textit{Journal of Composite Materials}, vol. 44, no. 20, pp. 2291-2303, 2010.
+\end{quote}
+
+
+
+
+
+\chapter{第二次作业}
+
+\section{两种不同作用功能的食品添加剂}
+
+\subsection{抗氧化剂（如维生素E）}
+\textbf{作用功能}：抗氧化剂的主要功能是防止食品中脂肪和油脂的氧化反应。氧化不仅会导致食品的色泽、味道和营养价值下降，还会产生有害的自由基。维生素E是一种脂溶性抗氧化剂，能够中和自由基，减缓脂肪酸的氧化，从而延长食品的保质期。在油脂和坚果中，维生素E常被添加以保持其新鲜度和风味，且在热加工过程中仍保持其稳定性。研究表明，添加适量的维生素E可以显著提高食品的抗氧化能力。
+
+\textbf{事例说明}：在一个研究中，添加维生素E的坚果在存储六个月后，其氧化程度明显低于未添加的对照组，显示出维生素E在防止脂肪氧化中的有效性。此外，某些品牌的调味油中添加维生素E，能够确保产品在高温烹饪中不易变质。
+
+\textbf{论文引用}：
+\begin{itemize}
+    \item Frankel, E. N. (1998). "Influence of antioxidant adding on the oxidative stability of oils." \textit{Journal of the American Oil Chemists' Society}, 75(8), 1077-1084.
+    \item Niki, E. (2000). "Antioxidant effects of vitamin E." \textit{Free Radical Biology and Medicine}, 29(5), 507-511.
+\end{itemize}
+
+\subsection{甜味剂（如阿斯巴甜）}
+\textbf{作用功能}：甜味剂的主要功能是提供甜味，而不增加显著的热量。阿斯巴甜是合成的低热量甜味剂，其甜度是蔗糖的约200倍，因此在使用时只需极少量。这使得阿斯巴甜非常适合糖尿病患者和需要控制热量摄入的人群。阿斯巴甜在饮料、糖果、酸奶及其他低热量食品中被广泛使用，并能够提供接近蔗糖的口感，而不引发血糖的剧烈波动。研究表明，适量使用阿斯巴甜是安全的，并且不会对健康造成负面影响。
+
+\textbf{事例说明}：许多无糖饮料和糖尿病专用食品使用阿斯巴甜，消费者在享用甜味的同时，不会对血糖产生显著影响。例如，一些知名品牌的无糖可乐使用阿斯巴甜，使得糖尿病患者也能安全享用。此外，阿斯巴甜还被广泛用于低热量甜点和酸奶中，为消费者提供更多健康选择。
+
+\textbf{论文引用}：
+\begin{itemize}
+    \item Roberts, A., \& Munro, I. (2002). "Safety evaluation of aspartame." \textit{Regulatory Toxicology and Pharmacology}, 35(1), 42-58.
+    \item Tandel, V. (2011). "Sugary drinks and their impact on health." \textit{Nutrition Journal}, 10, 1-8.
+\end{itemize}
+
+\section{与住房和化学相关的事例或事件}
+
+\subsection{铅污染}
+\textbf{事件说明}：在20世纪中叶，铅因其良好的防腐和防火性能而被广泛应用于建筑材料中，特别是油漆。然而，后来的研究发现，铅是一种神经毒素，特别对儿童的发育有严重影响。儿童接触铅后，可能出现学习障碍、注意力缺陷和行为问题。铅通过皮肤接触、摄入（如吸入铅尘或误食铅颗粒）或饮用被污染的水进入人体。为了解决这一问题，各国逐渐禁止在家居和公共建筑中使用铅基油漆，并进行铅污染的清除和修复。
+
+\textbf{事例说明}：在某些城市，儿童铅中毒率高达10%以上，很多家庭被迫进行铅基油漆的去除和修复工作。美国疾病控制与预防中心（CDC）建议家长定期检测儿童的血铅水平，以预防潜在的健康风险。
+
+\textbf{论文引用}：
+\begin{itemize}
+    \item Lanphear, B. P., et al. (2005). "Low-level environmental lead exposure and children's intellectual function: an international pooled analysis." \textit{Environmental Health Perspectives}, 113(7), 894-899.
+    \item Needleman, H. L. (2004). "Lead poisoning." \textit{Annual Review of Medicine}, 55, 209-222.
+\end{itemize}
+
+\subsection{建筑材料中的挥发性有机化合物（VOCs）}
+\textbf{事件说明}：随着建筑材料和室内环境的复杂化，挥发性有机化合物（VOCs）的问题逐渐显现。VOCs是指在常温下易挥发的有机化合物，广泛存在于涂料、胶水、地板材料和清洁剂中。这些化合物在使用和固化过程中会释放到室内空气中，导致空气质量下降。长期接触VOCs可能引起头痛、疲劳、呼吸道刺激以及其他健康问题。一些研究还指出，VOCs与哮喘等慢性呼吸疾病的发生有一定关联。因此，各国制定了相关标准，要求建筑材料的VOCs含量在安全范围内，并鼓励使用低VOCs或无VOCs的环保材料。
+
+\textbf{事例说明}：某市在一项研究中发现，许多学校的教室因涂料和家具释放的VOCs导致师生出现头痛、咳嗽和其他呼吸道症状。随后，学校开始实施使用低VOCs或无VOCs的环保材料，显著改善了室内空气质量，师生的健康状况也有所提升。
+
+\textbf{论文引用}：
+\begin{itemize}
+    \item Wargocki, P., et al. (2002). "The effects of indoor air quality on performance and productivity." \textit{Indoor Air}, 12(3), 215-229.
+    \item Mendell, M. J., \& Heath, G. A. (2005). "Do indoor pollutants and thermal conditions in schools influence student performance?" \textit{Indoor Air}, 15(1), 27-36.
+\end{itemize}
+
+
+\chapter{第三次作业}
+
+\section{给出三种交通工具中用到的主要化学物质组成及其作用功能(不包括课堂中介绍的内容)}
+
+\subsection{汽车}
+
+在汽车中，主要的化学物质包括燃料、润滑油和冷却液，它们各自承担着不同的功能。
+
+\begin{itemize}
+    \item 燃料（汽油或柴油）：
+    \begin{itemize}
+        \item 组成：汽油主要由碳（C）和氢（H）组成，是100多种烃的混合物。柴油也是复杂烃类的混合物，主要在石油蒸馏过程中200-350℃之间的馏分。
+        \item 作用：汽油和柴油作为燃料，为内燃机提供能量。汽油的抗爆性用辛烷值表示，而柴油的发火性、低温流动性、蒸发性、化学稳定性、防腐性和适当的粘度等使用性能是其主要指标。
+    \end{itemize}
+    \item 润滑油（机油）：
+    \begin{itemize}
+        \item 组成：机油基础油主要分为矿物基础油及合成基础油两大类。市场上的机油因其基础油不同可简分为矿物油及合成油两种。
+        \item 作用：机油在发动机内起到润滑、辅助冷却降温、清洗清洁、密封防漏、防锈防蚀、减震缓冲和抗磨等作用。例如，活塞和汽缸之间、主轴和轴瓦之间均存在着快速的相对滑动，需要在两个滑动表面间建立油膜以减少磨损。
+    \end{itemize}
+    \item 冷却液：
+    \begin{itemize}
+        \item 组成：通常由水和乙二醇混合而成。
+        \item 作用：冷却液用于发动机冷却系统，帮助散发发动机产生的热量，防止发动机过热。冷却液的冰点低，沸点高，能够在极端温度下保持液态，有效传递热量。
+    \end{itemize}
+\end{itemize}
+
+\subsection{电动汽车}
+
+电动汽车中的主要化学物质主要集中在电池系统中。
+
+\begin{itemize}
+    \item 锂离子电池：
+    \begin{itemize}
+        \item 组成：锂离子电池主要由正极材料（如锂钴氧化物、锂铁磷酸盐等）、负极材料（如石墨、硅基材料等）、电解液（含锂盐的有机溶剂）和隔膜组成。
+        \item 作用：锂离子电池作为电动汽车的动力源，存储和释放电能，为电动汽车提供动力。正极材料和负极材料在电解液中通过锂离子的移动实现电能的存储和释放。隔膜则起到传导离子、阻止电子在电极间直接传递和分隔氧化剂与还原剂的作用。
+    \end{itemize}
+    \item 燃料电池：
+    \begin{itemize}
+        \item 组成：燃料电池由燃料（如氢气）在阳极氧化，氧化剂（如氧气）在阴极还原。
+        \item 作用：燃料电池在电动汽车中作为动力源，通过电化学反应产生电流，为电动汽车提供动力。燃料电池的工作原理是连续不断地向电池内送入燃料和氧化剂，从而产生电能。
+    \end{itemize}
+\end{itemize}
+
+\subsection{飞机}
+
+飞机中的主要化学物质涉及到航空材料和燃料。
+
+\begin{itemize}
+    \item 航空材料：
+    \begin{itemize}
+        \item 组成：航空材料包括金属材料（如结构钢、不锈钢、高温合金、有色金属及合金等）、有机高分子材料（如橡胶、塑料、透明材料、涂料等）和复合材料。
+        \item 作用：这些材料用于制造飞机的结构部件，如机身、机翼、发动机等。金属材料因其高强度和耐腐蚀性被广泛使用，而复合材料则因其轻质高强的特性在现代飞机中越来越受到重视。
+    \end{itemize}
+    \item 航空燃料（Jet Fuel）：
+    \begin{itemize}
+        \item 组成：航空煤油主要含有烃类化合物。
+        \item 作用：航空燃料为飞机的喷气发动机提供能量，是飞机飞行的主要动力来源。航空燃料需要在极端的温度和压力条件下稳定燃烧，同时要求具有较低的冰点和较高的热值。
+    \end{itemize}
+\end{itemize}
+
+\section{给出一类治疗高血压药物或糖尿病药物的分子结构和生理作用机理}
+
+\subsection{阿齐沙坦酯（Azilsartan Medoxomil）}
+
+\begin{itemize}
+    \item 分子结构：阿齐沙坦酯是一种血管紧张素II受体阻滞剂（ARB），其结构特点为“快结合慢解离”，这使得其药效更强、控压时间和稳定性更好。阿齐沙坦酯的分子式为$C_{25}H_{20}N_{4}O_{5}$，分子量为456.45。其分子结构图如下：
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=0.6\textwidth]{1.png}
+        \caption{阿齐沙坦酯的分子结构}
+        \label{fig:azilsartan}
+    \end{figure}
+    \item 作用机理：阿齐沙坦酯在肠道或血浆中被水解为阿齐沙坦，通过与血管平滑肌及肾上腺等组织部位的AT1受体结合，阻断血管紧张素II的血管收缩和醛固酮分泌作用，从而降低血压。
+\end{itemize}
+
+\subsection{噻嗪类降压药}
+
+\begin{itemize}
+    \item 分子结构：噻嗪类利尿剂是一类通过抑制钠氯协同转运蛋白NCC功能来实现降压的药物。NCC位于肾脏远曲小管，通过重吸收钠和氯来调控离子和酸碱平衡。噻嗪类降压药是一类通过抑制钠氯协同转运蛋白NCC功能来实现降压的药物。具体的分子结构图因噻嗪类药物种类繁多而不同，但以下是其中一种常见噻嗪类利尿剂——氢氯噻嗪（Hydrochlorothiazide, $C_{7}H_{8}ClN_{3}O_{4}S_{2}$）的分子结构图：
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=0.7\textwidth]{2.png}
+        \caption{氢氯噻嗪的分子结构}
+        \label{fig:hydrochlorothiazide}
+    \end{figure}
+    \item 作用机理：噻嗪类降压药通过抑制NCC的活性，减少钠和氯的重吸收，增加尿液中钠和氯的排泄量，从而降低血压。最新的研究揭示了NCC转运底物过程中的构象变化，以及噻嗪类降压药抑制NCC转运功能的分子机制。
+\end{itemize}
+
+\begin{itemize}
+\item 注：图片来源于PubChem数据库，分子结构数据来源于PubChem和DrugBank数据库。
+\item 链接1：https://pubchem.ncbi.nlm.nih.gov/compound/135415867
+\item 链接2：https://pubchem.ncbi.nlm.nih.gov/compound/3639
+\end{itemize}
+
+\end{document}

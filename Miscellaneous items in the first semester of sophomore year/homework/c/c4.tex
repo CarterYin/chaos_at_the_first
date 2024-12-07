@@ -1,0 +1,53 @@
+\documentclass{article}
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric, arrows}
+
+\tikzstyle{startstop} = [ellipse, minimum width=3cm, minimum height=1cm, text centered, draw=black, fill=red!30]
+\tikzstyle{process} = [rectangle, minimum width=3cm, minimum height=1cm, text centered, draw=black, fill=blue!30]
+\tikzstyle{decision} = [diamond, minimum width=3cm, minimum height=1cm, text centered, draw=black, fill=green!30]
+\tikzstyle{arrow} = [thick,->,>=stealth]
+
+\begin{document}
+
+\begin{tikzpicture}[node distance=2cm]
+
+% Nodes
+\node (start) [startstop] {开始};
+\node (init) [process, below of=start] {初始化计数器};
+\node (input) [process, below of=init] {读取字符 c};
+\node (decision1) [decision, below of=input, yshift=-1cm] {c 是否为空白符？};
+\node (state0) [process, right of=decision1, xshift=3cm] {state = 0};
+\node (decision2) [decision, below of=decision1, yshift=-1cm] {state 是否为 0？};
+\node (decision3) [decision, below of=decision2, yshift=-1cm] {c 是否为大写字母？};
+\node (update_upper) [process, below of=decision3] {nw\_upper++};
+\node (decision4) [decision, right of=decision3, xshift=3cm] {c 是否为小写字母？};
+\node (update_lower) [process, below of=decision4] {nw\_lower++};
+\node (update_other) [process, right of=decision4, xshift=3cm] {nw\_other++};
+\node (state1) [process, below of=update_upper, yshift=-1cm] {state = 1};
+\node (eof) [decision, below of=state1, yshift=-1cm] {是否 EOF?};
+\node (output) [process, below of=eof, yshift=-1cm] {输出计数结果};
+\node (stop) [startstop, below of=output] {结束};
+
+% Arrows
+\draw [arrow] (start) -- (init);
+\draw [arrow] (init) -- (input);
+\draw [arrow] (input) -- (decision1);
+\draw [arrow] (decision1) -- node[anchor=south] {是} (state0);
+\draw [arrow] (state0) |- (input);
+\draw [arrow] (decision1) -- node[anchor=west] {否} (decision2);
+\draw [arrow] (decision2) -- node[anchor=west] {是} (decision3);
+\draw [arrow] (decision3) -- node[anchor=west] {是} (update_upper);
+\draw [arrow] (decision3) -- node[anchor=south] {否} (decision4);
+\draw [arrow] (decision4) -- node[anchor=west] {是} (update_lower);
+\draw [arrow] (decision4) -- node[anchor=west] {否} (update_other);
+\draw [arrow] (update_upper) -- (state1);
+\draw [arrow] (update_lower) |- (state1);
+\draw [arrow] (update_other) |- (state1);
+\draw [arrow] (state1) -- (eof);
+\draw [arrow] (eof) -- node[anchor=west] {否} (input);
+\draw [arrow] (eof) -- node[anchor=west] {是} (output);
+\draw [arrow] (output) -- (stop);
+
+\end{tikzpicture}
+
+\end{document}

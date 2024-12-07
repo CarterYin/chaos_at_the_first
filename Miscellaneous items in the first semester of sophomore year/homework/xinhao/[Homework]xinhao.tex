@@ -1,0 +1,1674 @@
+% 若编译失败，且生成 .synctex(busy) 辅助文件，可能有两个原因：
+% 1. 需要插入的图片不存在：Ctrl + F 搜索 'figure' 将这些代码注释/删除掉即可
+% 2. 路径/文件名含中文或空格：更改路径/文件名即可
+
+% ------------------------------------------------------------- %
+% >> ------------------ 文章宏包及相关设置 ------------------ << %
+% 设定文章类型与编码格式
+    \documentclass[UTF8]{report}		
+
+% 本 .tex 专属的宏定义
+    \def\V{\ \mathrm{V}}
+    \def\mV{\ \mathrm{mV}}
+    \def\kV{\ \mathrm{KV}}
+    \def\KV{\ \mathrm{KV}}
+    \def\MV{\ \mathrm{MV}}
+    \def\A{\ \mathrm{A}}
+    \def\mA{\ \mathrm{mA}}
+    \def\kA{\ \mathrm{KA}}
+    \def\KA{\ \mathrm{KA}}
+    \def\MA{\ \mathrm{MA}}
+    \def\O{\ \Omega}
+    \def\mO{\ \Omega}
+    \def\kO{\ \mathrm{K}\Omega}
+    \def\KO{\ \mathrm{K}\Omega}
+    \def\MO{\ \mathrm{M}\Omega}
+    \def\Hz{\ \mathrm{Hz}}
+
+% 自定义宏定义
+    \def\N{\mathbb{N}}
+    \def\F{\mathbb{F}}
+    \def\Z{\mathbb{Z}}
+    \def\Q{\mathbb{Q}}
+    \def\R{\mathbb{R}}
+    \def\C{\mathbb{C}}
+    \def\T{\mathbb{T}}
+    \def\S{\mathbb{S}}
+    \def\A{\mathbb{A}}
+    \def\I{\mathscr{I}}
+    \def\Im{\mathrm{Im\,}}
+    \def\Re{\mathrm{Re\,}}
+    \def\d{\mathrm{d}}
+    \def\p{\partial}
+% 导入基本宏包
+    \usepackage[UTF8]{ctex}     % 设置文档为中文语言
+    \usepackage[colorlinks, linkcolor=blue, anchorcolor=blue, citecolor=blue, urlcolor=blue]{hyperref}  % 宏包：自动生成超链接 (此宏包与标题中的数学环境冲突)
+    % \usepackage{docmute}    % 宏包：子文件导入时自动去除导言区，用于主/子文件的写作方式，\include{./51单片机笔记}即可。注：启用此宏包会导致.tex文件capacity受限。
+    \usepackage{amsmath}    % 宏包：数学公式
+    \usepackage{mathrsfs}   % 宏包：提供更多数学符号
+    \usepackage{amssymb}    % 宏包：提供更多数学符号
+    \usepackage{pifont}     % 宏包：提供了特殊符号和字体
+    \usepackage{extarrows}  % 宏包：更多箭头符号
+
+
+% 文章页面margin设置
+    \usepackage[a4paper]{geometry}
+        \geometry{top=1in}
+        \geometry{bottom=1in}
+        \geometry{left=0.75in}
+        \geometry{right=0.75in}   % 设置上下左右页边距
+        \geometry{marginparwidth=1.75cm}    % 设置边注距离（注释、标记等）
+
+% 配置数学环境
+    \usepackage{amsthm} % 宏包：数学环境配置
+    % theorem-line 环境自定义
+        \newtheoremstyle{MyLineTheoremStyle}% <name>
+            {11pt}% <space above>
+            {11pt}% <space below>
+            {}% <body font> 使用默认正文字体
+            {}% <indent amount>
+            {\bfseries}% <theorem head font> 设置标题项为加粗
+            {：}% <punctuation after theorem head>
+            {.5em}% <space after theorem head>
+            {\textbf{#1}\thmnumber{#2}\ \ (\,\textbf{#3}\,)}% 设置标题内容顺序
+        \theoremstyle{MyLineTheoremStyle} % 应用自定义的定理样式
+        \newtheorem{LineTheorem}{Theorem.\,}
+    % theorem-block 环境自定义
+        \newtheoremstyle{MyBlockTheoremStyle}% <name>
+            {11pt}% <space above>
+            {11pt}% <space below>
+            {}% <body font> 使用默认正文字体
+            {}% <indent amount>
+            {\bfseries}% <theorem head font> 设置标题项为加粗
+            {：\\ \indent}% <punctuation after theorem head>
+            {.5em}% <space after theorem head>
+            {\textbf{#1}\thmnumber{#2}\ \ (\,\textbf{#3}\,)}% 设置标题内容顺序
+        \theoremstyle{MyBlockTheoremStyle} % 应用自定义的定理样式
+        \newtheorem{BlockTheorem}[LineTheorem]{Theorem.\,} % 使用 LineTheorem 的计数器
+    % definition 环境自定义
+        \newtheoremstyle{MySubsubsectionStyle}% <name>
+            {11pt}% <space above>
+            {11pt}% <space below>
+            {}% <body font> 使用默认正文字体
+            {}% <indent amount>
+            {\bfseries}% <theorem head font> 设置标题项为加粗
+            {\\ \indent}% <punctuation after theorem head>
+            {0pt}% <space after theorem head>
+            {\textbf{#3}}% 设置标题内容顺序
+        \theoremstyle{MySubsubsectionStyle} % 应用自定义的定理样式
+        \newtheorem{definition}{}
+
+%宏包：有色文本框（proof环境）及其设置
+    \usepackage[dvipsnames,svgnames]{xcolor}    %设置插入的文本框颜色
+    \usepackage[strict]{changepage}     % 提供一个 adjustwidth 环境
+    \usepackage{framed}     % 实现方框效果
+        \definecolor{graybox_color}{rgb}{0.95,0.95,0.96} % 文本框颜色。修改此行中的 rgb 数值即可改变方框纹颜色，具体颜色的rgb数值可以在网站https://colordrop.io/ 中获得。（截止目前的尝试还没有成功过，感觉单位不一样）（找到喜欢的颜色，点击下方的小眼睛，找到rgb值，复制修改即可）
+        \newenvironment{graybox}{%
+        \def\FrameCommand{%
+        \hspace{1pt}%
+        {\color{gray}\small \vrule width 2pt}%
+        {\color{graybox_color}\vrule width 4pt}%
+        \colorbox{graybox_color}%
+        }%
+        \MakeFramed{\advance\hsize-\width\FrameRestore}%
+        \noindent\hspace{-4.55pt}% disable indenting first paragraph
+        \begin{adjustwidth}{}{7pt}%
+        \vspace{2pt}\vspace{2pt}%
+        }
+        {%
+        \vspace{2pt}\end{adjustwidth}\endMakeFramed%
+        }
+
+% 外源代码插入设置
+    % matlab 代码插入设置
+    %\usepackage{matlab-prettifier}
+    %    \lstset{
+    %        style=Matlab-editor,  % 继承matlab代码颜色等
+    %    }
+    %\usepackage[most]{tcolorbox} % 引入tcolorbox包 
+    %\usepackage{listings} % 引入listings包
+    %    \tcbuselibrary{listings, skins, breakable}
+    %    \newfontfamily\codefont{Consolas} % 定义需要的 codefont 字体
+    %    \lstdefinestyle{matlabstyle}{
+    %        language=Matlab,
+    %        basicstyle=\small\ttfamily\codefont,    % ttfamily 确保等宽 
+    %        breakatwhitespace=false,
+    %        breaklines=true,
+    %        captionpos=b,
+    %        keepspaces=true,
+    %        numbers=left,
+    %        numbersep=15pt,
+    %        showspaces=false,
+    %        showstringspaces=false,
+    %        showtabs=false,
+    %        tabsize=2
+    %    }
+    %    \newtcblisting{matlablisting}{
+    %        arc=2pt,        % 圆角半径
+    %        top=-5pt,
+    %        bottom=-5pt,
+    %        left=1mm,
+    %        listing only,
+    %        listing style=matlabstyle,
+    %        breakable,
+    %        colback=white   % 选一个合适的颜色
+    %    }
+
+% table 支持
+    %\usepackage{booktabs}   % 宏包：三线表
+    %\usepackage{tabularray} % 宏包：表格排版
+    %\usepackage{longtable}  % 宏包：长表格
+    %\usepackage[longtable]{multirow} % 宏包：multi 行列
+
+% figure 设置
+    \usepackage{graphicx}   % 支持 jpg, png, eps, pdf 图片 
+    %\usepackage{svg}        % 支持 svg 图片
+    %\usepackage{subcaption} % 支持子图
+    %    \svgsetup{
+            % 指向 inkscape.exe 的路径
+    %        inkscapeexe = C:/aa_MySame/inkscape/bin/inkscape.exe, 
+            % 一定程度上修复导入后图片文字溢出几何图形的问题
+    %        inkscapelatex = false                 
+    %    }
+
+% 图表进阶设置
+    %\usepackage{caption}    % 图注、表注
+    %    \captionsetup[figure]{name=图}  
+    %    \captionsetup[table]{name=表}
+    %    \captionsetup{labelfont=bf, font=small}
+    %\usepackage{float}     % 图表位置浮动设置 
+
+% 圆圈序号自定义
+    \newcommand*\circled[1]{\tikz[baseline=(char.base)]{\node[shape=circle,draw,inner sep=0.8pt, line width = 0.03em] (char) {\small \bfseries #1};}}   % TikZ solution
+
+% 列表设置
+    \usepackage{enumitem}   % 宏包：列表环境设置
+        \setlist[enumerate]{
+            label=\bfseries(\arabic*) ,   % 设置序号样式为加粗的 (1) (2) (3)
+            ref=\arabic*, % 如果需要引用列表项，这将决定引用格式（这里仍然使用数字）
+            itemsep=0pt, parsep=0pt, topsep=0pt, partopsep=0pt, leftmargin=3.5em} 
+        \setlist[itemize]{itemsep=0pt, parsep=0pt, topsep=0pt, partopsep=0pt, leftmargin=3.5em}
+        \newlist{circledenum}{enumerate}{1} % 创建一个新的枚举环境  
+        \setlist[circledenum,1]{  
+            label=\protect\circled{\arabic*}, % 使用 \arabic* 来获取当前枚举计数器的值，并用 \circled 包装它  
+            ref=\arabic*, % 如果需要引用列表项，这将决定引用格式（这里仍然使用数字）
+            itemsep=0pt, parsep=0pt, topsep=0pt, partopsep=0pt, leftmargin=3.5em
+        }  
+    
+
+% 文章默认字体设置
+    \usepackage{fontspec}   % 宏包：字体设置
+        \setmainfont{SimSun}    % 设置中文字体为宋体字体
+        \setCJKmainfont[AutoFakeBold=3]{SimSun} % 设置加粗字体为 SimSun 族，AutoFakeBold 可以调整字体粗细
+        \setmainfont{Times New Roman} % 设置英文字体为Times New Roman
+
+% 其它设置
+    % 脚注设置
+    \renewcommand\thefootnote{\ding{\numexpr171+\value{footnote}}}
+    % 参考文献引用设置
+        \bibliographystyle{unsrt}   % 设置参考文献引用格式为unsrt
+        \newcommand{\upcite}[1]{\textsuperscript{\cite{#1}}}     % 自定义上角标式引用
+    % 文章序言设置
+        \newcommand{\cnabstractname}{序言}
+        \newenvironment{cnabstract}{%
+            \par\Large
+            \noindent\mbox{}\hfill{\bfseries \cnabstractname}\hfill\mbox{}\par
+            \vskip 2.5ex
+            }{\par\vskip 2.5ex}
+% 各级标题自定义设置
+    \usepackage{titlesec}   
+    % chapter
+        \titleformat{\chapter}[hang]{\normalfont\Large\bfseries\centering}{Homework \thechapter }{10pt}{}
+        \titlespacing*{\chapter}{0pt}{-30pt}{10pt} % 控制上方空白的大小
+    % section
+        \titleformat{\section}[hang]{\normalfont\large\bfseries}{\thesection}{8pt}{}
+    % subsection
+        %\titleformat{\subsubsection}[hang]{\normalfont\bfseries}{}{8pt}{}
+    % subsubsection
+        %\titleformat{\subsubsection}[hang]{\normalfont\bfseries}{}{8pt}{}
+
+% >> ------------------ 文章宏包及相关设置 ------------------ << %
+% ------------------------------------------------------------- %
+
+
+
+% ----------------------------------------------------------- %
+% >> --------------------- 文章信息区 --------------------- << %
+% 页眉页脚设置
+
+\usepackage{fancyhdr}   %宏包：页眉页脚设置
+    \pagestyle{fancy}
+    \fancyhf{}
+    \cfoot{\thepage}
+    \renewcommand\headrulewidth{1pt}
+    \renewcommand\footrulewidth{0pt}
+    \chead{信号与系统作业,\ 尹超,\ 2023K8009926003}
+    \lhead{Homework \thechapter}
+    \rhead{yinchao23@mails.ucas.ac.cn}
+
+%文档信息设置
+\title{信号与系统作业\\ Homework}
+\author{尹超\\ \footnotesize 中国科学院大学，北京 100049\\ Carter Yin \\ \footnotesize University of Chinese Academy of Sciences, Beijing 100049, China}
+\date{\footnotesize 2024.8 -- 2025.1}
+% >> --------------------- 文章信息区 --------------------- << %
+% ----------------------------------------------------------- %
+
+% 开始编辑文章
+
+\begin{document}
+\zihao{5}           % 设置全文字号大小
+
+% --------------------------------------------------------------- %
+% >> --------------------- 封面序言与目录 --------------------- << %
+% 封面
+    \maketitle\newpage  
+    \pagenumbering{Roman} % 页码为大写罗马数字
+    \thispagestyle{fancy}   % 显示页码、页眉等
+
+% 序言
+    \begin{cnabstract}\normalsize 
+        本文为笔者信号与系统的作业。\par
+        望老师批评指正。
+    \end{cnabstract}
+    \addcontentsline{toc}{chapter}{序言} % 手动添加为目录
+
+% 不换页目录
+    \setcounter{tocdepth}{0}
+    \noindent\rule{\textwidth}{0.1em}   % 分割线
+    \noindent\begin{minipage}{\textwidth}\centering 
+        \vspace{1cm}
+        \tableofcontents\thispagestyle{fancy}   % 显示页码、页眉等   
+    \end{minipage}  
+    \addcontentsline{toc}{chapter}{目录} % 手动添加为目录
+
+% 收尾工作
+    \newpage    
+    \pagenumbering{arabic} 
+
+% >> --------------------- 封面序言与目录 --------------------- << %
+% --------------------------------------------------------------- %
+
+
+\chapter{2024.09.03}\thispagestyle{fancy}
+\section{习题总结}
+
+\begin{definition}
+    $ Ev \left\{\sin(4\pi t)u(t)\right\} = \frac{1}{2}\sin(4\pi t)u(t) + \frac{1}{2}\sin(-4\pi t)u(-t) = \frac{1}{2}\sin(4\pi t)u(t) $
+    $ Od \left\{\sin(4\pi t)u(t)\right\} = \frac{1}{2}\sin(4\pi t)u(t) - \frac{1}{2}\sin(-4\pi t)u(-t) = \frac{1}{2}\sin(4\pi t)u(t) $
+\end{definition}
+
+\begin{definition}
+    求基波周期时，先假设一个周期T，代入函数中，求解得到T，或者无解。
+\end{definition}
+
+
+
+
+\chapter{2024.9.5}\thispagestyle{fancy}
+
+\section{习题总结}
+
+\begin{definition}
+    一般复指数信号
+        \[
+        C, a \text{ 分别写成 } C = |C|e^{j\theta}, a = r + j\omega_0
+        \]
+        \[
+        x(t) = Ce^{at} = |C| e^{j\theta} e^{(r + j\omega_0)t} = |C| e^{rt} e^{j(\omega_0 t + \theta)} = |C| e^{rt} \cos(\omega_0 t + \theta) + j |C| e^{rt} \sin(\omega_0 t + \theta)
+        \]
+        \begin{itemize}
+            \item $|C| e^{rt}$ 提供包络线，显示变化趋势
+        \end{itemize}
+
+        周期性质（$C, \alpha$ 一般为复常数和连续时间复指数信号完全不同）
+        \begin{itemize}
+            \item 连续时间复指数信号 $x(t) = e^{j\omega_0 t}$ 是以 $T_0 = \frac{2\pi}{|\omega_0|}$（s）为基波周期的信号，$\omega_0$ 越大周期越短，振荡越快
+            \item 在频率上，显然有 $e^{j\omega_0 n} = e^{j\omega_0 n} e^{j2k\pi n} = e^{j(\omega_0 + 2k\pi)n}$，$k = 0, \pm1, \pm2, \ldots$，因此频率是以 $2\pi$ 为周期的，低频部分在 $0$ 和 $2\pi$ 附近，高频部分在 $\pi$ 附近；只需在任意的一个 $2\pi$ 间隔内考虑 $\omega_0$，一般取 $[0, 2\pi)$ 或者 $[-\pi, \pi)$
+            \item 在（时间）周期上，假设周期为 $N$，那么有
+            \[
+            e^{j\omega_0 n} = e^{j\omega_0 (n+N)} = e^{j\omega_0 n} e^{j\omega_0 N} \Rightarrow e^{j\omega_0 N} = 1 \Rightarrow \omega_0 N = 2\pi m \Rightarrow \frac{\omega_0}{2\pi} = \frac{m}{N}
+            \]
+            当 $\frac{\omega_0}{2\pi}$ 为有理数，$e^{j\omega_0 n}$ 才是周期信号，其基波频率为（假设 $N, m$ 无公因子）：
+            \[
+            \frac{2\pi}{N} = \frac{\omega_0}{m} \quad \text{（不是 $\omega_0$）}
+            \]
+            基波周期为：$N = \frac{2\pi m}{|\omega_0|}$
+
+            例：$x[n] = \cos\left(\frac{8\pi n}{31}\right)$，$\omega_0 = \frac{8\pi}{31}$，$m = 4$，$N = 31$；基波频率为：$\frac{2\pi}{31}$，样本每隔 31 个点才重复
+        \end{itemize}
+\end{definition}
+
+\section{系统及基本性质}
+
+\begin{definition}
+    \begin{itemize}
+        \item 连续时间系统：系统的输入和输出信号皆为连续时间信号，$x(t) \rightarrow y(t)$
+        统一成一阶常系数线性微分方程的形式：
+        \[
+        \frac{d y(t)}{d t} + a y(t) = b x(t)
+        \]
+
+        \item 离散时间系统：系统的输入和输出信号皆为离散时间信号，$x[n] \rightarrow y[n]$
+        统一成一阶常系数线性差分方程的形式：
+        \[
+        y[n] - a y[n - 1] = b x[n]
+        \]
+
+        \item 有记忆系统与无记忆系统
+        一个系统的输出如果只取决于系统的当前输入，称为无记忆系统（又称即时系统）
+        例如：
+        \[
+        y(t) = R x(t) \quad \text{（电阻电路）}
+        \]
+        \[
+        y(t) = x(t)
+        \]
+        \[
+        y[n] = x[n] \quad \text{（恒等系统）}
+        \]
+        否则称为有记忆系统（动态系统）
+        例如：
+        \[
+        y(t) = \frac{1}{C} \int_{-\infty}^{t} x(\tau) d\tau \quad \text{（电容）}
+        \]
+        \[
+        y[n] = \sum_{k=-\infty}^{n} x[k] = \sum_{k=-\infty}^{n-1} x[k] + x[n] \Rightarrow y[n] - y[n-1] = x[n] \quad \text{（累加器）}
+        \]
+        \[
+        y[n] = x[n-1] \quad \text{（延时器）}
+        \]
+        \[
+        y[n] = x[n] - x[n-1] \quad \text{（差分器）}
+        \]
+
+        \item 可逆性与可逆系统\par
+        一个系统如果输入不同则输出不同，那么系统就是可逆的；
+        一个系统如果是可逆的，那么存在一个逆系统，级联原系统后的输出就等于原系统的输入
+        \begin{itemize}
+            \item 乘法器 $y(t) = 2x(t)$ 的逆系统为 $w(t) = 0.5y(t)$
+            \item 累加器 $y[n] = \sum_{k=-\infty}^{n} x[k]$ 逆系统为差分器 $w[n] = y[n] - y[n-1]$
+            \item $y(t) = x^2(t)$ 不是可逆的；通信中的编码器是一个典型的可逆系统，解码器是其逆系统
+        \end{itemize}
+
+        \item 因果性\par
+        如果一个系统在任何时刻的输出只取决于现在及过去的输入，就称为因果系统
+        \begin{itemize}
+            \item 因果系统例子：累加器、（后向）差分器（$y[n] - y[n-1]$）、$y(t) = x(t) - \cos(t + 1)$
+            \item 非因果系统例子：$y(t) = x(t) - x(t + 1)$、$y[n] = \frac{1}{2M+1} \sum_{k=-M}^{M} x[n - k]$
+            \item 一切以时间为自变量的可物理实现的系统都是因果的
+            \item 所有的无记忆系统都是因果的
+        \end{itemize}
+
+        \item 稳定性\par
+        一个系统如果输入信号是有界的，输出信号也是有界的，则称系统是稳定的。
+        \begin{itemize}
+            \item 稳定系统例子：RC电路、汽车系统（输入为力$f(t)$，输出为速度$v(t)$，平衡点为$V = \frac{F}{\rho}$）、$y(t) = e^{x(t)}$
+            \item 不稳定系统例子：$y[n] = \sum_{k=-\infty}^{n} u[k]=(n+1)u[n]$、$y(t) = t x(t)$
+            \item 实际系统一般存在能量消耗，如电阻的耗能、摩擦的耗能；想象一下如果汽车的摩擦系数$\rho = 0$？
+        \end{itemize}
+
+        \item 时不变性\par
+        直观来讲，系统的特性和行为不随时间而改变的系统为时不变系统。
+        \begin{itemize}
+            \item RC电路中的$R$和$C$不随时间而变化
+            \item 汽车系统中的摩擦系数$\rho$和质量$m$不随时间而变化
+            \item 数学上：当输入信号有一个时移，在输出信号产生同样的时移，则为时不变系统
+            \begin{itemize}
+                \item 如果$x(t) \rightarrow y(t)$，则有$x(t - t_0) \rightarrow y(t - t_0)$
+                \item 如果$x[n] \rightarrow y[n]$，则有$x[n - n_0] \rightarrow y[n - n_0]$
+            \end{itemize}
+        \end{itemize}
+
+        判断一个系统是否时不变方法：
+        \begin{itemize}
+            \item 直观判断方法: 若$y(\cdot)$前出现变系数、或有反转、展缩变换，则系统为时变系统
+            \item 一般性步骤：
+            \begin{enumerate}
+                \item 令输入为$x_1(t) = x(t - t_0)$，得到输出为$y_1(t)$
+                \item 如果$y(t - t_0)$与$y_1(t)$相同，则为时不变系统
+            \end{enumerate}
+        \end{itemize}
+
+        \item 例1：$y(t) = \sin[x(t)]$
+    \begin{itemize}
+        \item 直观判断为时不变系统
+        \item 证明：
+        \begin{itemize}
+            \item 步骤1：$x_1(t) = x(t - t_0) \Rightarrow y_1(t) = \sin[x(t - t_0)]$
+            \item 步骤2：$y(t - t_0) = \sin[x(t - t_0)] = y_1(t)$
+        \end{itemize}
+        因此为时不变系统
+    \end{itemize}
+
+    \item 例2：$y[n] = nx[n]$
+        \begin{itemize}
+            \item 直观判断不是时不变系统
+            \item 证明：
+            \begin{itemize}
+                \item 步骤1：$x_1[n] = x[n - n_0] \Rightarrow y_1[n] = nx[n - n_0]$
+                \item 步骤2：$y[n - n_0] = (n - n_0)x[n - n_0] \neq y_1[n]$
+            \end{itemize}
+            因此不是时不变系统
+        \end{itemize}
+
+        \item 线性\par
+        满足可加性和齐次性的系统是线性系统
+        \begin{itemize}
+            \item 可加性：$x_1 \rightarrow y_1, x_2 \rightarrow y_2$，则有$x_1 + x_2 \rightarrow y_1 + y_2$
+            \item 齐次性（比例性）：$x \rightarrow y$，则有$ax \rightarrow ay$，$a$为任意复常数
+            \item 零输入产生零输出（齐次性）
+        \end{itemize}
+        两者组合得到线性系统的叠加性
+
+        叠加性：如果系统对信号$x_k(t)$的响应为$y_k(t)$，$k=1,2,3,\ldots$，那么系统对信号$x(t) = \sum_{k} x_k(t)$的响应$y(t)$为
+        \[
+        y(t) = \sum_{k} y_k(t)
+        \]
+        离散时间线性系统同上
+
+        判断一个系统“$\rightarrow$”是否线性系统的一般性步骤（$a, b, x(t), y(t)$可为复数）：
+        \begin{enumerate}
+            \item $x_1(t) \rightarrow y_1(t)$，$x_2(t) \rightarrow y_2(t)$
+            \item 设$x_3(t) = a x_1(t) + b x_2(t) \rightarrow y_3(t)$
+            \item 如果$y_3(t) = a y_1(t) + b y_2(t)$，则系统为线性的
+        \end{enumerate}
+        本质利用“线性”的定义
+
+        \item 例1：证明系统$y(t) = t x(t)$是线性的
+        \begin{itemize}
+            \item 步骤1：$y_1(t) = t x_1(t)$，$y_2(t) = t x_2(t)$
+            \item 步骤2：$x_3(t) = a x_1(t) + b x_2(t) \Rightarrow y_3(t) = t [a x_1(t) + b x_2(t)]$
+            \item 步骤3：$a y_1(t) + b y_2(t) = a t x_1(t) + b t x_2(t) = y_3(t)$
+            \item 因此系统是线性的
+        \end{itemize}
+
+        \item 例2：证明$y(t) = x^2(t)$是非线性的
+        \begin{itemize}
+            \item 步骤1：$y_1(t) = x_1^2(t)$，$y_2(t) = x_2^2(t)$
+            \item 步骤2：$x_3(t) = a x_1(t) + b x_2(t) \Rightarrow y_3(t) = [a x_1(t) + b x_2(t)]^2$
+            \item 步骤3：$a y_1(t) + b y_2(t) = a x_1^2(t) + b x_2^2(t) \neq y_3(t)$
+            \item 因此系统不是线性的
+        \end{itemize}
+
+        \item 例3：判断$y(t) = \Re\{x(t)\}$是否为线性
+        \begin{itemize}
+            \item 步骤1：$y_1(t) = \Re\{x_1(t)\}$，$y_2(t) = \Re\{x_2(t)\}$
+            \item 步骤2：$x_3(t) = j x_1(t) + j x_2(t) \Rightarrow y_3(t) = -\Im\{x_1(t) + x_2(t)\}$
+            \item 步骤3：$j \Re\{x_1(t)\} + j \Re\{x_2(t)\} \neq y_3(t)$
+            \item 因此系统不是线性的
+        \end{itemize}
+
+        \item 例4
+        \begin{itemize}
+            \item 例4：$y[n] = 2x[n] + 3$
+            \item 容易验证系统不是线性的。但此系统输出信号的增量与输入信号的增量满足线性关系，此类系统称为增量线性系统
+            \item 当 $y_0 = 0$，系统输出 $y$ 只取决于输入 $x$，称为系统的零状态响应（线性系统）
+            \item 当 $x = 0$，系统输出 $y$ 只取决于 $y_0$，称为系统的零输入响应
+            \item 完全响应 = 零状态响应 + 零输入响应
+        \end{itemize}
+    \end{itemize}
+\end{definition}
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.8\textwidth]{xiti21.png}
+\end{figure}
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.8\textwidth]{xiti2.png}
+\end{figure}
+
+
+
+
+\chapter{2024.9.10}\thispagestyle{fancy}
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.8\textwidth]{xiti3.png}
+\end{figure}
+
+计算下列各对信号的卷积 $y[n] = x[n] \ast h[n]$。
+
+\section*{(a) $x[n] = \alpha^n u[n], h[n] = \beta^n u[n], \alpha \neq \beta$}
+
+卷积的定义为：
+\[
+y[n] = \sum_{k=-\infty}^{\infty} x[k] h[n-k]
+\]
+代入 $x[n] = \alpha^n u[n]$ 和 $h[n] = \beta^n u[n]$，得到：
+\[
+y[n] = \sum_{k=0}^{n} \alpha^k \beta^{n-k}
+\]
+因为 $\alpha \neq \beta$，使用几何级数的求和公式：
+\[
+y[n] = \frac{\alpha^{n+1} - \beta^{n+1}}{\alpha - \beta} u[n]
+\]
+
+\section*{(b) $x[n] = h[n] = \alpha^n u[n]$}
+
+这时，两个信号相同，代入卷积公式：
+\[
+y[n] = \sum_{k=0}^{n} \alpha^k \alpha^{n-k}
+\]
+\[
+y[n] = \alpha^n \sum_{k=0}^{n} 1 = (n+1)\alpha^n u[n]
+\]
+
+\section*{(c) $x[n] = \left( -\frac{1}{2} \right)^n u[n-4], h[n] = 4^n u[2-n]$}
+
+首先，将卷积定义代入：
+\[
+y[n] = \sum_{k=-\infty}^{\infty} x[k] h[n-k]
+\]
+对于 $x[n] = \left( -\frac{1}{2} \right)^n u[n-4]$ 和 $h[n] = 4^n u[2-n]$，我们可以观察到它们的支持范围并计算卷积。由于 $x[n]$ 和 $h[n]$ 都是有限支持的，非零的卷积求和范围可以限制在有效值上。
+
+\section*{(d) 如图 P2.21 所示的卷积}
+
+给定图 $x[n]$ 和 $h[n]$ 的信号，我们通过使用卷积的定义：
+\[
+y[n] = \sum_{k=-\infty}^{\infty} x[k] h[n-k]
+\]
+可以看到，$x[n]$ 从 $n = 0$ 到 $n = 5$ 有值，而 $h[n]$ 从 $n = 9$ 到 $n = 16$ 有值，因此可以手动计算每一个 $n$ 值下的卷积结果。注意，$y[n]$ 只在 $n = 9$ 到 $n = 21$ 之间有非零值。
+
+通过图像上的卷积积分计算，我们得到 $y[n]$ 在每个 $n$ 值下的精确值。
+
+
+
+\chapter{2024.9.19}\thispagestyle{fancy}
+
+\section{习题2.22}
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.8\textwidth]{xiti4.png}
+\end{figure}
+
+\section*{题目: 对以下各对波形求单位冲激响应为 $h(t)$ 的线性时不变系统对输入 $x(t)$ 的响应 $y(t)$}
+
+\subsection*{(a) $x(t) = e^{-\alpha t} u(t)$ 和 $h(t) = e^{-\beta t} u(t)$ 的卷积}
+
+卷积公式为：
+\[
+y(t) = \int_{-\infty}^{\infty} x(\tau) h(t - \tau) d\tau
+\]
+
+带入 $x(t) = e^{-\alpha t} u(t)$ 和 $h(t) = e^{-\beta t} u(t)$，卷积式变为：
+\[
+y(t) = \int_0^t e^{-\alpha \tau} e^{-\beta (t - \tau)} d\tau
+\]
+
+化简为：
+\[
+y(t) = e^{-\beta t} \int_0^t e^{(\beta - \alpha) \tau} d\tau
+\]
+
+分为两种情况：
+
+- 当 $\alpha \neq \beta$ 时：
+  \[
+  y(t) = e^{-\beta t} \left[ \frac{e^{(\beta - \alpha) \tau}}{\beta - \alpha} \right]_0^t = \frac{e^{-\alpha t} - e^{-\beta t}}{\beta - \alpha} u(t)
+  \]
+
+- 当 $\alpha = \beta$ 时：
+  \[
+  y(t) = e^{-\alpha t} \int_0^t 1 d\tau = t e^{-\alpha t} u(t)
+  \]
+
+因此卷积的结果为：
+\[
+y(t) =
+\begin{cases}
+\frac{e^{-\alpha t} - e^{-\beta t}}{\beta - \alpha} u(t), & \alpha \neq \beta \\
+t e^{-\alpha t} u(t), & \alpha = \beta
+\end{cases}
+\]
+
+\subsection*{(b) $x(t) = u(t) - 2u(t-2) + u(t-5)$ 和 $h(t) = e^{2t} u(1-t)$ 的卷积}
+
+首先，分段定义 $x(t)$：
+\[
+x(t) =
+\begin{cases}
+1, & 0 \leq t < 2 \\
+-1, & 2 \leq t < 5 \\
+0, & \text{其他}
+\end{cases}
+\]
+而 $h(t) = e^{2t} u(1 - t)$ 仅在 $t \leq 1$ 时非零。
+
+卷积公式为：
+\[
+y(t) = \int_{-\infty}^{\infty} x(\tau) h(t - \tau) d\tau
+\]
+
+在 $t \leq 1$ 的区间内，卷积积分为：
+\[
+y(t) = \int_0^t e^{2(t - \tau)} x(\tau) d\tau
+\]
+
+根据 $x(t)$ 的分段定义，可以分别计算不同区间内的积分，结合 $h(t)$ 的支撑区域，得出分段结果。
+
+\subsection*{(c) 如图 P2.22(a) 所示的卷积}
+
+$x(t)$ 是一个周期为 $2$ 的正弦波，$h(t)$ 是一个方波，支持范围在 $1 \leq t \leq 3$。
+
+卷积公式为：
+\[
+y(t) = \int_{-\infty}^{\infty} x(\tau) h(t - \tau) d\tau
+\]
+
+由于 $h(t)$ 的支持范围为 $1 \leq t \leq 3$，在此区间内对正弦波进行卷积，计算重叠区域内的积分，得到结果。
+
+\subsection*{(d) 如图 P2.22(b) 所示的卷积}
+
+$x(t)$ 是一个斜坡函数：
+\[
+x(t) = at + b, \quad t \geq 0
+\]
+而 $h(t)$ 是一个宽度为 $1$，高度为 $\frac{1}{3}$ 的矩形脉冲，定义为：
+\[
+h(t) = \frac{1}{3} u(t) - \frac{1}{3} u(t-1)
+\]
+
+卷积公式为：
+\[
+y(t) = \int_{-\infty}^{\infty} x(\tau) h(t - \tau) d\tau
+\]
+
+将 $h(t)$ 的定义带入后，可以分区间对斜坡函数和矩形脉冲进行卷积计算，最终得出卷积结果。
+
+\subsection*{(e) 如图 P2.22(c) 所示的卷积}
+
+$x(t)$ 是一个阶跃信号，而 $h(t)$ 是一个从 1 线性下降到 0 的三角脉冲，定义为：
+\[
+h(t) =
+\begin{cases}
+1 - t, & 0 \leq t \leq 1 \\
+0, & \text{其他}
+\end{cases}
+\]
+
+卷积公式为：
+\[
+y(t) = \int_{-\infty}^{\infty} x(\tau) h(t - \tau) d\tau
+\]
+
+由于 $h(t)$ 是分段函数，卷积将分段进行计算。结合 $x(t)$ 的分段定义，计算每个区间的重叠区域，得出卷积结果。
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.8\textwidth]{xiti41.png}
+\end{figure}
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.8\textwidth]{xiti42.png}
+\end{figure}
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.8\textwidth]{xiti43.png}
+\end{figure}
+
+\textbf{\textcolor{red}{有记忆和无记忆系统}}
+    \begin{itemize}
+        \item 一个系统的输出如果只取决于系统的当前输入，称为无记忆系统（又称即时系统），否则称为有记忆系统
+        \item 对于离散LTI系统，$y[n] = \sum_{k=-\infty}^{\infty} h[k] x[n - k]$，无记忆意味着对于 $k \neq 0$ 有 $h[k] = 0$，即 $y[n] = h[0] x[n] = K x[n]$，$K = h[0]$ 为常数；令 $x[n] = \delta[n]$，得到 $h[n] = K \delta[n]$
+        \item 无记忆LTI系统的单位脉冲响应为脉冲函数
+        \item 对于连续LTI系统，$y(t) = \int_{-\infty}^{\infty} x(\tau) h(t - \tau) d\tau$，无记忆意味着对于 $\tau \neq t$ 有 $h(t - \tau) = 0$，也即 $y(t) = \int_{-\infty}^{\infty} x(t) h(0) d\tau = K x(t)$，$K = \int_{-\infty}^{\infty} h(0) d\tau$ 为常数；令输入为 $\delta(t)$，得到 $h(t) = K \delta(t)$
+        \item 系统的单位冲激响应为冲激函数
+        \item 令 $K = 1$，得到 $y[n] = x[n] = x[n] * \delta[n]$，$y(t) = x(t) = x(t) * \delta(t)$
+        \item 信号与单位冲激（脉冲）函数卷积得到自身，也即单位冲激（脉冲）函数的筛选性质
+    \end{itemize}
+\vspace{1em}
+    \textbf{\textcolor{red}{可逆性}}
+    \begin{itemize}
+        \item 一个系统如果是可逆的，那么存在一个逆系统，级联原系统后的输出就等于原系统的输入，也即级联后的系统冲激响应为 $\delta(t)$，也即
+    \[
+    h(t) * h_1(t) = \delta(t) \quad \text{或} \quad h[n] * h_1[n] = \delta[n]
+    \]
+    
+        \item 例1
+    $y(t) = x(t - t_0)$，求其逆系统。
+    
+    令 $x(t) = \delta(t)$，得到 $h(t) = \delta(t - t_0)$，
+    有 $y(t) = x(t - t_0) = x(t) * h(t) = x(t) * \delta(t - t_0)$。
+    
+    一个信号与时移冲激（脉冲）信号的卷积就是信号的时移：
+    \[
+    \delta(t - t_0) * \delta(t + t_0) = \delta(t) \Rightarrow h_1(t) = \delta(t + t_0)
+    \]
+    
+        \item 例2
+    $h[n] = u[n]$，求其逆系统。
+    
+    有 $y[n] = \sum_{k=-\infty}^{\infty} x[k] h[n - k] = \sum_{k=-\infty}^{n} x[k]$。
+    
+    一个信号与阶跃脉冲（冲激）函数的卷积是信号的累加（积分）。
+    
+    已知：$u[n] - u[n - 1] = \delta[n]$，
+    \[
+    h[n] * h_1[n] = u[n] - u[n - 1] = u[n] * \delta[n] - u[n] * \delta[n - 1] = u[n] * (\delta[n] - \delta[n - 1])
+    \]
+    因此，$h_1[n] = \delta[n] - \delta[n - 1]$。
+    \end{itemize}
+\vspace{1em}
+    \textbf{\textcolor{red}{因果性}}\par
+    一个因果系统的输出只取决于系统的过去和现在的输入。
+    
+    对于离散时间因果LTI系统，
+    \[
+    y[n] = \sum_{k=-\infty}^{\infty} x[k] h[n - k]
+    \]
+    意味着当 $k > n$，必有 $h[n - k] = 0$，因此当 $n < 0$，有 $h[n] = 0$（激励出现之前，响应为零），也即
+    \[
+    y[n] = \sum_{k=-\infty}^{n} x[k] h[n - k] \quad \text{或} \quad y[n] = \sum_{k=0}^{\infty} h[k] x[n - k]
+    \]
+    
+    一个因果系统的输出只取决于系统的过去和现在的输入。
+    
+    对于一个连续时间因果LTI系统，类似也有当 $t < 0$，有 $h(t) = 0$，
+    \[
+    y(t) = \int_{\tau = -\infty}^{t} x(\tau) h(t - \tau) d\tau \quad \text{或} \quad y(t) = \int_{\tau = 0}^{\infty} h(\tau) x(t - \tau) d\tau
+    \]
+    
+    一个因果系统的输入在某个时刻前为0，则系统的响应在那个时刻之前也必为0，这就是系统的初始松弛条件；对于线性系统，因果性等价初始松弛条件；也就是系统只有零状态响应。
+    
+    因果性是系统的性质，但一般也将 $n < 0$ 或 $t < 0$ 时为零的信号也称为因果信号，经常表示为 $x(t)u(t)$ 或者 $x[n]u[n]$：一个LTI系统的因果性等价于系统的冲激（脉冲）响应是一个因果信号。\par
+\vspace{1em}
+\raggedright
+    \textbf{\textcolor{red}{稳定性}}
+    \begin{itemize}
+
+    \item 如果一个系统的输入是有界的，那么输出也是有界的，该系统就是稳定的。
+    
+    对于离散时间LTI系统，
+    \[
+    |y[n]| = |\sum_{k=-\infty}^{\infty} h[k] x[n - k]| \leq \sum_{k=-\infty}^{\infty} |h[k]| |x[n - k]| \leq B \sum_{k=-\infty}^{\infty} |h[k]|
+    \]
+    因此，$|y[n]| < \infty$ 意味着 $\sum_{k=-\infty}^{\infty} |h[k]| < \infty$，称系统的单位脉冲响应绝对可和，这个条件是离散时间LTI系统稳定的充要条件。
+    
+    对于连续时间LTI系统，类似可以得到
+    \[
+    \int_{t = -\infty}^{\infty} |h(t)| dt < \infty
+    \]
+    称系统的单位冲激响应绝对可积，这个条件是连续时间LTI系统稳定的充要条件。
+ 
+        \item 例1\\
+    纯时移系统，$h[n] = \delta[n - n_0]$ 或 $h(t) = \delta(t - t_0)$
+    \[
+    \sum_{n=-\infty}^{\infty} |h[n]| = \sum_{n=-\infty}^{\infty} |\delta[n - n_0]| = 1
+    \]
+    \[
+    \int_{t = -\infty}^{\infty} |h(t)| dt = \int_{t = -\infty}^{\infty} |\delta(t - t_0)| dt = 1
+    \]
+    因此，纯时移系统是稳定系统。
+    
+    \item 例2\\
+    累加器或积分器，$h[n] = u[n]$ 或 $h(t) = u(t)$
+    \[
+    \sum_{n=-\infty}^{\infty} |h[n]| = \sum_{n=-\infty}^{\infty} |u[n]| = \sum_{n=0}^{\infty} 1 = \infty
+    \]
+    \[
+    \int_{t = -\infty}^{\infty} |h(t)| dt = \int_{t = -\infty}^{\infty} |u(t)| dt = \int_{t = 0}^{\infty} u(t) dt = \infty
+    \]
+    因此，累加器或积分器不是稳定系统。
+    \end{itemize}
+
+
+
+\chapter{2024.9.23}\thispagestyle{fancy}
+
+\section{习题 2.18}
+\begin{itemize}
+        \item 考虑一个因果线性时不变系统，其输入$x[n]$ 和输出 $y[n]$ 之间的关系由下面的差分方程给出：
+        \[
+            y[n] = \frac{1}{4}y[n-1] + x[n]
+        \]
+        若 $x[n] = \delta[n-1]$，求 $y[n]$ 的表达式。
+        
+            \item 要解决这个问题，我们可以利用差分方程的递推关系。我们从给定的输入 $x[n] = \delta[n-1]$ 开始，逐步计算输出 $y[n]$。
+\end{itemize}
+
+
+\section*{1. 确定初始条件}
+
+由于系统是因果的，我们通常假设 $y[n] = 0$ 对于 $n < 0$。
+
+\section*{2. 计算输出}
+
+使用给定的差分方程：
+
+\begin{equation}
+    y[n] = \frac{1}{4} y[n-1] + x[n]
+\end{equation}
+
+\subsection*{当 $n = 0$}
+
+\begin{align*}
+    y[0] &= \frac{1}{4} y[-1] + x[0] \\
+          &= \frac{1}{4} \cdot 0 + 0 \\
+          &= 0
+\end{align*}
+
+\subsection*{当 $n = 1$}
+
+\begin{align*}
+    y[1] &= \frac{1}{4} y[0] + x[1] \\
+          &= \frac{1}{4} \cdot 0 + 1 \\
+          &= 1
+\end{align*}
+
+\subsection*{当 $n = 2$}
+
+\begin{align*}
+    y[2] &= \frac{1}{4} y[1] + x[2] \\
+          &= \frac{1}{4} \cdot 1 + 0 \\
+          &= \frac{1}{4}
+\end{align*}
+
+\subsection*{当 $n = 3$}
+
+\begin{align*}
+    y[3] &= \frac{1}{4} y[2] + x[3] \\
+          &= \frac{1}{4} \cdot \frac{1}{4} + 0 \\
+          &= \frac{1}{16}
+\end{align*}
+
+\subsection*{当 $n = 4$}
+
+\begin{align*}
+    y[4] &= \frac{1}{4} y[3] + x[4] \\
+          &= \frac{1}{4} \cdot \frac{1}{16} + 0 \\
+          &= \frac{1}{64}
+\end{align*}
+
+\section*{3. 归纳出一般形式}
+
+可以观察到，输出 $y[n]$ 在每一步中都在乘以 $\frac{1}{4}$。所以我们可以归纳出：
+
+\begin{equation}
+    y[n] = \left(\frac{1}{4}\right)^{n-1} \quad \text{对于} \quad n \geq 1
+\end{equation}
+
+而对于 $n < 1$，输出仍然为 0。因此可以总结为：
+
+\begin{equation}
+    y[n] = 
+    \begin{cases} 
+    0 & n < 1 \\ 
+    \left(\frac{1}{4}\right)^{n-1} & n \geq 1 
+    \end{cases}
+\end{equation}
+
+\section*{4. 最终结果}
+
+输出 $y[n]$ 的表达式为：
+
+\begin{equation}
+    y[n] = \left(\frac{1}{4}\right)^{n-1} u[n-1]
+\end{equation}
+
+其中 $u[n-1]$ 是单位阶跃函数。
+
+
+
+
+\section{习题 2.24}
+\begin{itemize}
+    \item 考虑图中的三个因果线性时不变系统的级联，单位脉冲响应 $h_2[n]$ 为
+    \begin{equation}
+        h_2[n] = u[n] - u[n-2]
+    \end{equation}
+    \item 整个系统的单位脉冲响应如图所示。
+\end{itemize}
+
+\begin{itemize}
+    \item[(a)] 求 $h_1[n]$.
+    \item[(b)] 求整个系统对输入 $x[n] = \delta[n] - \delta[n-1]$ 的响应.
+\end{itemize}
+
+
+\section*{解答}
+
+\subsection*{(a) 求 $h_1[n]$}
+
+已知整个系统是由三级子系统串联组成的，系统的单位脉冲响应为：
+
+\[
+h[n] = h_1[n] * h_2[n] * h_3[n]
+\]
+
+其中，$h_2[n] = h_3[n] = u[n] - u[n-2]$，因此可以写作：
+
+\[
+h_2[n] = h_3[n] = 
+\begin{cases}
+1, & n = 0 \\
+1, & n = 1 \\
+0, & \text{其他}
+\end{cases}
+\]
+
+这表示 $h_2[n]$ 和 $h_3[n]$ 都是一个有限长为 2 的 FIR 滤波器。
+
+整个系统的单位脉冲响应 $h[n]$ 已知为：
+
+\[
+h[n] = 
+\begin{cases}
+1, & n = 0 \\
+5, & n = 1 \\
+10, & n = 2 \\
+11, & n = 3 \\
+8, & n = 4 \\
+4, & n = 5 \\
+1, & n = 6 \\
+0, & \text{其他} \\
+\end{cases}
+\]
+
+现在，我们首先计算 $h_2[n] * h_3[n]$。
+
+\subsection*{1. 计算 $h_2[n] * h_3[n]$}
+
+由于 $h_2[n]$ 和 $h_3[n]$ 都是有限长的脉冲响应，我们可以直接进行卷积：
+
+\[
+h_{23}[n] = h_2[n] * h_3[n]
+\]
+
+计算卷积：
+
+\[
+h_{23}[n] = 
+\begin{cases}
+1, & n = 0 \\
+2, & n = 1 \\
+1, & n = 2 \\
+0, & \text{其他}
+\end{cases}
+\]
+
+因此，$h_{23}[n] = [1, 2, 1]$。
+
+\subsection*{2. 计算 $h_1[n]$}
+
+现在，我们有：
+
+\[
+h[n] = h_1[n] * h_{23}[n]
+\]
+
+设 $h_1[n] = [h_1[0], h_1[1], h_1[2], \dots]$，根据卷积定义，可以得到以下方程：
+
+\[
+h[0] = h_1[0] \cdot h_{23}[0]
+\]
+\[
+h[1] = h_1[1] \cdot h_{23}[0] + h_1[0] \cdot h_{23}[1]
+\]
+\[
+h[2] = h_1[2] \cdot h_{23}[0] + h_1[1] \cdot h_{23}[1] + h_1[0] \cdot h_{23}[2]
+\]
+\[
+h[3] = h_1[3] \cdot h_{23}[0] + h_1[2] \cdot h_{23}[1] + h_1[1] \cdot h_{23}[2]
+\]
+依此类推。
+
+将 $h_{23}[n] = [1, 2, 1]$ 和 $h[n] = [1, 5, 10, 11, 8, 4, 1]$ 代入，逐项解出 $h_1[n]$：
+
+\[
+h[0] = 1 = h_1[0] \cdot 1 \quad \Rightarrow \quad h_1[0] = 1
+\]
+\[
+h[1] = 5 = h_1[1] \cdot 1 + h_1[0] \cdot 2 \quad \Rightarrow \quad 5 = h_1[1] + 2 \times 1 \quad \Rightarrow \quad h_1[1] = 3
+\]
+\[
+h[2] = 10 = h_1[2] \cdot 1 + h_1[1] \cdot 2 + h_1[0] \cdot 1 \quad \Rightarrow \quad 10 = h_1[2] + 2 \times 3 + 1 \times 1 \quad \Rightarrow \quad h_1[2] = 3
+\]
+\[
+h[3] = 11 = h_1[3] \cdot 1 + h_1[2] \cdot 2 + h_1[1] \cdot 1 \quad \Rightarrow \quad 11 = h_1[3] + 2 \times 3 + 3 \quad \Rightarrow \quad h_1[3] = 2
+\]
+
+\subsection*{结论}
+
+因此，$h_1[n]$ 的解为：
+
+\[
+h_1[n] = [1, 3, 3, 2]
+\]
+
+
+\subsection*{(b) 求整个系统对输入 $x[n] = \delta[n] - \delta[n-1]$ 的响应}
+
+输入信号为：
+
+\[
+x[n] = \delta[n] - \delta[n-1]
+\]
+
+整个系统的输出为：
+
+\[
+y[n] = x[n] * h[n] = h[n] - h[n-1]
+\]
+
+将 $h[n]$ 代入：
+
+\[
+y[0] = h[0] = 1
+\]
+\[
+y[1] = h[1] - h[0] = 5 - 1 = 4
+\]
+\[
+y[2] = h[2] - h[1] = 10 - 5 = 5
+\]
+\[
+y[3] = h[3] - h[2] = 11 - 10 = 1
+\]
+\[
+y[4] = h[4] - h[3] = 8 - 11 = -3
+\]
+\[
+y[5] = h[5] - h[4] = 4 - 8 = -4
+\]
+\[
+y[6] = h[6] - h[5] = 1 - 4 = -3
+\]
+\[
+y[7] = h[7] - h[6] = 0 - 1 = -1
+\]
+
+因此，系统的输出响应为：
+
+\[
+y[n] = [1, 4, 5, 1, -3, -4, -3, -1]
+\]
+
+
+\chapter{2024.10.8}\thispagestyle{fancy}
+
+\section{习题 3.23}
+
+给出下面周期为 4 的各连续时间信号的傅里叶级数系数，求每一个 \( x(t) \) 信号：
+
+对于周期为 \( T \) 的周期信号 \( x(t) \)，傅里叶级数逆变换为：
+\[
+x(t) = \sum_{k=-\infty}^{\infty} a_k e^{j \frac{2 \pi k t}{T}}
+\]
+
+\textbf{(a) 系数}：
+\[
+a_k =
+\begin{cases}
+0, & k = 0 \\
+(j)^k \frac{\sin(k \pi / 4)}{k \pi}, & \text{其他}
+\end{cases}
+\]
+
+信号 \( x(t) \) 的重建公式为：
+\[
+x(t) = \sum_{k=-\infty}^{\infty} a_k e^{j \frac{\pi k t}{2}}
+\]
+
+\textbf{(b) 系数}：
+\[
+a_k = 
+\begin{cases}
+\frac{1}{16}, & k = 0 \\
+(-1)^k \frac{\sin(k \pi / 8)}{2k \pi}, & \text{其他}
+\end{cases}
+\]
+
+信号 \( x(t) \) 的重建公式为：
+\[
+x(t) = \sum_{k=-\infty}^{\infty} a_k e^{j \frac{\pi k t}{2}}
+\]
+
+\textbf{(c) 系数（第一种）}：
+\[
+a_k =
+\begin{cases}
+jk, & |k| < 3 \\
+0, & \text{其他}
+\end{cases}
+\]
+
+信号 \( x(t) \) 的重建公式为：
+\[
+x(t) = \sum_{k=-2}^{2} a_k e^{j \frac{\pi k t}{2}}
+\]
+
+\textbf{(d) 系数（第二种）}：
+\[
+a_k =
+\begin{cases}
+1, & k \text{为偶数} \\
+2, & k \text{为奇数}
+\end{cases}
+\]
+
+该信号的傅里叶级数重建公式为：
+\[
+x(t) = \sum_{k=-\infty}^{\infty} a_k e^{j \frac{\pi k t}{2}}
+\]
+
+\section{习题 3.25}
+
+下面三个连续时间周期信号的基波周期 \( T = 1/2 \):
+\[ x(t) = \cos(4\pi t), \quad y(t) = \sin(4\pi t), \quad z(t) = x(t)y(t) \]
+
+(a) 求 \( x(t) \) 的傅里叶级数系数。\par
+(b) 求 \( y(t) \) 的傅里叶级数系数。\par
+(c) 利用 (a) 和 (b) 的结果，按照连续时间傅里叶级数的相乘性质，求 \( z(t) = x(t)y(t) \) 的傅里叶级数系数。\par
+
+\textbf{(a) 求 \( x(t) = \cos(4\pi t) \) 的傅里叶级数系数}
+
+由于 \( \cos(4\pi t) \) 是一个正弦信号，频率为 4（基波频率的 2 倍）。其傅里叶级数表达式为：
+\[
+x(t) = \cos(4\pi t) = \frac{1}{2}\left(e^{j4\pi t} + e^{-j4\pi t}\right)
+\]
+
+因此，傅里叶级数系数 \( a_k \) 为：
+\[
+a_k =
+\begin{cases}
+\frac{1}{2}, & k = 2 \\
+\frac{1}{2}, & k = -2 \\
+0, & \text{其他}
+\end{cases}
+\]
+
+\textbf{(b) 求 \( y(t) = \sin(4\pi t) \) 的傅里叶级数系数}
+
+同样，\( \sin(4\pi t) \) 是一个正弦信号，频率也是 4。其傅里叶级数表达式为：
+\[
+y(t) = \sin(4\pi t) = \frac{1}{2j}\left(e^{j4\pi t} - e^{-j4\pi t}\right)
+\]
+
+因此，傅里叶级数系数 \( b_k \) 为：
+\[
+b_k =
+\begin{cases}
+-\frac{j}{2}, & k = 2 \\
+\frac{j}{2}, & k = -2 \\
+0, & \text{其他}
+\end{cases}
+\]
+
+\textbf{(c) 利用 (a) 和 (b) 的结果，按照傅里叶级数的乘积性质，求 \( z(t) = x(t)y(t) \) 的傅里叶级数系数}
+
+根据傅里叶级数的卷积性质，两个信号 \( x(t) \) 和 \( y(t) \) 的乘积 \( z(t) = x(t)y(t) \) 的傅里叶级数系数是 \( x(t) \) 和 \( y(t) \) 的傅里叶系数的卷积。
+
+设 \( z(t) \) 的傅里叶系数为 \( c_k \)，则有：
+\[
+c_k = \sum_{m=-\infty}^{\infty} a_m b_{k-m}
+\]
+
+其中 \( a_m \) 是 \( x(t) \) 的傅里叶系数，\( b_m \) 是 \( y(t) \) 的傅里叶系数。
+
+由于 \( a_k \) 和 \( b_k \) 的非零项只在 \( k = \pm 2 \)，我们只需要考虑这些项的卷积：
+\[
+c_4 = a_2 b_2 = \frac{1}{2} \times -\frac{j}{2} = -\frac{j}{4}
+\]
+
+\[
+c_0 = a_2 b_{-2} + a_{-2} b_2 = \frac{1}{2} \times \frac{j}{2} + \frac{1}{2} \times -\frac{j}{2} = 0
+\]
+
+\[
+c_{-4} = a_{-2} b_{-2} = \frac{1}{2} \times \frac{j}{2} = \frac{j}{4}
+\]
+
+因此，信号 \( z(t) = x(t) y(t) \) 的傅里叶级数系数为：
+\[
+c_k =
+\begin{cases}
+-\frac{j}{4}, & k = 4 \\
+0, & k = 0 \\
+\frac{j}{4}, & k = -4 \\
+0, & \text{其他}
+\end{cases}
+\]
+
+
+\chapter{2024.10.15}\thispagestyle{fancy}
+
+
+\section{习题 3.28}
+
+对下面每一个离散时间周期信号，求其傅里叶级数系数，并画出每一组系数 $a_k$ 的模和相位。
+
+\begin{itemize}
+    \item[(a)] 图 P3.28(a) 至图 P3.28(c) 中的每一个 $x[n]$。
+
+对图 (a)，周期 $N = 7$，
+\[ 
+x[n] = \begin{cases}
+    1, & 0 \leq n \leq 4 \\
+    0, & 5 \leq n \leq 6
+\end{cases}
+\]
+
+傅里叶级数系数 $a_k$ 的计算公式为：
+\[
+a_k = \frac{1}{N} \sum_{n=0}^{N-1} x[n] e^{-j \frac{2\pi k n}{N}} = \frac{1}{7} \sum_{n=0}^{4} x[n] e^{-j \frac{2\pi k n}{7}}
+\]
+代入 $x[n]$ 的值：
+\[
+a_k = \frac{1}{7} \frac{e^{-jk\frac{4\pi}{7}} \sin\left(\frac{5\pi k}{7}\right)}{\sin\left(\frac{\pi k}{7}\right)}
+\]
+
+对图 (b)，周期 $N = 6$，
+\[ 
+x[n] = \begin{cases}
+    1, & 0 \leq n \leq 3 \\
+    0, & 4 \leq n \leq 5
+\end{cases}
+\]
+
+傅里叶级数系数 $a_k$ 的计算公式为：
+\[
+a_k = \frac{1}{6} \sum_{n=0}^{3} x[n] e^{-j \frac{2\pi k n}{6}}
+\]
+代入 $x[n]$ 的值：
+\[
+a_k = \frac{1}{6} \frac{e^{-jk\frac{\pi}{2}} \sin\left(\frac{2\pi k}{3}\right)}{\sin\left(\frac{\pi k}{6}\right)}
+\]
+
+对图 (c)，周期 $N = 6$，
+\[ 
+x[n] = \begin{cases}
+    1, & n = 0 \\
+    0, & n = 3 \\
+    -1, & n = 2, 4 \\
+    2, & n = -1, 1
+\end{cases}
+\]
+
+傅里叶级数系数 $a_k$ 的计算公式为：
+\[
+a_k = \frac{1}{6} \sum_{n=-1}^{4} x[n] e^{-j \frac{2\pi k n}{6}}
+\]
+代入 $x[n]$ 的值：
+\[
+a_k = \frac{1}{6} \left[ 1 + 4\cos\left(\frac{k\pi}{3}\right) - 2\cos\left(\frac{2k\pi}{3}\right) \right]
+\]
+
+
+
+
+
+
+
+
+
+    \item[(b)] $x[n] = \sin\left( \frac{2\pi n}{3} \right)\cos\left( \frac{\pi n}{2} \right)$。
+    
+    \[
+    x[n] = \sin\left( \frac{2\pi n}{3} \right)\cos\left( \frac{\pi n}{2} \right) = \frac{1}{2j}\left( e^{j\frac{2\pi n}{3}} - e^{-j\frac{2\pi n}{3}} \right) \times \frac{1}{2}\left( e^{j\frac{\pi n}{2}} + e^{-j\frac{\pi n}{2}} \right)
+    \]
+    \[ 
+        = \frac{1}{4j}\left( e^{j\frac{7\pi n}{6}} + e^{j\frac{\pi n}{6}} - e^{-j\frac{7\pi n}{6}} - e^{-j\frac{\pi n}{6}} \right)
+    \]
+    \[
+    = \frac{1}{4j}\left( e^{j7\frac{2\pi}{12}n} \right) - \frac{1}{4j}\left( e^{-j7\frac{2\pi}{12}n} \right) + \frac{1}{4j}\left( e^{j\frac{2\pi}{12}n} - e^{-j\frac{2\pi}{12}n} \right)
+    \]
+    即x[n]的周期为12，非零的傅里叶级数系数为：
+    \[
+    a_1 = a_{-1}^* = \frac{1}{4j} = -\frac{1}{4}j, \quad a_7 = a_{-7}^* = \frac{1}{4j} = -\frac{1}{4}j
+    \]
+
+    \item[(c)] $x[n]$ 的周期为 4，且有 $x[n] = 1 - \sin\left( \frac{\pi n}{4} \right)$，$0 \leq n \leq 3$。
+    
+    由于 $x[n]$ 的周期为 4，我们可以写出傅里叶级数：
+    \[
+    x[n] = \sum_{k=-\infty}^{\infty} a_k e^{j \frac{2\pi k n}{4}}
+    \]
+    计算傅里叶系数 $a_k$：
+    \[
+    a_k = \frac{1}{4} \sum_{n=0}^{3} x[n] e^{-j \frac{2\pi k n}{4}}
+    \]
+    代入 $x[n] = 1 - \sin\left( \frac{\pi n}{4} \right)$ 计算每个 $a_k$。
+
+    \[
+    a_k = \frac{1}{4} \left[1 + (2-\sqrt{2}\cos (\frac{\pi}{2} k) )  \right]
+    \]
+
+    \item[(d)] $x[n]$ 的周期为 12，且有 $x[n] = 1 - \sin\left( \frac{\pi n}{4} \right)$，$0 \leq n \leq 11$。
+    
+    由于 $x[n]$ 的周期为 12，我们可以写出傅里叶级数：
+    \[
+    x[n] = \sum_{k=-\infty}^{\infty} a_k e^{j \frac{2\pi k n}{12}}
+    \]
+    计算傅里叶系数 $a_k$：
+    \[
+    a_k = \frac{1}{12} \sum_{n=0}^{11} x[n] e^{-j \frac{2\pi k n}{12}}
+    \]
+    代入 $x[n] = 1 - \sin\left( \frac{\pi n}{4} \right)$ 计算每个 $a_k$。
+    \[
+    a_k = \frac{1}{12} \left[1 + (2 - \sqrt{2})\cos(\frac{k\pi}{6}) + (2 - \sqrt{2})\cos(\frac{k\pi}{2}) + (2 + \sqrt{2})\cos(\frac{5k\pi}{6})+2\cos(\frac{2k\pi}{3})+2(-1)^k\right]
+    \]
+\end{itemize}
+
+
+\section{习题 3.36}
+
+考虑一个因果离散时间线性时不变系统，其输入 $x[n]$ 和输出 $y[n]$ 由下列差分方程所关联：
+\[
+y[n] - \frac{1}{4}y[n-1] = x[n]
+\]
+
+在下面两种输入下，求输出 $y[n]$ 的傅里叶级数表示：
+
+\begin{enumerate}
+    \item $x[n] = \sin\left(\frac{3\pi n}{4}\right)$
+    
+    \item $x[n] = \cos\left(\frac{\pi n}{4}\right) + 2\cos\left(\frac{\pi n}{2}\right)$
+\end{enumerate}
+
+\subsection*{解答}
+(a) 先求系统响应 $H(e^{j\omega})$。
+
+对于 LTI 系统，当输入 $x[n] = e^{j\omega n}$ 时，输出为 $y[n] = H(e^{j\omega})e^{j\omega n}$，其中 $H(e^{j\omega})$ 为系统的频率响应。
+
+将 $x[n]$ 和 $y[n]$ 代入差分方程，得到：
+\[
+H(e^{j\omega}) = \frac{1}{1-\frac{1}{4}e^{-j\omega}}
+\]
+
+对于输入 $x[n] = \sin\left(\frac{3\pi n}{4}\right)$，其傅里叶级数表示为：
+\[
+\sin\left(\frac{3\pi n}{4}\right) = \frac{1}{2j}\left(e^{j\frac{3\pi}{4}n} - e^{-j\frac{3\pi}{4}n}\right)
+\]
+对于 $x[n]$，其 $\omega_0 = \frac{2\pi}{8}$，非零的傅里叶级数系数为：
+\[
+a_3 = \frac{1}{2j}, \quad a_{-3} = -\frac{1}{2j}
+\]
+故 $y[n]$ 中非零的傅里叶级数系数为：
+\[
+b_3 = a_3 H(e^{j\frac{3\pi}{4}}) = \frac{1}{2j} \cdot \frac{1}{1-\frac{1}{4}e^{-j\frac{3\pi}{4}}}
+\]
+\[
+b_{-3} = a_{-3} H(e^{-j\frac{3\pi}{4}}) = -\frac{1}{2j} \cdot \frac{1}{1-\frac{1}{4}e^{j\frac{3\pi}{4}}}
+\]
+
+(b) 对于输入 $x[n] = \cos\left(\frac{\pi n}{4}\right) + 2\cos\left(\frac{\pi n}{2}\right)$，其傅里叶级数表示为：
+\[
+x[n] = \frac{1}{2}e^{j\frac{\pi n}{4}} + e^{j\frac{\pi n}{2}} + \frac{1}{2}e^{-j\frac{\pi n}{4}} + e^{-j\frac{\pi n}{2}}
+\]
+对于 $x[n]$，其 $\omega_0 = \frac{2\pi}{8}$，非零的傅里叶级数系数为：
+\[
+a_1 = \frac{1}{2}, \quad a_{-1} = \frac{1}{2}, \quad a_2 = 1, \quad a_{-2} = 1
+\]
+故 $y[n]$ 中非零的傅里叶级数系数为：
+\[
+b_1 = a_1 H(e^{j\frac{\pi}{4}}) = \frac{1}{2} \cdot \frac{1}{1-\frac{1}{4}e^{j\frac{\pi}{4}}}
+\]
+\[
+b_{-1} = a_{-1} H(e^{-j\frac{\pi}{4}}) = \frac{1}{2} \cdot \frac{1}{1-\frac{1}{4}e^{-j\frac{\pi}{4}}}
+\]
+\[
+b_2 = a_2 H(e^{j\frac{\pi}{2}}) = 1 \cdot \frac{1}{1-\frac{1}{4}e^{j\frac{\pi}{2}}}
+\]
+\[
+b_{-2} = a_{-2} H(e^{-j\frac{\pi}{2}}) = 1 \cdot \frac{1}{1-\frac{1}{4}e^{-j\frac{\pi}{2}}}
+\]
+
+
+
+
+\chapter{2024.10.17}\thispagestyle{fancy}
+
+\section{习题 3.42}
+
+令 $x(t)$ 是一个基波周期为 $T$，傅里叶级数系数为 $a_k$ 的实值信号。
+
+(a) 证明：$a_k = a_{-k}^*$，并且 $a_0$ 一定为实数。
+
+\begin{proof}
+由于 $x(t)$ 是实值信号，其傅里叶级数表示为：
+\[
+x(t) = \sum_{k=-\infty}^{\infty} a_k e^{j\frac{2\pi k}{T}t}
+\]
+取复共轭：
+\[
+x^*(t) = \left( \sum_{k=-\infty}^{\infty} a_k e^{j\frac{2\pi k}{T}t} \right)^* = \sum_{k=-\infty}^{\infty} a_k^* e^{-j\frac{2\pi k}{T}t}
+\]
+由于 $x(t)$ 是实值信号，$x^*(t) = x(t)$，所以：
+\[
+\sum_{k=-\infty}^{\infty} a_k^* e^{-j\frac{2\pi k}{T}t} = \sum_{k=-\infty}^{\infty} a_k e^{j\frac{2\pi k}{T}t}
+\]
+令 $k \rightarrow -k$，得到：
+\[
+\sum_{k=-\infty}^{\infty} a_{-k}^* e^{j\frac{2\pi k}{T}t} = \sum_{k=-\infty}^{\infty} a_k e^{j\frac{2\pi k}{T}t}
+\]
+因此，$a_k = a_{-k}^*$。特别地，当 $k=0$ 时，$a_0 = a_0^*$，所以 $a_0$ 一定为实数。
+\end{proof}
+
+(b) 证明：若 $x(t)$ 为偶函数，则它的傅里叶级数系数一定为实偶函数。
+
+\begin{proof}
+若 $x(t)$ 为偶函数，则 $x(t) = x(-t)$。其傅里叶级数表示为：
+\[
+x(t) = \sum_{k=-\infty}^{\infty} a_k e^{j\frac{2\pi k}{T}t}
+\]
+由于 $x(t)$ 为偶函数，$x(-t) = x(t)$，所以：
+\[
+\sum_{k=-\infty}^{\infty} a_k e^{-j\frac{2\pi k}{T}t} = \sum_{k=-\infty}^{\infty} a_k e^{j\frac{2\pi k}{T}t}
+\]
+令 $k \rightarrow -k$，得到：
+\[
+\sum_{k=-\infty}^{\infty} a_{-k} e^{j\frac{2\pi k}{T}t} = \sum_{k=-\infty}^{\infty} a_k e^{j\frac{2\pi k}{T}t}
+\]
+因此，$a_k = a_{-k}$，并且 $a_k$ 为实数。
+\end{proof}
+
+(c) 证明：若 $x(t)$ 为奇函数，则它的傅里叶级数系数是虚数且为奇函数，$a_0 = 0$。
+
+\begin{proof}
+若 $x(t)$ 为奇函数，则 $x(t) = -x(-t)$。其傅里叶级数表示为：
+\[
+x(t) = \sum_{k=-\infty}^{\infty} a_k e^{j\frac{2\pi k}{T}t}
+\]
+由于 $x(t)$ 为奇函数，$x(-t) = -x(t)$，所以：
+\[
+\sum_{k=-\infty}^{\infty} a_k e^{-j\frac{2\pi k}{T}t} = -\sum_{k=-\infty}^{\infty} a_k e^{j\frac{2\pi k}{T}t}
+\]
+令 $k \rightarrow -k$，得到：
+\[
+\sum_{k=-\infty}^{\infty} a_{-k} e^{j\frac{2\pi k}{T}t} = -\sum_{k=-\infty}^{\infty} a_k e^{j\frac{2\pi k}{T}t}
+\]
+因此，$a_k = -a_{-k}$，并且 $a_k$ 为虚数。特别地，当 $k=0$ 时，$a_0 = -a_0$，所以 $a_0 = 0$。
+\end{proof}
+
+(d) 证明：$x(t)$ 偶部的傅里叶系数等于 $\Re\{a_k\}$。
+
+\begin{proof}
+设 $x(t)$ 的偶部为 $x_e(t)$，则：
+\[
+x_e(t) = \frac{x(t) + x(-t)}{2}
+\]
+其傅里叶级数系数为：
+\[
+a_k^e = \frac{a_k + a_{-k}}{2} = \Re\{a_k\}
+\]
+\end{proof}
+
+(e) 证明：$x(t)$ 奇部的傅里叶系数等于 $j\Im\{a_k\}$。
+
+\begin{proof}
+设 $x(t)$ 的奇部为 $x_o(t)$，则：
+\[
+x_o(t) = \frac{x(t) - x(-t)}{2}
+\]
+其傅里叶级数系数为：
+\[
+a_k^o = \frac{a_k - a_{-k}}{2} = j\Im\{a_k\}
+\]
+\end{proof}
+
+\section{习题 3.47}
+
+考虑信号 $x(t)$：
+\[
+x(t) = \cos(2\pi t)
+\]
+因为 $x(t)$ 是周期的，基波周期为 1，因此对任意正整数 $N$，该信号也是周期的。若将 $x(t)$ 看成周期为 3 的周期信号，那么 $x(t)$ 的傅里叶级数系数是什么？
+
+\subsection*{解答}
+
+考虑信号 $x(t) = \cos(2\pi t)$。将其视为周期为 3 的周期信号，我们计算其傅里叶级数系数。傅里叶级数的表达式为：
+
+\begin{equation}
+x(t) = \sum_{k=-\infty}^{\infty} c_k e^{j \frac{2\pi k t}{T}}
+\end{equation}
+
+其中 $T = 3$ 为信号的周期，$c_k$ 是傅里叶级数系数，计算公式为：
+
+\begin{equation}
+c_k = \frac{1}{T} \int_0^T x(t) e^{-j \frac{2\pi k t}{T}} \, dt
+\end{equation}
+
+对于周期为 3 的情况，即 $T = 3$，我们代入 $x(t) = \cos(2\pi t)$：
+
+\begin{equation}
+c_k = \frac{1}{3} \int_0^3 \cos(2\pi t) e^{-j \frac{2\pi k t}{3}} \, dt
+\end{equation}
+
+使用欧拉公式 $\cos(2\pi t) = \frac{e^{j 2\pi t} + e^{-j 2\pi t}}{2}$，我们可以将傅里叶系数展开为两个积分：
+
+\begin{equation}
+c_k = \frac{1}{6} \left( \int_0^3 e^{j 2\pi t} e^{-j \frac{2\pi k t}{3}} \, dt + \int_0^3 e^{-j 2\pi t} e^{-j \frac{2\pi k t}{3}} \, dt \right)
+\end{equation}
+
+计算第一个积分
+
+第一个积分为：
+
+\begin{equation}
+\int_0^3 e^{j 2\pi t (1 - \frac{k}{3})} \, dt = \frac{e^{j 2\pi (1 - \frac{k}{3}) 3} - 1}{j 2\pi (1 - \frac{k}{3})}
+\end{equation}
+
+注意到 $e^{j 2\pi n} = 1$ 对于任意整数 $n$，因此该积分为：
+
+\begin{equation}
+\frac{1 - 1}{j 2\pi (1 - \frac{k}{3})} = 0 \quad \text{当} \quad k \neq 3
+\end{equation}
+
+如果 $k = 3$，则该积分为：
+
+\begin{equation}
+\int_0^3 e^{j 2\pi t (1 - 1)} \, dt = \int_0^3 1 \, dt = 3
+\end{equation}
+
+计算第二个积分
+
+第二个积分为：
+
+\begin{equation}
+\int_0^3 e^{-j 2\pi t (1 + \frac{k}{3})} \, dt = \frac{e^{-j 2\pi (1 + \frac{k}{3}) 3} - 1}{-j 2\pi (1 + \frac{k}{3})}
+\end{equation}
+
+同样，由于 $e^{-j 6\pi (1 + \frac{k}{3})} = 1$，因此该积分为 0，除非 $k = -3$。当 $k = -3$ 时，积分为：
+
+\begin{equation}
+\int_0^3 e^{-j 2\pi t (1 - 1)} \, dt = \int_0^3 1 \, dt = 3
+\end{equation}
+
+总结傅里叶级数系数
+
+结合以上结果：
+
+\begin{itemize}
+    \item 当 $k = 3$ 时，$c_3 = \frac{1}{6} \cdot 3 = \frac{1}{2}$；
+    \item 当 $k = -3$ 时，$c_{-3} = \frac{1}{6} \cdot 3 = \frac{1}{2}$；
+    \item 对于其他 $k$，$c_k = 0$。
+\end{itemize}
+
+因此，傅里叶级数系数为：
+
+\begin{equation}
+c_k =
+\begin{cases}
+\frac{1}{2}, & k = 3 \text{ 或 } k = -3, \\
+0, & \text{其他}.
+\end{cases}
+\end{equation}
+
+这表明，信号 $x(t) = \cos(2\pi t)$ 的傅里叶级数系数只有在 $k = 3$ 和 $k = -3$ 时为非零，且值为 $\frac{1}{2}$。
+
+
+
+
+
+
+
+
+
+
+
+
+%\nocite{*}
+%\bibliography{re}
+%\thispagestyle{fancy} 
+%\addcontentsline{toc}{chapter}{参考文献}
+
+
+% ------------------------------------------------------------ %
+% >> ------------------------ 附录 ------------------------ << %
+
+%\newpage
+%\appendix
+% chapter 标题自定义设置
+%\titleformat{\chapter}[hang]{\normalfont\huge\bfseries\centering}{}{20pt}{}
+%\titlespacing*{\chapter}{0pt}{-25pt}{8pt} % 控制上方空白的大小
+% section 标题自定义设置 
+%\titleformat{\section}[hang]{\normalfont\centering\Large\bfseries}{\thesection}{8pt}{}
+
+% 附录 A
+%\chapter*{附录 A. Matlab 代码}\addcontentsline{toc}{chapter}{附录 A. Matlab 代码}   
+%\thispagestyle{fancy} 
+%\setcounter{section}{0}   
+%\renewcommand\thesection{A.\arabic{section}}   
+%\renewcommand{\thefigure}{A.\arabic{figure}} 
+%\renewcommand{\thetable}{A.\arabic{table}}
+
+
+% >> ------------------------ 附录 ------------------------ << %
+% ------------------------------------------------------------ %
+
+\end{document}
+
+% VScode 常用快捷键：
+
+% Ctrl + R:                 打开最近的文件夹
+% F2:                       变量重命名
+% Ctrl + Enter:             行中换行
+% Alt + up/down:            上下移行
+% 鼠标中键 + 移动:           快速多光标
+% Shift + Alt + up/down:    上下复制
+% Ctrl + left/right:        左右跳单词
+% Ctrl + Backspace/Delete:  左右删单词    
+% Shift + Delete:           删除此行
+% Ctrl + J:                 打开 VScode 下栏(输出栏)
+% Ctrl + B:                 打开 VScode 左栏(目录栏)
+% Ctrl + `:                 打开 VScode 终端栏
+% Ctrl + 0:                 定位文件
+% Ctrl + Tab:               切换已打开的文件(切标签)
+% Ctrl + Shift + P:         打开全局命令(设置)
+
+% Latex 常用快捷键
+
+% Ctrl + Alt + J:           由代码定位到PDF
+% 
+
+
+% Git提交规范：
+% update: Linear Algebra 2 notes
+% add: Linear Algebra 2 notes
+% import: Linear Algebra 2 notes
+% delete: Linear Algebra 2 notes

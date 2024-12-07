@@ -1,0 +1,2736 @@
+% 若编译失败，且生成 .synctex(busy) 辅助文件，可能有两个原因：
+% 1. 需要插入的图片不存在：Ctrl + F 搜索 'figure' 将这些代码注释/删除掉即可
+% 2. 路径/文件名含中文或空格：更改路径/文件名即可
+
+% ------------------------------------------------------------- %
+% >> ------------------ 文章宏包及相关设置 ------------------ << %
+% 设定文章类型与编码格式
+\documentclass[UTF8]{report}		
+
+% 本 .tex 专属的宏定义
+    \def\V{\ \mathrm{V}}
+    \def\mV{\ \mathrm{mV}}
+    \def\kV{\ \mathrm{KV}}
+    \def\KV{\ \mathrm{KV}}
+    \def\MV{\ \mathrm{MV}}
+    \def\A{\ \mathrm{A}}
+    \def\mA{\ \mathrm{mA}}
+    \def\kA{\ \mathrm{KA}}
+    \def\KA{\ \mathrm{KA}}
+    \def\MA{\ \mathrm{MA}}
+    \def\O{\ \Omega}
+    \def\mO{\ \Omega}
+    \def\kO{\ \mathrm{K}\Omega}
+    \def\KO{\ \mathrm{K}\Omega}
+    \def\MO{\ \mathrm{M}\Omega}
+    \def\Hz{\ \mathrm{Hz}}
+
+% 自定义宏定义
+    \def\N{\mathbb{N}}
+    \def\F{\mathbb{F}}
+    \def\Z{\mathbb{Z}}
+    \def\Q{\mathbb{Q}}
+    \def\R{\mathbb{R}}
+    \def\C{\mathbb{C}}
+    \def\T{\mathbb{T}}
+    \def\S{\mathbb{S}}
+    \def\A{\mathbb{A}}
+    \def\I{\mathscr{I}}
+    \def\Im{\mathrm{Im\,}}
+    \def\Re{\mathrm{Re\,}}
+    \def\d{\mathrm{d}}
+    \def\p{\partial}
+% 导入基本宏包
+    \usepackage[UTF8]{ctex}     % 设置文档为中文语言
+    \usepackage[colorlinks, linkcolor=blue, anchorcolor=blue, citecolor=blue, urlcolor=blue]{hyperref}  % 宏包：自动生成超链接 (此宏包与标题中的数学环境冲突)
+    % \usepackage{docmute}    % 宏包：子文件导入时自动去除导言区，用于主/子文件的写作方式，\include{./51单片机笔记}即可。注：启用此宏包会导致.tex文件capacity受限。
+    \usepackage{amsmath}    % 宏包：数学公式
+    \usepackage{mathrsfs}   % 宏包：提供更多数学符号
+    \usepackage{amssymb}    % 宏包：提供更多数学符号
+    \usepackage{pifont}     % 宏包：提供了特殊符号和字体
+    \usepackage{extarrows}  % 宏包：更多箭头符号
+
+
+% 文章页面margin设置
+    \usepackage[a4paper]{geometry}
+        \geometry{top=1in}
+
+% 定义 solution 环境
+\usepackage{amsthm}
+\newtheorem{solution}{Solution}
+        \geometry{bottom=1in}
+        \geometry{left=0.75in}
+        \geometry{right=0.75in}   % 设置上下左右页边距
+        \geometry{marginparwidth=1.75cm}    % 设置边注距离（注释、标记等）
+
+% 配置数学环境
+    \usepackage{amsthm} % 宏包：数学环境配置
+    % theorem-line 环境自定义
+        \newtheoremstyle{MyLineTheoremStyle}% <name>
+            {11pt}% <space above>
+            {11pt}% <space below>
+            {}% <body font> 使用默认正文字体
+            {}% <indent amount>
+            {\bfseries}% <theorem head font> 设置标题项为加粗
+            {：}% <punctuation after theorem head>
+            {.5em}% <space after theorem head>
+            {\textbf{#1}\thmnumber{#2}\ \ (\,\textbf{#3}\,)}% 设置标题内容顺序
+        \theoremstyle{MyLineTheoremStyle} % 应用自定义的定理样式
+        \newtheorem{LineTheorem}{Theorem.\,}
+    % theorem-block 环境自定义
+        \newtheoremstyle{MyBlockTheoremStyle}% <name>
+            {11pt}% <space above>
+            {11pt}% <space below>
+            {}% <body font> 使用默认正文字体
+            {}% <indent amount>
+            {\bfseries}% <theorem head font> 设置标题项为加粗
+            {：\\ \indent}% <punctuation after theorem head>
+            {.5em}% <space after theorem head>
+            {\textbf{#1}\thmnumber{#2}\ \ (\,\textbf{#3}\,)}% 设置标题内容顺序
+        \theoremstyle{MyBlockTheoremStyle} % 应用自定义的定理样式
+        \newtheorem{BlockTheorem}[LineTheorem]{Theorem.\,} % 使用 LineTheorem 的计数器
+    % definition 环境自定义
+        \newtheoremstyle{MySubsubsectionStyle}% <name>
+            {11pt}% <space above>
+            {11pt}% <space below>
+            {}% <body font> 使用默认正文字体
+            {}% <indent amount>
+            {\bfseries}% <theorem head font> 设置标题项为加粗
+            {\\ \indent}% <punctuation after theorem head>
+            {0pt}% <space after theorem head>
+            {\textbf{#3}}% 设置标题内容顺序
+        \theoremstyle{MySubsubsectionStyle} % 应用自定义的定理样式
+        \newtheorem{definition}{}
+
+%宏包：有色文本框（proof环境）及其设置
+    \usepackage[dvipsnames,svgnames]{xcolor}    %设置插入的文本框颜色
+    \usepackage[strict]{changepage}     % 提供一个 adjustwidth 环境
+    \usepackage{framed}     % 实现方框效果
+        \definecolor{graybox_color}{rgb}{0.95,0.95,0.96} % 文本框颜色。修改此行中的 rgb 数值即可改变方框纹颜色，具体颜色的rgb数值可以在网站https://colordrop.io/ 中获得。（截止目前的尝试还没有成功过，感觉单位不一样）（找到喜欢的颜色，点击下方的小眼睛，找到rgb值，复制修改即可）
+        \newenvironment{graybox}{%
+        \def\FrameCommand{%
+        \hspace{1pt}%
+        {\color{gray}\small \vrule width 2pt}%
+        {\color{graybox_color}\vrule width 4pt}%
+        \colorbox{graybox_color}%
+        }%
+        \MakeFramed{\advance\hsize-\width\FrameRestore}%
+        \noindent\hspace{-4.55pt}% disable indenting first paragraph
+        \begin{adjustwidth}{}{7pt}%
+        \vspace{2pt}\vspace{2pt}%
+        }
+        {%
+        \vspace{2pt}\end{adjustwidth}\endMakeFramed%
+        }
+
+% 外源代码插入设置
+    % matlab 代码插入设置
+    %\usepackage{matlab-prettifier}
+    %    \lstset{
+    %        style=Matlab-editor,  % 继承matlab代码颜色等
+    %    }
+    %\usepackage[most]{tcolorbox} % 引入tcolorbox包 
+    %\usepackage{algorithm}
+    %\usepackage{algpseudocode}
+    %\usepackage{algorithmic}
+    %\usepackage{listings} % 引入listings包
+    %    \tcbuselibrary{listings, skins, breakable}
+    %    \newfontfamily\codefont{Consolas} % 定义需要的 codefont 字体
+    %    \lstdefinestyle{matlabstyle}{
+    %        language=Matlab,
+    %        basicstyle=\small\ttfamily\codefont,    % ttfamily 确保等宽 
+    %        breakatwhitespace=false,
+    %        breaklines=true,
+    %        captionpos=b,
+    %        keepspaces=true,
+    %        numbers=left,
+    %        numbersep=15pt,
+    %        showspaces=false,
+    %        showstringspaces=false,
+    %        showtabs=false,
+    %        tabsize=2
+    %    }
+    %    \newtcblisting{matlablisting}{
+    %        arc=2pt,        % 圆角半径
+    %        top=-5pt,
+    %        bottom=-5pt,
+    %        left=1mm,
+    %        listing only,
+    %        listing style=matlabstyle,
+    %        breakable,
+    %        colback=white   % 选一个合适的颜色
+    %    }
+
+% table 支持
+    %\usepackage{booktabs}   % 宏包：三线表
+    %\usepackage{tabularray} % 宏包：表格排版
+    %\usepackage{longtable}  % 宏包：长表格
+    %\usepackage[longtable]{multirow} % 宏包：multi 行列
+
+% figure 设置
+    %\usepackage{graphicx}   % 支持 jpg, png, eps, pdf 图片 
+    %\usepackage{svg}        % 支持 svg 图片
+    %\usepackage{subcaption} % 支持子图
+    %    \svgsetup{
+            % 指向 inkscape.exe 的路径
+    %        inkscapeexe = C:/aa_MySame/inkscape/bin/inkscape.exe, 
+            % 一定程度上修复导入后图片文字溢出几何图形的问题
+    %        inkscapelatex = false                 
+    %    }
+
+% 图表进阶设置
+    %\usepackage{caption}    % 图注、表注
+    %    \captionsetup[figure]{name=图}  
+    %    \captionsetup[table]{name=表}
+    %    \captionsetup{labelfont=bf, font=small}
+    %\usepackage{float}     % 图表位置浮动设置 
+
+% 圆圈序号自定义
+    \newcommand*\circled[1]{\tikz[baseline=(char.base)]{\node[shape=circle,draw,inner sep=0.8pt, line width = 0.03em] (char) {\small \bfseries #1};}}   % TikZ solution
+
+% 列表设置
+    \usepackage{enumitem}   % 宏包：列表环境设置
+        \setlist[enumerate]{
+            label=\bfseries(\arabic*) ,   % 设置序号样式为加粗的 (1) (2) (3)
+            ref=\arabic*, % 如果需要引用列表项，这将决定引用格式（这里仍然使用数字）
+            itemsep=0pt, parsep=0pt, topsep=0pt, partopsep=0pt, leftmargin=3.5em} 
+        \setlist[itemize]{itemsep=0pt, parsep=0pt, topsep=0pt, partopsep=0pt, leftmargin=3.5em}
+        \newlist{circledenum}{enumerate}{1} % 创建一个新的枚举环境  
+        \setlist[circledenum,1]{  
+            label=\protect\circled{\arabic*}, % 使用 \arabic* 来获取当前枚举计数器的值，并用 \circled 包装它  
+            ref=\arabic*, % 如果需要引用列表项，这将决定引用格式（这里仍然使用数字）
+            itemsep=0pt, parsep=0pt, topsep=0pt, partopsep=0pt, leftmargin=3.5em
+        }  
+    
+
+% 文章默认字体设置
+    \usepackage{fontspec}   % 宏包：字体设置
+        \setmainfont{SimSun}    % 设置中文字体为宋体字体
+        \setCJKmainfont[AutoFakeBold=3]{SimSun} % 设置加粗字体为 SimSun 族，AutoFakeBold 可以调整字体粗细
+
+% 引入 algorithmicx 宏包
+    \usepackage{algorithm}
+    \usepackage{algpseudocode}
+        \setmainfont{Times New Roman} % 设置英文字体为Times New Roman
+
+% 其它设置
+    % 脚注设置
+    \renewcommand\thefootnote{\ding{\numexpr171+\value{footnote}}}
+    % 参考文献引用设置
+        \bibliographystyle{unsrt}   % 设置参考文献引用格式为unsrt
+        \newcommand{\upcite}[1]{\textsuperscript{\cite{#1}}}     % 自定义上角标式引用
+    % 文章序言设置
+        \newcommand{\cnabstractname}{序言}
+        \newenvironment{cnabstract}{%
+            \par\Large
+            \noindent\mbox{}\hfill{\bfseries \cnabstractname}\hfill\mbox{}\par
+            \vskip 2.5ex
+            }{\par\vskip 2.5ex}
+% 各级标题自定义设置
+    \usepackage{titlesec}   
+    % chapter
+        \titleformat{\chapter}[hang]{\normalfont\Large\bfseries\centering}{Homework \thechapter }{10pt}{}
+        \titlespacing*{\chapter}{0pt}{-30pt}{10pt} % 控制上方空白的大小
+    % section
+        \titleformat{\section}[hang]{\normalfont\large\bfseries}{\thesection}{8pt}{}
+    % subsection
+        %\titleformat{\subsubsection}[hang]{\normalfont\bfseries}{}{8pt}{}
+    % subsubsection
+        %\titleformat{\subsubsection}[hang]{\normalfont\bfseries}{}{8pt}{}
+
+% >> ------------------ 文章宏包及相关设置 ------------------ << %
+% ------------------------------------------------------------- %
+
+
+
+% ----------------------------------------------------------- %
+% >> --------------------- 文章信息区 --------------------- << %
+% 页眉页脚设置
+
+\usepackage{fancyhdr}   %宏包：页眉页脚设置
+    \pagestyle{fancy}
+    \fancyhf{}
+    \cfoot{\thepage}
+    \renewcommand\headrulewidth{1pt}
+    \renewcommand\footrulewidth{0pt}
+    \chead{离散数学作业,\ 尹超,\ 2023K8009926003}
+    \lhead{Homework \thechapter}
+    \rhead{yinchao23@mails.ucas.ac.cn}
+
+%文档信息设置
+\title{离散数学作业\\ Homework}
+\author{尹超\\ \footnotesize 中国科学院大学，北京 100049\\ Carter Yin \\ \footnotesize University of Chinese Academy of Sciences, Beijing 100049, China}
+\date{\footnotesize 2024.8 -- 2025.1}
+% >> --------------------- 文章信息区 --------------------- << %
+% ----------------------------------------------------------- %
+
+% 开始编辑文章
+
+\begin{document}
+\zihao{5}           % 设置全文字号大小
+
+% --------------------------------------------------------------- %
+% >> --------------------- 封面序言与目录 --------------------- << %
+% 封面
+    \maketitle\newpage  
+    \pagenumbering{Roman} % 页码为大写罗马数字
+    \thispagestyle{fancy}   % 显示页码、页眉等
+
+% 序言
+    \begin{cnabstract}\normalsize 
+        本文为笔者离散数学的作业。\par
+        望老师批评指正。
+    \end{cnabstract}
+    \addcontentsline{toc}{chapter}{序言} % 手动添加为目录
+
+% 不换页目录
+    \setcounter{tocdepth}{0}
+    \noindent\rule{\textwidth}{0.1em}   % 分割线
+    \noindent\begin{minipage}{\textwidth}\centering 
+        \vspace{1cm}
+        \tableofcontents\thispagestyle{fancy}   % 显示页码、页眉等   
+    \end{minipage}  
+    \addcontentsline{toc}{chapter}{目录} % 手动添加为目录
+
+% 收尾工作
+    \newpage    
+    \pagenumbering{arabic} 
+
+% >> --------------------- 封面序言与目录 --------------------- << %
+% --------------------------------------------------------------- %
+
+
+
+\chapter{第一章作业}\thispagestyle{fancy}
+
+\section{习题总结}
+
+\subsection{反证法}
+
+\begin{definition}
+    \textbf{间接证明法（indirect proof）}\par
+    直接证明法有的时候比较困难\par
+    不从前提开始、以结论结束的证明方法叫间接证明法\par
+    \vspace{1em} % 添加一个空行 
+    反证法（proof by contraposition）\par
+    归谬证明法（proof by contradiction）\par
+\vspace{1em} % 添加一个空行
+    \textbf{反证法（proof by contraposition）}\par
+    条件语句 $p \rightarrow q$ 等价于它的逆否命题 $\neg q \rightarrow \neg p$\par
+    证明当 $\neg q$ 为真时，$\neg p$ 一定为真\par
+\vspace{1em} % 添加一个空行
+    \textbf{示例1：}\par
+    证明“如果 $n$ 是一个整数且 $3n + 2$ 是奇数，则 $n$ 是奇数”\par
+    直接证明比较困难\par
+    假设 $n$ 不是奇数，即 $n$ 为偶数，则 $n = 2k$，$k$ 为某个整数\par
+    $3n + 2 = 3(2k) + 2 = 6k + 2 = 2(3k + 1)$，即 $3n + 2$ 为偶数，逆否命题为真，所以原命题也为真\par
+\vspace{1em} % 添加一个空行
+    \textbf{示例2：}\par
+    证明“如果 $n$ 是一个整数且 $n^2$ 是奇数，则 $n$ 是奇数”\par
+    直接证明比较困难：假设 $n^2$ 是奇数，很难推导下去\par
+    假设 $n$ 不是奇数，即 $n$ 为偶数，则 $n = 2k$，$k$ 为某个整数\par
+    $n^2 = (2k)^2 = 4k^2 = 2(2k^2)$，即 $n^2$ 为偶数\par
+    即我们证明了逆否命题“如果 $n$ 是一个偶数，则 $n^2$ 是偶数”\par
+    由反证法，“如果 $n$ 是一个整数且 $n^2$ 是奇数，则 $n$ 是奇数”\par
+\end{definition}
+
+\subsection{归谬证明法}
+
+\begin{definition}
+    \textbf{归谬证明法（proof by contradiction）}\par
+    假设我们需要证明命题 $s$ （不一定是条件语句）\par
+    如果能够证明条件语句 $\neg s \rightarrow r$ 为真，而且 $r$ 为矛盾式，那么 $s$ 为真\par
+    因为 $r$ 为矛盾式，所以条件语句 $\neg s \rightarrow r$ 等价于 $\neg s \rightarrow F$，而 $\neg s \rightarrow F$ 的逆否命题为 $T \rightarrow s$\par
+\vspace{1em}
+    \textbf{示例1：}\par
+    证明“任意22天中至少有4天属于每星期的同一天”\par
+    假设命题为假，即“任意22天中至多有3天属于每星期的同一天”，而一个星期有7天，这蕴含着至多可以选出21天，与命题的前提“22天”矛盾\par
+\vspace{1em}
+    \textbf{示例2：}\par
+    证明“$\sqrt{2}$ 是无理数”\par
+    假设命题为假，即“$\sqrt{2}$ 不是无理数”，则“$\sqrt{2}$ 是有理数”\par
+    那么存在整数 $p$ 和 $q$ 使得 $\sqrt{2} = \frac{p}{q}$，其中 $q \neq 0$ 且 $p$ 和 $q$ 没有公约数\par
+    两端取平方，可得 $2 = \frac{p^2}{q^2}$，即 $2q^2 = p^2$\par
+    所以 $p^2$ 为偶数，那么 $p$ 也是偶数，存在整数 $r$ 使得 $p = 2r$\par
+    因此 $2q^2 = p^2 = (2r)^2 = 4r^2 = 2(2r^2)$，即 $q^2 = 2r^2$\par
+    所以 $q^2$ 为偶数，那么 $q$ 也是偶数，$p$ 和 $q$ 有公约数 2，矛盾\par
+\vspace{1em}
+    \textbf{示例3：}\par
+    证明“素数的个数是无限的”\par
+    假设命题为假，即“素数的个数是有限的”\par
+    设素数的个数为 $n$，从小到大排列为 $p_1 = 2, p_2 = 3, \cdots, p_n$\par
+    考虑整数 $m = p_1 \times p_2 \times \cdots \times p_n + 1$\par
+    因为 $p_1, p_2, \cdots, p_n$ 都不能整除 $m$，所以 $m$ 是一个素数\par
+    这与“素数的个数为 $n$”矛盾\par
+    所以“素数的个数是无限的”\par
+\vspace{1em}
+    归谬证明法可以用于条件语句\par
+    条件语句 $p \rightarrow q$ 等价于 $\neg p \lor q$\par
+    假设 $\neg (\neg p \lor q)$ 为真，即 $p \land \neg q$ 为真，推导出矛盾式，则原命题为真\par
+\vspace{1em}
+    归谬证明法和反证法\par
+    条件语句的反证法证明可以改写为归谬证明\par
+    反证法：假设 $\neg q$ 为真，推导出 $\neg p$ 为真\par
+    归谬证明法：假设 $\neg q$ 和 $p$ 为真，推导出 $\neg p \land p$ 为真\par
+\vspace{1em}
+    归谬证明法和直接证明法\par
+    条件语句 $p \rightarrow q$ 的直接证明可以改写为归谬证明\par
+    直接证明：假设 $p$ 为真，推导出 $q$ 为真\par
+    归谬证明法：假设 $p$ 和 $\neg q$ 为真，推导出 $q \land \neg q$ 为真\par
+\end{definition}
+
+
+
+\chapter{第二章作业}\thispagestyle{fancy}
+
+\section{习题总结}
+
+\subsection{笛卡尔积}
+
+\begin{definition}
+    \textbf{有序n元组（ordered n-tuple）}\par
+    有时候集合中的元素顺序是很重要的\par
+    有序n元组是由 $n$ 个对象组成的有序集合 $(a_1, a_2, a_3, \ldots, a_n)$，其中 $a_1$ 为第 1 个元素，$a_2$ 为第 2 个元素，如此类推，$a_n$ 为第 $n$ 个元素\par
+    两个有序n元组相等，当且仅当对应位置的元素都相等\par
+
+    \textbf{序偶（ordered pair）}\par
+    有序2元组又称序偶或有序对\par
+    序偶 $(a, b)$ 和 $(c, d)$ 相等，当且仅当 $a = c$ 且 $b = d$\par
+
+    \textbf{笛卡尔积（Cartesian Product）}\par
+    两个集合 $A$ 和 $B$ 的笛卡尔积是由序偶 $(a, b)$ 构成的集合，其中 $a \in A, b \in B$\par
+    用记号 $A \times B$ 表示集合 $A$ 和 $B$ 的笛卡尔积\par
+    $A \times B = \{(a, b) \mid a \in A, b \in B\}$\par
+
+    \textbf{示例：}\par
+    \begin{itemize}
+        \item $A = \{a, b\}$，$B = \{1, 2, 3\}$
+        \item $A \times B = \{(a, 1), (a, 2), (a, 3), (b, 1), (b, 2), (b, 3)\}$
+    \end{itemize}
+
+    笛卡尔积 $A \times B$ 的一个子集 $R$ 被称为从集合 $A$ 到 $B$ 的关系（relation）\par
+
+    \textbf{多个集合的笛卡尔积}\par
+    $n$ 个集合 $A_1, A_2, \ldots, A_n$ 的笛卡尔积是由有序n元组 $(a_1, a_2, \ldots, a_n)$ 构成的集合，其中 $a_i \in A_i, i = 1, 2, \ldots, n$\par
+    $A_1 \times A_2 \times \ldots \times A_n = \{(a_1, a_2, \ldots, a_n) \mid a_i \in A_i, i = 1, 2, \ldots, n\}$\par
+    用记号 $A^2$ 表示 $A \times A$，$A^3$ 表示 $A \times A \times A$，以此类推\par
+
+    \textbf{示例：}\par
+    \begin{itemize}
+        \item $A = \{0, 1\}$，$B = \{1, 2\}$，$C = \{1, 2, 3\}$
+        \item $A \times B \times C = \{(0, 1, 1), (0, 1, 2), (0, 1, 3), (0, 2, 1), (0, 2, 2), (0, 2, 3), (1, 1, 1), (1, 1, 2), (1, 1, 3), (1, 2, 1), (1, 2, 2), (1, 2, 3)\}$
+    \end{itemize}
+\end{definition}
+
+\subsection{可数集合}
+
+\begin{definition}
+    \textbf{可数集合（countable set）}\par
+    \begin{itemize}
+        \item 可数（countable）和不可数（uncountable）
+        \begin{itemize}
+            \item 如果一个集合是有限的或者和正整数集合（$\mathbb{Z}^+$）有相同的基数，则称这个集合是可数的
+            \item 如果一个集合不是可数的，则称其为不可数的
+            \item 当一个无穷集合是可数的（即可数无穷集合），它的基数为 $\aleph_0$
+            \item $\aleph$ 读作阿列夫（aleph），是希伯来语（Hebrew）字母表的第一个字符
+            \item 记作 $S = \aleph_0$，并说集合 $S$ 具有基数“阿列夫零（aleph null）”
+        \end{itemize}
+    \end{itemize}
+
+    \textbf{证明一个集合是可数的}\par
+    \begin{itemize}
+        \item 一个无穷集合是可数的，当且仅当可以把集合中的元素排列成序列（以正整数为下标）
+        \item 这是因为从正整数到集合 $S$ 的一一对应函数 $f$ 可以用序列 $a_1, a_2, \ldots, a_n, \ldots$ 表示，其中 $a_1 = f(1)$, $a_2 = f(2)$, $\ldots$, $a_n = f(n)$, $\ldots$
+    \end{itemize}
+
+    \textbf{示例1：}\par
+    \begin{itemize}
+        \item 证明正奇数集合是可数的
+        \item 正奇数集合与正整数集合之间存在一一对应关系：$f(n) = 2n - 1$
+    \end{itemize}
+
+    \textbf{希尔伯特大饭店（Hilbert’s Grand Hotel）}\par
+    \begin{itemize}
+        \item 希尔伯特构造的一个例子，证明了某些对有限集合不可能的事情对于无穷集合变得可能
+        \item 一个有可数无穷多个房间的大饭店，每个房间都住了客人，但是当一个新的客人来到这个大饭店，我们总是可以容纳这个新客人而不赶走旧的客人
+        \item 当饭店的房间数量是有限时，所有房间客满的概念等价于不能再容纳新客人
+        \item 但是房间数量是无穷时，这种等价关系不再成立
+    \end{itemize}
+
+    \textbf{示例2：}\par
+    \begin{itemize}
+        \item 证明所有整数的集合是可数的
+        \item 我们可以把所有整数排列为一个序列：$0, 1, -1, 2, -2, 3, -3, \ldots$
+        \item 这是一个双射函数 $f(n) = \begin{cases} 
+            \frac{n}{2} & \text{如果 } n \text{ 是偶数} \\
+            -\frac{n-1}{2} & \text{如果 } n \text{ 是奇数}
+        \end{cases}$
+    \end{itemize}
+
+    \textbf{示例3：}\par
+    \begin{itemize}
+        \item 证明正有理数集合是可数的
+        \item 每个正有理数都可以表示为两个正整数之比 $\frac{p}{q}$
+        \item 把有理数 $\frac{p}{q}$ 排在第 $q$ 行第 $p$ 列
+        \item 从左上角出发，沿着每条反对角线依次列出相应的有理数
+        \item 遇到已经列出过的有理数，就跳过不再重复列出
+        \item 由于所有正有理数都被列出而且只列出一次
+        \item 因此所有正有理数排列成了一个序列
+    \end{itemize}
+
+    \textbf{示例4：}\par
+    \begin{itemize}
+        \item 证明一个有限字母表 $A$ 上的有限串组成的集合 $S$ 是可数的
+        \item 假设字母表 $A$ 中的字符有一个字母顺序
+        \item 我们证明集合 $S$ 中的所有串可以排列成一个序列
+        \begin{itemize}
+            \item 先列出长度为 0 的串
+            \item 再按字母顺序列出长度为 1 的串
+            \item 再按字典序列出长度为 2 的串
+            \item 以此类推
+        \end{itemize}
+        \item 这意味着存在一个从正整数到集合 $S$ 的一一对应，所以集合 $S$ 是可数的
+    \end{itemize}
+
+    \textbf{示例5：}\par
+    \begin{itemize}
+        \item 证明所有 Java 程序组成的集合是可数的
+        \item 令 $A$ 为所有 Java 程序中允许出现的字符构成的字母表
+        \item 令 $S$ 为字母表 $A$ 上的有限串集合
+        \item 根据前一个示例，可以把 $S$ 中的串排列成一个序列 $a_n$
+        \item 使用 Java 编译器按序列顺序，逐个检查字符串 $a_i$ 是否一个合法的 Java 程序
+        \item 如果字符串 $a_i$ 通过 Java 编译器检查，则将其加入一个新的序列 $b_n$
+        \item 通过以上过程，我们建立了一个从正整数到所有 Java 程序的一一对应
+        \item 因此所有 Java 程序组成的集合是可数的
+    \end{itemize}
+
+    \textbf{子集的基数}\par
+    \begin{itemize}
+        \item 可数集合的子集是可数的
+        \item 不可数集合的超集是不可数的
+        \item 不可数集合一定存在可数无穷子集
+    \end{itemize}
+
+    \textbf{交集的基数}\par
+    \begin{itemize}
+        \item 可数集合与其他集合的交集是可数的
+        \item 两个不可数集合的交集可能是可数的，也可能是不可数的
+    \end{itemize}
+
+    \textbf{并集的基数}\par
+    \begin{itemize}
+        \item 两个可数集合的并集是可数的
+        \item 可数个可数集合的并集是可数的
+        \item 不可数集合与其他集合的并集是不可数的
+    \end{itemize}
+
+    \textbf{差集的基数}\par
+    \begin{itemize}
+        \item 可数集合与其他集合的差集是可数的
+        \item 不可数集合与可数集合的差集是不可数的
+        \item 两个不可数集合的差集可能是可数的，也可能是不可数的
+    \end{itemize}
+\end{definition}
+
+\subsection{不可数集合}
+
+\begin{definition}
+    \textbf{不可数集合（uncountable set）}\par
+    \textbf{Schröder-Bernstein定理}\par
+    \begin{itemize}
+        \item 如果集合 $A$ 和 $B$ 满足 $|A| \leq |B|$ 和 $|B| \leq |A|$，那么 $|A| = |B|$
+        \item 如果存在一个从集合 $A$ 到 $B$ 的单射 $f$ 和一个从集合 $B$ 到 $A$ 的单射 $g$，那么集合 $A$ 和 $B$ 是一一对应的。
+    \end{itemize}
+
+    \textbf{示例：}\par
+    \begin{itemize}
+        \item 证明 $[0,1] = [0,1)$
+        \item 直接找一个从 $[0,1]$ 到 $[0,1)$ 的一一对应比较困难
+        \item 因为 $[0,1) \subseteq [0,1]$，所以 $f(x) = x$ 是从 $[0,1)$ 到 $[0,1]$ 的单射
+        \item 因为 $[0,0.5) \subseteq [0,1)$，所以 $g(x) = \frac{x}{2}$ 是从 $[0,1]$ 到 $[0,1)$ 的单射
+    \end{itemize}
+
+    \textbf{连续统假设（Continuum Hypothesis）}\par
+    \begin{itemize}
+        \item 连续统假设是关于无穷集合的基数的一个猜想
+        \item 正整数集合的幂集与实数集具有相同的基数，即 $\mathcal{P}(\mathbb{Z}^+) = \mathbb{R} = c$
+        \item 用 $2^S$ 表示集合 $S$ 的幂集的基数，因此 $c = \mathcal{P}(\mathbb{Z}^+) = 2^{\aleph_0}$
+        \item 一个集合的基数总是小于它的幂集的基数，即 $S < \mathcal{P}(S) = 2^S$
+        \item 连续统假设断言不存在集合 $A$ 使得 $\aleph_0 < |A| < 2^{\aleph_0}$
+        \item 我们将无穷集合的基数从小到大排一个顺序 $\aleph_0 < \aleph_1 < \aleph_2 < \cdots$
+        \item 如果连续统假设成立，则有 $\aleph_1 = c = 2^{\aleph_0}$
+    \end{itemize}
+\end{definition}
+
+
+\subsection{函数的表示}
+
+\begin{definition}
+    \textbf{满射函数（surjection）}\par
+    映上的（onto）\par
+
+    \textbf{双射函数（bijection）}\par
+    一一对应的（one-to-one correspondence）\par
+
+    \textbf{单射函数（injection）}\par
+    是一对一的（one-to-one）\par
+
+    \textbf{逆函数（inverse function）}\par
+    反函数\par
+
+    \textbf{复合函数（composition）}\par
+\end{definition}
+
+
+
+
+\subsection{矩阵}
+
+\begin{definition}
+    \textbf{0-1矩阵（zero-one matrix）}\par
+        \begin{itemize}
+            \item 如果一个矩阵的元素是 0 或 1，称这个矩阵为 0-1矩阵
+            \item 许多离散结构经常表示为 0-1矩阵
+        \end{itemize}
+        \textbf{布尔算术（Boolean arithmetic）}\par
+        \begin{itemize}
+            \item 使用 0-1矩阵的算法通常是基于布尔算术
+            \item 布尔运算
+            \[
+            b_1 \land b_2 = 
+            \begin{cases}
+            1 & \text{如果 } b_1 = b_2 = 1 \\
+            0 & \text{否则}
+            \end{cases}
+            , \quad
+            b_1 \lor b_2 = 
+            \begin{cases}
+            1 & \text{如果 } b_1 = 1 \text{ 或者 } b_2 = 1 \\
+            0 & \text{否则}
+            \end{cases}
+            \]
+        \end{itemize}
+
+        \textbf{0-1矩阵的并（join）和交（meet）}\par
+        \begin{itemize}
+            \item 令 $A = [a_{ij}]$ 和 $B = [b_{ij}]$ 为 $m \times n$ 的 0-1矩阵
+            \item 矩阵 $A$ 和 $B$ 的并是一个 $m \times n$ 的 0-1矩阵，其 $i,j$ 项为 $a_{ij} \lor b_{ij}$
+            \item 矩阵 $A$ 和 $B$ 的并，记作 $A \lor B$
+            \item 矩阵 $A$ 和 $B$ 的交是一个 $m \times n$ 的 0-1矩阵，其 $i,j$ 项为 $a_{ij} \land b_{ij}$
+            \item 矩阵 $A$ 和 $B$ 的交，记作 $A \land B$
+        \end{itemize}
+    
+        \textbf{示例：}\par
+        \[
+        A =
+        \begin{bmatrix}
+        1 & 0 & 1 \\
+        0 & 1 & 0
+        \end{bmatrix}
+        , \quad
+        B =
+        \begin{bmatrix}
+        0 & 1 & 0 \\
+        1 & 1 & 0
+        \end{bmatrix}
+        \]
+        \[
+        A \lor B =
+        \begin{bmatrix}
+        1 \lor 0 & 0 \lor 1 & 1 \lor 0 \\
+        0 \lor 1 & 1 \lor 1 & 0 \lor 0
+        \end{bmatrix}
+        =
+        \begin{bmatrix}
+        1 & 1 & 1 \\
+        1 & 1 & 0
+        \end{bmatrix}
+        \]
+        \[
+        A \land B =
+        \begin{bmatrix}
+        1 \land 0 & 0 \land 1 & 1 \land 0 \\
+        0 \land 1 & 1 \land 1 & 0 \land 0
+        \end{bmatrix}
+        =
+        \begin{bmatrix}
+        0 & 0 & 0 \\
+        0 & 1 & 0
+        \end{bmatrix}
+        \]
+    
+
+        \textbf{0-1矩阵的布尔积（Boolean product）}\par
+        \begin{itemize}
+            \item 令 $A = [a_{ij}]$ 为 $m \times k$ 的 0-1矩阵，$B = [b_{ij}]$ 为 $k \times n$ 的 0-1矩阵
+            \item 矩阵 $A$ 和 $B$ 的布尔积是一个 $m \times n$ 的 0-1矩阵，其 $i,j$ 项为
+            \[
+            c_{ij} = (a_{i1} \land b_{1j}) \lor (a_{i2} \land b_{2j}) \lor \cdots \lor (a_{ik} \land b_{kj})
+            \]
+            \item 矩阵 $A$ 和 $B$ 的布尔积记作 $A \bigodot  B$ （符号 $\bigodot $ 有时候被用作表示 Hadamard积）
+            \item 矩阵 $A$ 和 $B$ 的布尔积等价于：先做普通矩阵乘积，再转换为 0-1矩阵
+        \end{itemize}
+    
+        \textbf{示例：}\par
+        \[
+        A =
+        \begin{bmatrix}
+        1 & 0 \\
+        0 & 1 \\
+        1 & 0
+        \end{bmatrix}
+        , \quad
+        B =
+        \begin{bmatrix}
+        1 & 1 & 0 \\
+        0 & 1 & 1
+        \end{bmatrix}
+        \]
+        \[
+        A \bigodot  B =
+        \begin{bmatrix}
+        (1 \land 1) \lor (0 \land 0) & (1 \land 1) \lor (0 \land 1) & (1 \land 0) \lor (0 \land 1) \\
+        (0 \land 1) \lor (1 \land 0) & (0 \land 1) \lor (1 \land 1) & (0 \land 0) \lor (1 \land 1) \\
+        (1 \land 1) \lor (0 \land 0) & (1 \land 1) \lor (0 \land 1) & (1 \land 0) \lor (0 \land 1)
+        \end{bmatrix}
+        =
+        \begin{bmatrix}
+        1 \lor 0 & 1 \lor 0 & 0 \lor 0 \\
+        0 \lor 0 & 0 \lor 1 & 0 \lor 1 \\
+        1 \lor 0 & 1 \lor 0 & 0 \lor 0
+        \end{bmatrix}
+        =
+        \begin{bmatrix}
+            1 & 1 & 0 \\
+            0 & 1 & 1 \\
+            1 & 1 & 0
+            \end{bmatrix}
+            \]
+
+ \textbf{0-1矩阵的布尔幂（Boolean power）}\par
+    \begin{itemize}
+        \item 令 $A$ 为一个 $n \times n$ 的 0-1方阵
+        \item $A$ 的 $r$ 次布尔幂是 $r$ 个 $A$ 的布尔积，记作 $A^{[r]}$
+        \item $A^{[0]} = I_n$
+        \item $A^{[r]} = A \circ A^{[r-1]}, \quad r \geq 1$
+        \item 布尔幂是良定义的，因为布尔积满足结合律
+    \end{itemize}
+
+    \textbf{示例：}\par
+    \[
+    A =
+    \begin{bmatrix}
+    0 & 0 & 1 \\
+    1 & 0 & 0 \\
+    1 & 1 & 0
+    \end{bmatrix}
+    \]
+    \[
+    A^{[2]} = A \bigodot  A =
+    \begin{bmatrix}
+    1 & 1 & 0 \\
+    0 & 0 & 1 \\
+    1 & 0 & 1
+    \end{bmatrix}
+    , \quad
+    A^{[3]} = A \bigodot  A^{[2]} =
+    \begin{bmatrix}
+    1 & 0 & 1 \\
+    1 & 1 & 0 \\
+    1 & 1 & 1
+    \end{bmatrix}
+    \]
+    \[
+    A^{[4]} = A \bigodot  A^{[3]} =
+    \begin{bmatrix}
+    1 & 1 & 1 \\
+    1 & 0 & 1 \\
+    1 & 1 & 1
+    \end{bmatrix}
+\]
+$A^{[5]} = A \bigodot  A^{[4]} =$
+\[
+\begin{pmatrix}
+1 & 1 & 1 \\
+1 & 1 & 1 \\
+1 & 1 & 1
+\end{pmatrix}
+\]
+$A^{[r]} = A^{[5]}$，$r \geq 5$
+\end{definition}
+
+
+
+
+
+
+\chapter{第三章作业}\thispagestyle{fancy}
+\section{习题 3.1.2}
+\begin{definition}
+    判断下列过程具有和缺乏在正文中（算法1之后）所描述的哪些算法特征。
+    \begin{itemize}
+        \item[a)] procedure double(n: 正整数)
+        \begin{verbatim}
+            while n > 0
+                n := 2 * n
+        \end{verbatim}
+        \item[b)] procedure divide(n: 正整数)
+        \begin{verbatim}
+            while n ≥ 0
+                m := 1 / n
+                n := n - 1
+        \end{verbatim}
+        \item[c)] procedure sum(n: 正整数)
+        \begin{verbatim}
+            sum := 0
+            while i < 10
+                sum := sum + i
+        \end{verbatim}
+        \item[d)] procedure choose(a, b: 整数)
+        \begin{verbatim}
+            x := a 或 b
+        \end{verbatim}
+    \end{itemize}
+    \textbf{算法的性质}\par
+    \begin{itemize}
+        \item 输入（input）：算法有一个来自指定集合的输入值
+        \item 输出（output）：对每组输入，算法从指定集合中产生输出值，即问题的解
+        \item 明确性（definiteness）：算法的每个步骤必须是准确定义的
+        \item 正确性（correctness）：对每组输入，算法都应该产生正确的输出值
+        \item 有限性（finiteness）：对任意输入，算法都应该在有限（可能很多）步内产生期望的输出
+        \item 有效性（effectiveness）：算法的每一步都应该能在有限时间内准确完成
+        \item 一般性（generality）：算法应该可以应用于期望形式的所有问题，而不仅仅是某些特定的输入值
+    \end{itemize}
+\end{definition}
+    
+\begin{proof}[解]
+    \begin{itemize}
+        \item[a)] procedure double(n: 正整数)
+        \begin{verbatim}
+            while n > 0
+                n := 2 * n
+        \end{verbatim}
+        \begin{itemize}
+            \item 输入：正整数 $n$
+            \item 输出：$n$ 的倍数
+            \item 明确性：明确
+            \item 正确性：正确
+            \item 有限性：有限
+            \item 有效性：有效
+            \item 一般性：一般
+        \end{itemize}
+        \item[b)] procedure divide(n: 正整数)
+        \begin{verbatim}
+            while n ≥ 0
+                m := 1 / n
+                n := n - 1
+        \end{verbatim}
+        \begin{itemize}
+            \item 输入：正整数 $n$
+            \item 输出：$n$ 的倒数
+            \item 明确性：明确
+            \item 正确性：不正确，$n = 0$ 时除法不成立
+            \item 有限性：有限
+            \item 有效性：有效
+            \item 一般性：一般
+        \end{itemize}
+        \item[c)] procedure sum(n: 正整数)
+        \begin{verbatim}
+            sum := 0
+            while i < 10
+                sum := sum + i
+        \end{verbatim}
+        \begin{itemize}
+            \item 输入：正整数 $n$
+            \item 输出：$1$ 到 $10$ 的和
+            \item 明确性：明确
+            \item 正确性：不正确，未定义 $i$
+            \item 有限性：有限
+            \item 有效性：有效
+            \item 一般性：一般
+        \end{itemize}
+        \item[d)] procedure choose(a, b: 整数)
+        \begin{verbatim}
+            x := a 或 b
+        \end{verbatim}
+        \begin{itemize}
+            \item 输入：整数 $a, b$
+            \item 输出：$a$ 或 $b$
+            \item 明确性：明确
+            \item 正确性：正确
+            \item 有限性：有限
+            \item 有效性：有效
+            \item 一般性：一般
+            \item 说明：$x$ 为 $a$ 或 $b$ 的值
+        \end{itemize}
+    \end{itemize}
+\end{proof}
+
+\section{习题 3.1.42}
+
+\begin{definition}
+    用插入排序来排序d, f, k, m, a, b的列表，说明在每一步所获得的列表。
+\begin{enumerate}
+    \item 初始列表：d, f, k, m, a, b
+    \item 第一步：将 f 插入到 d 之后，列表保持不变：d, f, k, m, a, b
+    \item 第二步：将 k 插入到 f 之后，列表保持不变：d, f, k, m, a, b
+    \item 第三步：将 m 插入到 k 之后，列表保持不变：d, f, k, m, a, b
+    \item 第四步：将 a 插入到 d 之前，列表变为：a, d, f, k, m, b
+    \item 第五步：将 b 插入到 a 之后，列表变为：a, b, d, f, k, m
+\end{enumerate}
+
+最终排序结果为：a, b, d, f, k, m
+\end{definition}
+
+\section{习题 3.1.62}
+
+\begin{definition}
+    62.证明在解决报告厅安排一组演讲(如例7所示)的贪婪算法中，如果在每一步都选择一个与其他演讲
+冲突最少的演讲，则不一定产生最优解。
+\begin{itemize}
+    \item 讲座A：开始时间 = 1，结束时间 = 4
+    \item 讲座B：开始时间 = 3，结束时间 = 5
+    \item 讲座C：开始时间 = 0，结束时间 = 6
+    \item 讲座D：开始时间 = 5，结束时间 = 7
+\end{itemize}
+
+如果我们按照结束时间排序，得到的顺序是：A, B, C, D。
+
+\begin{enumerate}
+    \item 选择讲座A（结束时间4），此时最后选择的结束时间为4。
+    \item 不能选择讲座B（开始时间3 < 结束时间4）。
+    \item 不能选择讲座C（开始时间0 < 结束时间4）。
+    \item 选择讲座D（开始时间5 $\geq$ 结束时间4），此时最后选择的结束时间为7。
+\end{enumerate}
+
+最终选择的讲座为A和D，共2个讲座。
+
+然而，如果我们选择讲座B而不是A：
+
+\begin{enumerate}
+    \item 选择讲座B（结束时间5），此时最后选择的结束时间为5。
+    \item 选择讲座D（开始时间5 $\geq$ 结束时间5），此时最后选择的结束时间为7。
+\end{enumerate}
+
+最终选择的讲座为B和D，共2个讲座。
+
+在这种情况下，虽然贪婪算法选择了结束时间最早的讲座，但未能找到最优解。
+\end{definition}
+
+\section{习题 3.1.68}
+
+\begin{definition}
+a)试解释为什么一个序列最多只有一个多数元素。\par
+b)给定序列2,1,3,3,2,3,试列出Boyer-Moore多数投票算法的步骤。\par
+c)用伪代码描述Boyer-Moore多数投票算法。\par
+d)试解释你如何确定Boyer-Moore算法产生的候选多数元素确实是一个多数元素。\par
+
+\subsection{a) 解释为什么一个序列最多只有一个多数元素}
+
+一个多数元素是指在序列中出现次数超过一半的元素。如果一个序列有 $n$ 个元素，那么多数元素的出现次数必须大于 $\frac{n}{2}$。假设存在两个不同的多数元素 $x$ 和 $y$，则 $x$ 和 $y$ 的出现次数加起来至少为 $n + 1$，这与每个元素出现次数必须小于等于 $n$ 的条件相矛盾。因此，一个序列最多只有一个多数元素。
+
+\subsection{b) 列出Boyer-Moore多数投票算法的步骤}
+
+给定序列：2, 1, 3, 3, 2, 3。
+
+\begin{enumerate}
+    \item 初始化：候选元素 `candidate` = None，计数器 `count` = 0。
+    \item 遍历序列：
+    \begin{itemize}
+        \item 读取元素 2：
+        \begin{itemize}
+            \item $count = 0$ → $candidate = 2$，$count = 1$。
+        \end{itemize}
+        \item 读取元素 1：
+        \begin{itemize}
+            \item $count = 1$ → $count = 0$。
+        \end{itemize}
+        \item 读取元素 3：
+        \begin{itemize}
+            \item $count = 0$ → $candidate = 3$，$count = 1$。
+        \end{itemize}
+        \item 读取元素 3：
+        \begin{itemize}
+            \item $count = 1$ → $count = 2$。
+        \end{itemize}
+        \item 读取元素 2：
+        \begin{itemize}
+            \item $count = 2$ → $count = 1$。
+        \end{itemize}
+        \item 读取元素 3：
+        \begin{itemize}
+            \item $count = 1$ → $count = 2$。
+        \end{itemize}
+    \end{itemize}
+\end{enumerate}
+最终候选元素为 3。
+
+\subsection{c) 用伪代码描述Boyer-Moore多数投票算法}
+
+\begin{verbatim}
+function BoyerMooreMajorityVote(nums):
+    candidate = None
+    count = 0
+
+    for num in nums:
+        if count == 0:
+            candidate = num
+            count = 1
+        else if num == candidate:
+            count += 1
+        else:
+            count -= 1
+
+    return candidate
+\end{verbatim}
+
+\subsection{d) 解释如何确定Boyer-Moore算法产生的候选多数元素确实是一个多数元素}
+
+Boyer-Moore算法的候选元素在算法结束后被称为候选多数元素。要验证该候选元素是否为真正的多数元素，可以再次遍历整个序列，计算候选元素的出现次数。如果该元素的出现次数大于 $\frac{n}{2}$，则它确实是多数元素。这个额外的验证步骤确保了算法的准确性，因为在某些情况下，候选元素可能并不是多数元素。
+\end{definition}
+
+\section{习题 3.2.8}
+
+\begin{definition}
+    8. 对下列每个函数求最小的整数 \( n \) 使得 \( f(x) \) 是 \( O(x^n) \) 的。
+    \begin{itemize}
+        \item[a)] \( f(x) = 2x^2 + x^3 \log x \)
+        \item[b)] \( f(x) = 3x^5 + (\log x)^4 \)
+        \item[c)] \( f(x) = \frac{x^4 + x^2 + 1}{x^4 + 1} \)
+        \item[d)] \( f(x) = \frac{x^3 + 5 \log x}{x^4 + 1} \)
+    \end{itemize}
+\end{definition}
+
+\begin{proof}
+    \begin{itemize}
+        \item[a)] \( f(x) = 2x^2 + x^3 \log x \)
+        \begin{itemize}
+            \item 分析：\( 2x^2 \) 是 \( O(x^2) \)，\( x^3 \log x \) 是 \( O(x^3 \log x) \)
+            \item 由于 \( x^3 \log x \) 增长得比 \( x^2 \) 快，因此 \( f(x) \) 的主导项是 \( x^3 \log x \)
+            \item 结论：最小的整数 \( n \) 是 3，使得 \( f(x) \) 是 \( O(x^3) \)
+        \end{itemize}
+        \item[b)] \( f(x) = 3x^5 + (\log x)^4 \)
+        \begin{itemize}
+            \item 分析：\( 3x^5 \) 是 \( O(x^5) \)，\( (\log x)^4 \) 是 \( O((\log x)^4) \)
+            \item 由于 \( x^5 \) 增长得比 \( (\log x)^4 \) 快，因此 \( f(x) \) 的主导项是 \( 3x^5 \)
+            \item 结论：最小的整数 \( n \) 是 5，使得 \( f(x) \) 是 \( O(x^5) \)
+        \end{itemize}
+        \item[c)] \( f(x) = \frac{x^4 + x^2 + 1}{x^4 + 1} \)
+        \begin{itemize}
+            \item 分析：分子和分母的最高次项都是 \( x^4 \)
+            \item 当 \( x \) 很大时，\( f(x) \approx \frac{x^4}{x^4} = 1 \)
+            \item 结论：最小的整数 \( n \) 是 0，使得 \( f(x) \) 是 \( O(1) \)
+        \end{itemize}
+        \item[d)] \( f(x) = \frac{x^3 + 5 \log x}{x^4 + 1} \)
+        \begin{itemize}
+            \item 分析：分母的最高次项是 \( x^4 \)，分子的最高次项是 \( x^3 \)
+            \item 当 \( x \) 很大时，\( f(x) \approx \frac{x^3}{x^4} = \frac{1}{x} \)
+            \item 结论：最小的整数 \( n \) 是 -1，使得 \( f(x) \) 是 \( O(x^{-1}) \)
+        \end{itemize}
+    \end{itemize}
+\end{proof}
+
+\section{习题 3.2.22}
+
+\begin{definition}
+    将函数 \( 10^0 \)、\( n^1 \)、\( \log^3 n \)、\( \sqrt{n} \log n \)、\( n^2 + n \) 和 \( (n!)^2 \) 排成一列使得每个函数是大 \( O \) 下一个函数。
+    \begin{itemize}
+        \item \( 10^0 \)
+        \item \( n^1 \)
+        \item \( \log^3 n \)
+        \item \( \sqrt{n} \log n \)
+        \item \( n^2 + n \)
+        \item \( (n!)^2 \)
+    \end{itemize}
+\end{definition}
+
+
+\section{习题 3.2.42}
+
+\begin{definition}
+    假定 \( f(x) \) 是 \( O(g(x)) \) 的。能否推断出 \( 2^{f(x)} \) 是 \( O(2^{g(x)}) \) 的？
+\end{definition}
+
+\begin{proof}
+    假设 \( f(x) \) 是 \( O(g(x)) \) 的，这意味着存在常数 \( C > 0 \) 和 \( x_0 \)，使得对于所有 \( x \geq x_0 \)，都有：
+    \[
+    |f(x)| \leq C \cdot |g(x)|
+    \]
+
+    我们需要证明 \( 2^{f(x)} \) 是 \( O(2^{g(x)}) \) 的，即存在常数 \( K > 0 \) 和 \( x_1 \)，使得对于所有 \( x \geq x_1 \)，都有：
+    \[
+    2^{f(x)} \leq K \cdot 2^{g(x)}
+    \]
+
+    由于 \( f(x) \leq C \cdot g(x) \)，我们可以取指数：
+    \[
+    2^{f(x)} \leq 2^{C \cdot g(x)}
+    \]
+
+    令 \( K = 2^C \)，则有：
+    \[
+    2^{f(x)} \leq K \cdot 2^{g(x)}
+    \]
+
+    因此，存在常数 \( K = 2^C \) 使得对于所有 \( x \geq x_0 \)，都有 \( 2^{f(x)} \leq K \cdot 2^{g(x)} \)。这表明 \( 2^{f(x)} \) 是 \( O(2^{g(x)}) \) 的。
+
+    综上所述，如果 \( f(x) \) 是 \( O(g(x)) \) 的，则 \( 2^{f(x)} \) 是 \( O(2^{g(x)}) \) 的。
+\end{proof}
+
+\section{习题 3.2.56}
+\begin{definition}
+    证明 \( \left\lfloor xy \right\rfloor \) 是 \( \Omega(xy) \)。
+\end{definition}
+
+\begin{proof}
+    我们需要证明存在常数 \( c > 0 \) 和 \( x_0, y_0 \)，使得对于所有 \( x \geq x_0 \) 和 \( y \geq y_0 \)，都有：
+    \[
+    \left\lfloor xy \right\rfloor \geq c \cdot xy
+    \]
+
+    由于 \( \left\lfloor xy \right\rfloor \) 是 \( xy \) 的下取整，因此有：
+    \[
+    \left\lfloor xy \right\rfloor \leq xy < \left\lfloor xy \right\rfloor + 1
+    \]
+
+    这意味着：
+    \[
+    \left\lfloor xy \right\rfloor \geq xy - 1
+    \]
+
+    选择 \( c = 1 \)，则对于所有 \( x \geq 1 \) 和 \( y \geq 1 \)，都有：
+    \[
+    \left\lfloor xy \right\rfloor \geq xy - 1 \geq \frac{1}{2} \cdot xy
+    \]
+
+    因此，存在常数 \( c = \frac{1}{2} \) 和 \( x_0 = 1 \)，\( y_0 = 1 \)，使得对于所有 \( x \geq x_0 \) 和 \( y \geq y_0 \)，都有：
+    \[
+    \left\lfloor xy \right\rfloor \geq c \cdot xy
+    \]
+
+    综上所述，\( \left\lfloor xy \right\rfloor \) 是 \( \Omega(xy) \)。
+\end{proof}
+
+\section{习题 3.3.12}
+
+\begin{definition}
+    12. 考虑下面的算法，以 \( n \) 个整数 \( a_1, a_2, \ldots, a_n \) 的序列作为输入，生成一个矩阵 \( M = (m_{ij}) \) 作为输出，
+    其中对于 \( j \geq i \) 时 \( m_{ij} \) 是整数序列 \( a_i, a_{i+1}, \ldots, a_j \) 中的最小项，否则 \( m_{ij} = 0 \)。
+    初始化 \( M \) 使得当 \( j \geq i \) 时 \( m_{ij} = a_i \) 否则 \( m_{ij} = 0 \)
+   
+    \begin{align*}
+        \text{for } i &:= 1 \text{ to } n \\
+            \text{for } j &:= i + 1 \text{ to } n \\
+                \text{for } k &:= i + 1 \text{ to } j \\
+                    m_{ij} &:= \min(m_{ij}, a_k) \\
+        \text{return } M &= (m_{ij}) \quad \text{其中 } m_{ij} \text{ 是 } a_i, a_{i+1}, \ldots, a_j \text{ 中的最小项}
+        \end{align*}
+    \begin{itemize}
+        \item[a)] 证明这个算法使用 \( O(n^3) \) 次比较来计算矩阵 \( M \)。
+        \item[b)] 证明这个算法使用 \( \Omega(n^3) \) 次比较来计算矩阵 \( M \)。利用该事实以及 a) 得出结论该算法使用 \( \Theta(n^3) \) 次比较。[提示：在算法的两层外循环中只考虑当 \( i \leq n/4 \) 和 \( j \geq 3n/4 \) 的情形。]
+    \end{itemize}
+\end{definition}
+
+\begin{proof}
+    \begin{itemize}
+        \item[a)] 证明这个算法使用 \( O(n^3) \) 次比较来计算矩阵 \( M \)。
+
+        我们来分析算法的时间复杂度。算法有三个嵌套的循环：
+        \begin{itemize}
+            \item 外层循环从 1 到 \( n \)，执行 \( n \) 次。
+            \item 中层循环从 \( i + 1 \) 到 \( n \)，在最坏情况下执行 \( n - i \) 次。
+            \item 内层循环从 \( i + 1 \) 到 \( j \)，在最坏情况下执行 \( j - i \) 次。
+        \end{itemize}
+
+        因此，总的比较次数为：
+        \[
+        \sum_{i=1}^{n} \sum_{j=i+1}^{n} \sum_{k=i+1}^{j} 1
+        \]
+
+        我们可以将其简化为：
+        \[
+        \sum_{i=1}^{n} \sum_{j=i+1}^{n} (j - i)
+        \]
+
+        进一步简化为：
+        \[
+        \sum_{i=1}^{n} \sum_{j=i+1}^{n} j - \sum_{i=1}^{n} \sum_{j=i+1}^{n} i
+        \]
+
+        这两个和分别为：
+        \[
+        \sum_{i=1}^{n} \left( \frac{(n-i)(n-i+1)}{2} \right) - \sum_{i=1}^{n} (n-i)i
+        \]
+
+        这两个和的复杂度都是 \( O(n^3) \)，因此总的比较次数为 \( O(n^3) \)。
+
+        \item[b)] 证明这个算法使用 \( \Omega(n^3) \) 次比较来计算矩阵 \( M \)。
+
+        我们只考虑当 \( i \leq n/4 \) 和 \( j \geq 3n/4 \) 的情形。在这种情况下，内层循环的范围为 \( j - i \)，即至少为 \( n/2 \)。
+
+        因此，总的比较次数至少为：
+        \[
+        \sum_{i=1}^{n/4} \sum_{j=3n/4}^{n} (j - i)
+        \]
+
+        这两个和分别为：
+        \[
+        \sum_{i=1}^{n/4} \left( \frac{(n/4)(n/4+1)}{2} \right) - \sum_{i=1}^{n/4} (n/4)i
+        \]
+
+        这两个和的复杂度都是 \( \Omega(n^3) \)，因此总的比较次数为 \( \Omega(n^3) \)。
+
+        综上所述，算法的时间复杂度为 \( \Theta(n^3) \)。
+    \end{itemize}
+\end{proof}
+
+\section{习题 3.3.20}
+
+\begin{definition}
+    当你将问题的输入规模从 \( n \) 翻倍到 \( 2n \) 时对解题所需时间有什么影响？假定算法解决输入规模为 \( n \) 的问题时所需的毫秒数为如下函数。[尽可能将答案表达得简单些，或者一个比值或者一个差值。你的答案可以是 \( n \) 的函数或常量。]
+    \begin{itemize}
+        \item[a)] \(\log \log n\)
+        \item[b)] \(\log n\)
+        \item[c)] \(100n\)
+        \item[d)] \(n \log n\)
+        \item[e)] \(n^2\)
+        \item[f)] \(n^3\)
+        \item[g)] \(2^n\)
+    \end{itemize}
+\end{definition}
+
+\begin{proof}
+    \begin{itemize}
+        \item[a)] \(\log \log n\)：
+        \[
+        \frac{\log \log (2n)}{\log \log n} = \frac{\log (\log 2 + \log n)}{\log \log n} \approx \frac{\log \log n}{\log \log n} = 1
+        \]
+        因此，时间复杂度几乎不变。
+
+        \item[b)] \(\log n\)：
+        \[
+        \frac{\log (2n)}{\log n} = \frac{\log 2 + \log n}{\log n} = 1 + \frac{\log 2}{\log n} \approx 1 + \frac{0.3010}{\log n}
+        \]
+        因此，时间复杂度增加了一个常数。
+
+        \item[c)] \(100n\)：
+        \[
+        \frac{100(2n)}{100n} = 2
+        \]
+        因此，时间复杂度翻倍。
+
+        \item[d)] \(n \log n\)：
+        \[
+        \frac{(2n) \log (2n)}{n \log n} = 2 \cdot \frac{\log (2n)}{\log n} = 2 \left(1 + \frac{\log 2}{\log n}\right) \approx 2 \left(1 + \frac{0.3010}{\log n}\right)
+        \]
+        因此，时间复杂度大约增加了两倍。
+
+        \item[e)] \(n^2\)：
+        \[
+        \frac{(2n)^2}{n^2} = \frac{4n^2}{n^2} = 4
+        \]
+        因此，时间复杂度增加了四倍。
+
+        \item[f)] \(n^3\)：
+        \[
+        \frac{(2n)^3}{n^3} = \frac{8n^3}{n^3} = 8
+        \]
+        因此，时间复杂度增加了八倍。
+
+        \item[g)] \(2^n\)：
+        \[
+        \frac{2^{2n}}{2^n} = 2^n
+        \]
+        因此，时间复杂度呈指数级增长。
+    \end{itemize}
+\end{proof}
+
+\section{习题 3.3.42}
+
+\begin{definition}
+    找出通过在每一步加入一个和那些已安排讲座兼容的结束时间最早的讲座的方式安排最多讲座的贪婪算法的复杂度（3.1节算法7）。假设讲座还没有按最早结束时间排序，并且假设排序的最坏情形时间复杂度是 \( O(n \log n) \)。
+\end{definition}
+
+\begin{proof}
+    该贪婪算法的步骤如下：
+    \begin{enumerate}
+        \item 将所有讲座按结束时间进行排序，时间复杂度为 \( O(n \log n) \)。
+        \item 初始化一个空的安排列表。
+        \item 依次检查每个讲座，如果该讲座与已安排的讲座不冲突，则将其加入安排列表中。这个步骤需要遍历所有讲座，时间复杂度为 \( O(n) \)。
+    \end{enumerate}
+
+    因此，总的时间复杂度为：
+    \[
+    O(n \log n) + O(n) = O(n \log n)
+    \]
+
+    综上所述，通过在每一步加入一个和那些已安排讲座兼容的结束时间最早的讲座的方式安排最多讲座的贪婪算法的复杂度是 \( O(n \log n) \)。
+\end{proof}
+
+\section{习题 3.3.48}
+
+\begin{definition}
+    48. 计算乘积 \( ABC \) 的最佳次序是什么，如果 \( A \)、\( B \) 和 \( C \) 分别是 \( 3 \times 9 \)、\( 9 \times 4 \) 和 \( 4 \times 2 \) 矩阵？
+\end{definition}
+
+\begin{proof}
+    我们需要找到计算矩阵乘积 \( ABC \) 的最佳次序，以最小化标量乘法的次数。我们可以通过计算不同次序的标量乘法次数来确定最佳次序。
+
+    设 \( A \) 是 \( 3 \times 9 \) 矩阵，\( B \) 是 \( 9 \times 4 \) 矩阵，\( C \) 是 \( 4 \times 2 \) 矩阵。
+
+    计算次序 \( (AB)C \)：
+    \begin{itemize}
+        \item 计算 \( AB \) 的标量乘法次数：\( 3 \times 9 \times 4 = 108 \)
+        \item 结果是一个 \( 3 \times 4 \) 矩阵
+        \item 计算 \( (AB)C \) 的标量乘法次数：\( 3 \times 4 \times 2 = 24 \)
+        \item 总标量乘法次数：\( 108 + 24 = 132 \)
+    \end{itemize}
+
+    计算次序 \( A(BC) \)：
+    \begin{itemize}
+        \item 计算 \( BC \) 的标量乘法次数：\( 9 \times 4 \times 2 = 72 \)
+        \item 结果是一个 \( 9 \times 2 \) 矩阵
+        \item 计算 \( A(BC) \) 的标量乘法次数：\( 3 \times 9 \times 2 = 54 \)
+        \item 总标量乘法次数：\( 72 + 54 = 126 \)
+    \end{itemize}
+
+    比较两种次序的总标量乘法次数：
+    \begin{itemize}
+        \item \( (AB)C \) 的总标量乘法次数：132
+        \item \( A(BC) \) 的总标量乘法次数：126
+    \end{itemize}
+
+    因此，计算乘积 \( ABC \) 的最佳次序是 \( A(BC) \)，总标量乘法次数为 126。
+\end{proof}
+
+
+
+
+
+
+
+\chapter{第四章作业}
+
+\section{习题 4.1.14}
+
+\begin{definition}
+    14. 下列各式的商和余数是多少？
+    \begin{itemize}
+        \item[a)] \( 44 \div 8 \)
+        \item[b)] \( 777 \div 21 \)
+        \item[c)] \( -123 \div 19 \)
+        \item[d)] \( -1 \div 23 \)
+        \item[e)] \( -2002 \div 87 \)
+        \item[f)] \( 0 \div 17 \)
+        \item[g)] \( 1234567 \div 1001 \)
+        \item[h)] \( -100 \div 101 \)
+    \end{itemize}
+\end{definition}
+
+\begin{solution}
+    \begin{itemize}
+        \item[a)] \( 44 \div 8 = 5 \) 余数 \( 4 \)
+        \item[b)] \( 777 \div 21 = 37 \) 余数 \( 0 \)
+        \item[c)] \( -123 \div 19 = -7 \) 余数 \( 10 \)
+        \item[d)] \( -1 \div 23 = -1 \) 余数 \( 22 \)
+        \item[e)] \( -2002 \div 87 = -24 \) 余数 \( 86 \)
+        \item[f)] \( 0 \div 17 = 0 \) 余数 \( 0 \)
+        \item[g)] \( 1234567 \div 1001 = 1233 \) 余数 \( 334 \)
+        \item[h)] \( -100 \div 101 = -1 \) 余数 \( 1 \)
+    \end{itemize}
+\end{solution}
+
+\section{习题 4.1.18}
+
+\begin{definition}
+    18. 假设 \( a \) 和 \( b \) 是整数，\( a \equiv 11 \pmod{19} \) 且 \( b \equiv 3 \pmod{19} \)。试找出满足 \( 0 \leq c \leq 18 \) 的整数 \( c \) 使得
+    \begin{itemize}
+        \item[a)] \( c \equiv 13a \pmod{19} \)
+        \item[b)] \( c \equiv 8b \pmod{19} \)
+        \item[c)] \( c \equiv a - b \pmod{19} \)
+        \item[d)] \( c \equiv 7a + 3b \pmod{19} \)
+        \item[e)] \( c \equiv 2a^2 + 3b^2 \pmod{19} \)
+        \item[f)] \( c \equiv a^3 + 4b^3 \pmod{19} \)
+    \end{itemize}
+\end{definition}
+
+\begin{solution}
+    \begin{itemize}
+        \item[a)] \( c \equiv 13 \cdot 11 \pmod{19} \equiv 143 \pmod{19} \equiv 10 \)
+        \item[b)] \( c \equiv 8 \cdot 3 \pmod{19} \equiv 24 \pmod{19} \equiv 5 \)
+        \item[c)] \( c \equiv 11 - 3 \pmod{19} \equiv 8 \)
+        \item[d)] \( c \equiv 7 \cdot 11 + 3 \cdot 3 \pmod{19} \equiv 77 + 9 \pmod{19} \equiv 86 \pmod{19} \equiv 10 \)
+        \item[e)] \( c \equiv 2 \cdot 11^2 + 3 \cdot 3^2 \pmod{19} \equiv 2 \cdot 121 + 3 \cdot 9 \pmod{19} \equiv 242 + 27 \pmod{19} \equiv 269 \pmod{19} \equiv 3 \)
+        \item[f)] \( c \equiv 11^3 + 4 \cdot 3^3 \pmod{19} \equiv 1331 + 4 \cdot 27 \pmod{19} \equiv 1331 + 108 \pmod{19} \equiv 1439 \pmod{19} \equiv 15 \)
+    \end{itemize}
+\end{solution}
+
+\section{习题 4.1.42}
+
+\begin{definition}
+    42. 证明：如果 \( a, b, c \) 和 \( m \) 为整数使得 \( m \geq 2, c > 0 \)，且 \( a \equiv b \pmod{m} \)，则 \( ac \equiv bc \pmod{mc} \)。
+\end{definition}
+
+\begin{proof}
+    由于 \( a \equiv b \pmod{m} \)，我们有 \( a = b + km \)，其中 \( k \) 是某个整数。
+
+    将两边乘以 \( c \)，得到：
+    \[
+    ac = (b + km)c = bc + kmc
+    \]
+
+    因此，\( ac \equiv bc \pmod{mc} \)。
+\end{proof}
+
+\section{习题 4.1.46}
+
+\begin{definition}
+    46. 证明：如果 \( n \) 是一个奇正整数，则 \( n^2 \equiv 1 \pmod{8} \)。
+\end{definition}
+
+\begin{proof}
+    设 \( n \) 是一个奇正整数，则 \( n \) 可以表示为 \( n = 2k + 1 \)，其中 \( k \) 是某个整数。
+
+    计算 \( n^2 \)：
+    \[
+    n^2 = (2k + 1)^2 = 4k^2 + 4k + 1 = 4k(k + 1) + 1
+    \]
+
+    由于 \( k(k + 1) \) 是一个偶数，因此 \( 4k(k + 1) \) 是 8 的倍数。
+
+    因此，\( n^2 \equiv 1 \pmod{8} \)。
+\end{proof}
+
+\section{习题 4.2.6}
+
+\begin{definition}
+    6. 把下列整数从二进制表示转换为八进制表示。
+    \begin{itemize}
+        \item[a)] \( (11110111)_2 \)
+        \item[b)] \( (101010101010)_2 \)
+        \item[c)] \( (111011101110111)_2 \)
+        \item[d)] \( (101010101010101)_2 \)
+    \end{itemize}
+\end{definition}
+
+\begin{solution}
+    \begin{itemize}
+        \item[a)] \( (11110111)_2 = (367)_8 \)
+        \item[b)] \( (101010101010)_2 = (5252)_8 \)
+        \item[c)] \( (111011101110111)_2 = (73567)_8 \)
+        \item[d)] \( (101010101010101)_2 = (52525)_8 \)
+    \end{itemize}
+\end{solution}
+
+\section{习题 4.2.24}
+
+\begin{definition}
+    24. 找出下列每一对数的和与积。答案用十六进制表示。
+    \begin{itemize}
+        \item[a)] \( (1AE)_{16}, (BBC)_{16} \)
+        \item[b)] \( (20CBA)_{16}, (A01)_{16} \)
+        \item[c)] \( (ABCDE)_{16}, (1111)_{16} \)
+        \item[d)] \( (E0000E)_{16}, (BAAA)_{16} \)
+    \end{itemize}
+\end{definition}
+
+\begin{solution}
+    \begin{itemize}
+        \item[a)] 和：\( (1AE + BBC)_{16} = (D6A)_{16} \)，积：\( (1AE \times BBC)_{16} = (D8D8C)_{16} \)
+        \item[b)] 和：\( (20CBA + A01)_{16} = (2165B)_{16} \)，积：\( (20CBA \times A01)_{16} = (14A5D3A)_{16} \)
+        \item[c)] 和：\( (ABCDE + 1111)_{16} = (ACEEF)_{16} \)，积：\( (ABCDE \times 1111)_{16} = (CBA987EF)_{16} \)
+        \item[d)] 和：\( (E0000E + BAAA)_{16} = (E0BAA8)_{16} \)，积：\( (E0000E \times BAAA)_{16} = (AABF5D5C)_{16} \)
+    \end{itemize}
+\end{solution}
+
+\section{习题 4.2.26}
+
+\begin{definition}
+    26. 用算法5求 \( 11^{6} \mod 645 \)。
+    \begin{algorithm}
+        \begin{algorithmic}[5]
+            \Procedure{modular\_exponentiation}{$b: \text{整数}$, $n = (a_{k-1}a_{k-2} \dots a_1a_0)_2$, $m: \text{正整数}$}
+            \State $x := 1$
+            \State $power := b \mod m$
+            \For{$i := 0$ \textbf{to} $k-1$}
+                \If{$a_i = 1$}
+                    \State $x := (x \cdot power) \mod m$
+                \EndIf
+                \State $power := (power \cdot power) \mod m$
+            \EndFor
+            \State \Return $x$ \Comment{$x$ 等于 $b^n \mod m$}
+        \EndProcedure
+        \end{algorithmic}
+        \caption{快速模指数运算}
+    \end{algorithm}
+
+    现在我们使用该算法计算 \( 11^{6} \mod 645 \)。
+
+    首先，将 6 转换为二进制形式：
+    \[
+    6_{10} = 110_2
+    \]
+
+    依次计算每一步的结果：
+    \[
+    \begin{aligned}
+        &\text{第 0 位：} \\
+        &a_0 = 0 \\
+        &x := 1 \\
+        &power := (11 \cdot 11) \mod 645 = 121 \\
+        \\
+        &\text{第 1 位：} \\
+        &a_1 = 1 \\
+        &x := (1 \cdot 121) \mod 645 = 121 \\
+        &power := (121 \cdot 121) \mod 645 = 14641 \mod 645 = 451 \\
+        \\
+        &\text{第 2 位：} \\
+        &a_2 = 1 \\
+        &x := (121 \cdot 451) \mod 645 = 54571 \mod 645 = 391 \\
+    \end{aligned}
+    \]
+
+    最终结果为：
+    \[
+    11^{6} \mod 645 = 391
+    \]
+\end{definition}
+
+
+\section{习题 4.2.32}
+
+\begin{definition}
+    32. 证明一个正整数能被 11 整除当且仅当它的偶数位十进制数字之和与奇数位十进制数字之和的差能被 11 整除。
+\end{definition}
+
+\begin{proof}
+    设一个正整数 \( n \) 的十进制表示为 \( d_k d_{k-1} \ldots d_1 d_0 \)，其中 \( d_i \) 是第 \( i \) 位的数字。
+
+    定义偶数位数字之和为 \( S_{\text{even}} \)，奇数位数字之和为 \( S_{\text{odd}} \)。
+
+    我们需要证明 \( n \) 能被 11 整除当且仅当 \( S_{\text{even}} - S_{\text{odd}} \) 能被 11 整除。
+
+    由于 10 的幂次 \( 10^i \) 对 11 的余数是交替的 1 和 -1，因此：
+    \[
+    n \equiv d_0 - d_1 + d_2 - d_3 + \ldots \pmod{11}
+    \]
+
+    这意味着 \( n \equiv S_{\text{even}} - S_{\text{odd}} \pmod{11} \)。
+
+    因此，\( n \) 能被 11 整除当且仅当 \( S_{\text{even}} - S_{\text{odd}} \) 能被 11 整除。
+\end{proof}
+
+\section{习题 4.3.4}
+
+\begin{definition}
+    4. 求下列整数的素因子分解式。
+    \begin{itemize}
+        \item[a)] 39
+        \item[b)] 81
+        \item[c)] 101
+        \item[d)] 143
+        \item[e)] 289
+        \item[f)] 899
+    \end{itemize}
+\end{definition}
+
+\begin{solution}
+    \begin{itemize}
+        \item[a)] \( 39 = 3 \times 13 \)
+        \item[b)] \( 81 = 3^4 \)
+        \item[c)] \( 101 \) 是素数
+        \item[d)] \( 143 = 11 \times 13 \)
+        \item[e)] \( 289 = 17^2 \)
+        \item[f)] \( 899 = 29 \times 31 \)
+    \end{itemize}
+\end{solution}
+
+\section{习题 4.3.16}
+
+\begin{definition}
+    16. 判断下列各组整数是否两两互素？
+    \begin{itemize}
+        \item[a)] 21, 34, 55
+        \item[b)] 14, -17, 85
+        \item[c)] 25, 41, 49, 64
+        \item[d)] 17, 18, 19, 23
+    \end{itemize}
+\end{definition}
+
+\begin{solution}
+    \begin{itemize}
+        \item[a)] 21 和 34 互素，21 和 55 互素，34 和 55 互素。因此，21, 34, 55 两两互素。
+        \item[b)] 14 和 -17 互素，14 和 85 不互素（公因数为 7），-17 和 85 互素。因此，14, -17, 85 不两两互素。
+        \item[c)] 25 和 41 互素，25 和 49 互素，25 和 64 互素，41 和 49 互素，41 和 64 互素，49 和 64 互素。因此，25, 41, 49, 64 两两互素。
+        \item[d)] 17 和 18 互素，17 和 19 互素，17 和 23 互素，18 和 19 互素，18 和 23 互素，19 和 23 互素。因此，17, 18, 19, 23 两两互素。
+    \end{itemize}
+\end{solution}
+
+\section{习题 4.3.32}
+
+\begin{definition}
+    32. 用欧几里得算法求
+    \begin{itemize}
+        \item[a)] \(\gcd(1, 5)\)
+        \item[b)] \(\gcd(100, 101)\)
+        \item[c)] \(\gcd(123, 277)\)
+        \item[d)] \(\gcd(1529, 14039)\)
+        \item[e)] \(\gcd(1529, 14038)\)
+        \item[f)] \(\gcd(11111, 111111)\)
+    \end{itemize}
+\end{definition}
+
+\begin{solution}
+    \begin{itemize}
+        \item[a)] \(\gcd(1, 5)\)
+        \[
+        \begin{aligned}
+            5 &= 5 \cdot 1 + 0 \\
+            \gcd(1, 5) &= 1
+        \end{aligned}
+        \]
+
+        \item[b)] \(\gcd(100, 101)\)
+        \[
+        \begin{aligned}
+            101 &= 1 \cdot 100 + 1 \\
+            100 &= 100 \cdot 1 + 0 \\
+            \gcd(100, 101) &= 1
+        \end{aligned}
+        \]
+
+        \item[c)] \(\gcd(123, 277)\)
+        \[
+        \begin{aligned}
+            277 &= 2 \cdot 123 + 31 \\
+            123 &= 3 \cdot 31 + 30 \\
+            31 &= 1 \cdot 30 + 1 \\
+            30 &= 30 \cdot 1 + 0 \\
+            \gcd(123, 277) &= 1
+        \end{aligned}
+        \]
+
+        \item[d)] \(\gcd(1529, 14039)\)
+        \[
+        \begin{aligned}
+            14039 &= 9 \cdot 1529 + 1280 \\
+            1529 &= 1 \cdot 1280 + 249 \\
+            1280 &= 5 \cdot 249 + 35 \\
+            249 &= 7 \cdot 35 + 4 \\
+            35 &= 8 \cdot 4 + 3 \\
+            4 &= 1 \cdot 3 + 1 \\
+            3 &= 3 \cdot 1 + 0 \\
+            \gcd(1529, 14039) &= 1
+        \end{aligned}
+        \]
+
+        \item[e)] \(\gcd(1529, 14038)\)
+        \[
+        \begin{aligned}
+            14038 &= 9 \cdot 1529 + 77 \\
+            1529 &= 19 \cdot 77 + 66 \\
+            77 &= 1 \cdot 66 + 11 \\
+            66 &= 6 \cdot 11 + 0 \\
+            \gcd(1529, 14038) &= 11
+        \end{aligned}
+        \]
+
+        \item[f)] \(\gcd(11111, 111111)\)
+        \[
+        \begin{aligned}
+            111111 &= 10 \cdot 11111 + 1 \\
+            11111 &= 11111 \cdot 1 + 0 \\
+            \gcd(11111, 111111) &= 1
+        \end{aligned}
+        \]
+    \end{itemize}
+\end{solution}
+
+\section{习题 4.3.44}
+
+\begin{definition}
+    44. 利用扩展欧几里得算法把 \(\gcd(1001, 100001)\) 表示成 1001 和 100001 的线性组合。
+\end{definition}
+
+\begin{solution}
+    使用扩展欧几里得算法，我们得到：
+    \[
+    100001 = 99 \cdot 1001 + 1000
+    \]
+    \[
+    1001 = 1 \cdot 1000 + 1
+    \]
+    \[
+    1000 = 1000 \cdot 1 + 0
+    \]
+
+    因此，\(\gcd(1001, 100001) = 1\)。
+
+    反向操作这些步骤，我们得到：
+    \[
+    1 = 1001 - 1 \cdot 1000
+    \]
+    \[
+    1000 = 100001 - 99 \cdot 1001
+    \]
+    \[
+    1 = 1001 - 1 \cdot (100001 - 99 \cdot 1001) = 1001 - 100001 + 99 \cdot 1001 = 100 \cdot 1001 - 100001
+    \]
+
+    因此，\(\gcd(1001, 100001) = 100 \cdot 1001 - 100001\)。
+\end{solution}
+
+\section{习题 4.3.50}
+
+\begin{definition}
+    50. 证明如果 \( a, b \) 和 \( m \) 为整数使得 \( m \geq 2 \) 且 \( a \equiv b \pmod{m} \)，则 \(\gcd(a, m) = \gcd(b, m)\)。
+\end{definition}
+
+\begin{proof}
+    由于 \( a \equiv b \pmod{m} \)，我们有 \( a = b + km \)，其中 \( k \) 是某个整数。
+
+    因此，\(\gcd(a, m) = \gcd(b + km, m) = \gcd(b, m)\)。
+\end{proof}
+
+\section{习题 4.4.6}
+
+\begin{definition}
+    6. 用例2中的方法对下列每对互素的整数找出 \( a \mod m \) 的逆。
+    \begin{itemize}
+        \item[a)] \( a = 2, m = 17 \)
+        \item[b)] \( a = 34, m = 89 \)
+        \item[c)] \( a = 144, m = 233 \)
+        \item[d)] \( a = 200, m = 1001 \)
+    \end{itemize}
+\end{definition}
+
+\begin{definition}
+    6. 用例2中的方法对下列每对互素的整数找出 \( a \mod m \) 的逆。
+    \begin{itemize}
+        \item[a)] \( a = 2, m = 17 \)
+        \item[b)] \( a = 34, m = 89 \)
+        \item[c)] \( a = 144, m = 233 \)
+        \item[d)] \( a = 200, m = 1001 \)
+    \end{itemize}
+\end{definition}
+
+\begin{definition}
+    例2：找出101模4620的逆。
+    解：为了完整性，我们给出用来计算101模4620的逆的全部步骤。（只有最后一步超出了4.3节介绍的方法，并在那里的例17中做了解释。）首先，用欧几里得算法证明gcd(101,4620)=1。然后颠倒步骤找出贝祖系数 \( a \) 和 \( b \) 使得 \( 101a + 4620b = 1 \)。于是可推出 \( a \) 是101模4620的一个逆。欧几里得算法用于寻找gcd(101,4620)的步骤是：
+    \[
+    \begin{aligned}
+        4620 &= 45 \cdot 101 + 75 \\
+        101 &= 1 \cdot 75 + 26 \\
+        75 &= 2 \cdot 26 + 23 \\
+        26 &= 1 \cdot 23 + 3 \\
+        23 &= 7 \cdot 3 + 2 \\
+        3 &= 1 \cdot 2 + 1 \\
+        2 &= 2 \cdot 1
+    \end{aligned}
+    \]
+
+    因为最后非零余数是1，所以可知gcd(101,4620)=1。可以通过反向操作这些步骤，用连续的余数对表示gcd(101,4620)=1，从而找出101和4620的贝祖系数，在每一步通过将余数表示成除数和被除数的线性组合来消除余数。我们得到：
+    \[
+    \begin{aligned}
+        1 &= 3 - 1 \cdot 2 \\
+          &= 3 - 1 \cdot (23 - 7 \cdot 3) = -1 \cdot 23 + 8 \cdot 3 \\
+          &= -1 \cdot 23 + 8 \cdot (26 - 1 \cdot 23) = 8 \cdot 26 - 9 \cdot 23 \\
+          &= 8 \cdot 26 - 9 \cdot (75 - 2 \cdot 26) = -9 \cdot 75 + 26 \cdot 26 \\
+          &= -9 \cdot 75 + 26 \cdot (101 - 1 \cdot 75) = 26 \cdot 101 - 35 \cdot 75 \\
+          &= 26 \cdot 101 - 35 \cdot (4620 - 45 \cdot 101) = -35 \cdot 4620 + 1601 \cdot 101
+    \end{aligned}
+    \]
+
+    \(-35 \cdot 4620 + 1601 \cdot 101 = 1\) 告诉我们 -35 和 1601 是 4620 和 101 的贝祖系数，而 1601 是 101 模 4620 的逆。
+
+    一旦有了 \( a \mod m \) 的逆 \( a^{-1} \)，就可以通过在线性同余方程两边同时乘以 \( a^{-1} \) 来求解同余方程 \( ax = b \mod m \)，如例3所示。
+\end{definition}
+
+\begin{solution}
+    \begin{itemize}
+        \item[a)] 使用扩展欧几里得算法，我们得到 \( 2 \mod 17 \) 的逆是 9。
+        \[
+        \begin{aligned}
+            17 &= 8 \cdot 2 + 1 \\
+            2 &= 2 \cdot 1 + 0 \\
+            \gcd(2, 17) &= 1 \\
+            \\
+            1 &= 17 - 8 \cdot 2 \\
+            &= 1 \cdot 17 - 8 \cdot 2 \\
+            \\
+            \text{因此，2 的逆是 9。}
+        \end{aligned}
+        \]
+
+        \item[b)] 使用扩展欧几里得算法，我们得到 \( 34 \mod 89 \) 的逆是 55。
+        \[
+        \begin{aligned}
+            89 &= 2 \cdot 34 + 21 \\
+            34 &= 1 \cdot 21 + 13 \\
+            21 &= 1 \cdot 13 + 8 \\
+            13 &= 1 \cdot 8 + 5 \\
+            8 &= 1 \cdot 5 + 3 \\
+            5 &= 1 \cdot 3 + 2 \\
+            3 &= 1 \cdot 2 + 1 \\
+            2 &= 2 \cdot 1 + 0 \\
+            \gcd(34, 89) &= 1 \\
+            \\
+            1 &= 3 - 1 \cdot 2 \\
+              &= 3 - 1 \cdot (5 - 1 \cdot 3) = 2 \cdot 3 - 1 \cdot 5 \\
+              &= 2 \cdot (8 - 1 \cdot 5) - 1 \cdot 5 = 2 \cdot 8 - 3 \cdot 5 \\
+              &= 2 \cdot 8 - 3 \cdot (13 - 1 \cdot 8) = 5 \cdot 8 - 3 \cdot 13 \\
+              &= 5 \cdot (21 - 1 \cdot 13) - 3 \cdot 13 = 5 \cdot 21 - 8 \cdot 13 \\
+              &= 5 \cdot 21 - 8 \cdot (34 - 1 \cdot 21) = 13 \cdot 21 - 8 \cdot 34 \\
+              &= 13 \cdot (89 - 2 \cdot 34) - 8 \cdot 34 = 13 \cdot 89 - 34 \cdot 55 \\
+            \\
+            \text{因此，34 的逆是 55。}
+        \end{aligned}
+        \]
+
+        \item[c)] 使用扩展欧几里得算法，我们得到 \( 144 \mod 233 \) 的逆是 89。
+        \[
+        \begin{aligned}
+            233 &= 1 \cdot 144 + 89 \\
+            144 &= 1 \cdot 89 + 55 \\
+            89 &= 1 \cdot 55 + 34 \\
+            55 &= 1 \cdot 34 + 21 \\
+            34 &= 1 \cdot 21 + 13 \\
+            21 &= 1 \cdot 13 + 8 \\
+            13 &= 1 \cdot 8 + 5 \\
+            8 &= 1 \cdot 5 + 3 \\
+            5 &= 1 \cdot 3 + 2 \\
+            3 &= 1 \cdot 2 + 1 \\
+            2 &= 2 \cdot 1 + 0 \\
+            \gcd(144, 233) &= 1 \\
+            \\
+            1 &= 3 - 1 \cdot 2 \\
+              &= 3 - 1 \cdot (5 - 1 \cdot 3) = 2 \cdot 3 - 1 \cdot 5 \\
+              &= 2 \cdot (8 - 1 \cdot 5) - 1 \cdot 5 = 2 \cdot 8 - 3 \cdot 5 \\
+              &= 2 \cdot 8 - 3 \cdot (13 - 1 \cdot 8) = 5 \cdot 8 - 3 \cdot 13 \\
+              &= 5 \cdot (21 - 1 \cdot 13) - 3 \cdot 13 = 5 \cdot 21 - 8 \cdot 13 \\
+              &= 5 \cdot 21 - 8 \cdot (34 - 1 \cdot 21) = 13 \cdot 21 - 8 \cdot 34 \\
+              &= 13 \cdot (55 - 1 \cdot 34) - 8 \cdot 34 = 13 \cdot 55 - 21 \cdot 34 \\
+              &= 13 \cdot 55 - 21 \cdot (89 - 1 \cdot 55) = 34 \cdot 55 - 21 \cdot 89 \\
+              &= 34 \cdot (144 - 1 \cdot 89) - 21 \cdot 89 = 34 \cdot 144 - 55 \cdot 89 \\
+              &= 34 \cdot 144 - 55 \cdot (233 - 1 \cdot 144) = 89 \cdot 144 - 55 \cdot 233 \\
+            \\
+            \text{因此，144 的逆是 89。}
+        \end{aligned}
+        \]
+
+        \item[d)] 使用扩展欧几里得算法，我们得到 \( 200 \mod 1001 \) 的逆是 801。
+        \[
+        \begin{aligned}
+            1001 &= 5 \cdot 200 + 1 \\
+            200 &= 200 \cdot 1 + 0 \\
+            \gcd(200, 1001) &= 1 \\
+            \\
+            1 &= 1001 - 5 \cdot 200 \\
+            &= 1 \cdot 1001 - 5 \cdot 200 \\
+            \\
+            \text{因此，200 的逆是 801。}
+        \end{aligned}
+        \]
+    \end{itemize}
+\end{solution}
+
+
+
+
+\section{习题 4.4.10}
+
+\begin{definition}
+    10. 解同余方程 \( 2x \equiv 7 \pmod{17} \)，利用练习6a中找到的 \( 2 \mod 17 \) 的逆。
+\end{definition}
+
+\begin{solution}
+    在练习6a中，我们找到 \( 2 \mod 17 \) 的逆是 9。我们可以通过将同余方程两边同时乘以 9 来求解：
+    \[
+    2x \equiv 7 \pmod{17}
+    \]
+    乘以 9：
+    \[
+    9 \cdot 2x \equiv 9 \cdot 7 \pmod{17}
+    \]
+    简化：
+    \[
+    18x \equiv 63 \pmod{17}
+    \]
+    由于 \( 18 \equiv 1 \pmod{17} \)，我们有：
+    \[
+    x \equiv 63 \pmod{17}
+    \]
+    计算 \( 63 \mod 17 \)：
+    \[
+    63 \div 17 = 3 \text{ 余 } 12
+    \]
+    因此，解为：
+    \[
+    x \equiv 12 \pmod{17}
+    \]
+\end{solution}
+
+\section{习题 4.4.20}
+
+\begin{definition}
+    20. 利用中国剩余定理证明中的构造法找出同余方程组 \( x \equiv 2 \pmod{3} \)，\( x \equiv 1 \pmod{4} \) 和 \( x \equiv 3 \pmod{5} \) 的所有解。
+\end{definition}
+
+\begin{solution}
+    根据中国剩余定理，我们可以构造解：
+    \[
+    x = a_1 M_1 y_1 + a_2 M_2 y_2 + a_3 M_3 y_3
+    \]
+    其中 \( M = 3 \cdot 4 \cdot 5 = 60 \)，\( M_1 = \frac{M}{3} = 20 \)，\( M_2 = \frac{M}{4} = 15 \)，\( M_3 = \frac{M}{5} = 12 \)。
+
+    我们需要找到 \( y_1, y_2, y_3 \) 使得：
+    \[
+    \begin{aligned}
+        20y_1 &\equiv 1 \pmod{3} \\
+        15y_2 &\equiv 1 \pmod{4} \\
+        12y_3 &\equiv 1 \pmod{5}
+    \end{aligned}
+    \]
+
+    通过计算，我们得到：
+    \[
+    \begin{aligned}
+        y_1 &\equiv 2 \pmod{3} \\
+        y_2 &\equiv 3 \pmod{4} \\
+        y_3 &\equiv 3 \pmod{5}
+    \end{aligned}
+    \]
+
+    因此，解为：
+    \[
+    x = 2 \cdot 20 \cdot 2 + 1 \cdot 15 \cdot 3 + 3 \cdot 12 \cdot 3 \pmod{60}
+    \]
+    计算得：
+    \[
+    x = 80 + 45 + 108 \equiv 233 \pmod{60} \equiv 53 \pmod{60}
+    \]
+
+    所以，所有解为：
+    \[
+    x \equiv 53 \pmod{60}
+    \]
+\end{solution}
+
+\section{习题 4.4.23}
+
+\begin{definition}
+    23. 用反向替换方法求解练习20的同余方程组。
+\end{definition}
+
+\begin{solution}
+    我们从最后一个同余方程开始：
+    \[
+    x \equiv 3 \pmod{5}
+    \]
+    设 \( x = 5k + 3 \)，代入第二个同余方程：
+    \[
+    5k + 3 \equiv 1 \pmod{4}
+    \]
+    简化：
+    \[
+    5k \equiv -2 \pmod{4} \equiv 2 \pmod{4}
+    \]
+    由于 \( 5 \equiv 1 \pmod{4} \)，我们有：
+    \[
+    k \equiv 2 \pmod{4}
+    \]
+    设 \( k = 4m + 2 \)，代入第一个同余方程：
+    \[
+    x = 5(4m + 2) + 3 = 20m + 13
+    \]
+    代入第一个同余方程：
+    \[
+    20m + 13 \equiv 2 \pmod{3}
+    \]
+    简化：
+    \[
+    20m \equiv -11 \pmod{3} \equiv 1 \pmod{3}
+    \]
+    由于 \( 20 \equiv 2 \pmod{3} \)，我们有：
+    \[
+    2m \equiv 1 \pmod{3}
+    \]
+    乘以2的逆元：
+    \[
+    m \equiv 2 \pmod{3}
+    \]
+    设 \( m = 3n + 2 \)，代入 \( x \)：
+    \[
+    x = 20(3n + 2) + 13 = 60n + 53
+    \]
+
+    所以，所有解为：
+    \[
+    x \equiv 53 \pmod{60}
+    \]
+\end{solution}
+
+\section{习题 4.4.38}
+
+\begin{definition}
+    38. 
+    \begin{itemize}
+        \item[a)] 利用费马小定理计算 \( 30^{2} \mod 5 \)，\( 3^{302} \mod 7 \) 和 \( 3^{302} \mod 11 \)。
+        \item[b)] 利用 a 中结果及中国剩余定理计算 \( 30^{302} \mod 385 \)。（注意 \( 385 = 5 \cdot 7 \cdot 11 \)）
+    \end{itemize}
+\end{definition}
+
+\begin{solution}
+    \begin{itemize}
+        \item[a)] 利用费马小定理：
+        \[
+        \begin{aligned}
+            30^{2} &\equiv 0 \pmod{5} \\
+            3^{302} &\equiv 3^{302 \mod 6} \equiv 3^2 \equiv 2 \pmod{7} \\
+            3^{302} &\equiv 3^{302 \mod 10} \equiv 3^2 \equiv 9 \pmod{11}
+        \end{aligned}
+        \]
+
+        \item[b)] 利用中国剩余定理：
+        \[
+        \begin{aligned}
+            x &\equiv 0 \pmod{5} \\
+            x &\equiv 2 \pmod{7} \\
+            x &\equiv 9 \pmod{11}
+        \end{aligned}
+        \]
+
+        设 \( x = 5k \)，代入第二个同余方程：
+        \[
+        5k \equiv 2 \pmod{7} \implies k \equiv 3 \pmod{7} \implies k = 7m + 3
+        \]
+        代入 \( x \)：
+        \[
+        x = 5(7m + 3) = 35m + 15
+        \]
+        代入第三个同余方程：
+        \[
+        35m + 15 \equiv 9 \pmod{11} \implies 2m + 4 \equiv 9 \pmod{11} \implies 2m \equiv 5 \pmod{11} \implies m \equiv 8 \pmod{11}
+        \]
+        设 \( m = 11n + 8 \)，代入 \( x \)：
+        \[
+        x = 35(11n + 8) + 15 = 385n + 295
+        \]
+
+        所以，所有解为：
+        \[
+        x \equiv 295 \pmod{385}
+        \]
+    \end{itemize}
+\end{solution}
+
+\section{习题 4.5.6}
+
+\begin{definition}
+    6. 用线性同余生成器 \( x_{n+1} = (4x_n + 1) \mod 7 \) 和种子 \( x_0 = 3 \) 生成的伪随机数序列是什么？
+\end{definition}
+
+\begin{solution}
+    计算伪随机数序列：
+    \[
+    \begin{aligned}
+        x_1 &= (4 \cdot 3 + 1) \mod 7 = 13 \mod 7 = 6 \\
+        x_2 &= (4 \cdot 6 + 1) \mod 7 = 25 \mod 7 = 4 \\
+        x_3 &= (4 \cdot 4 + 1) \mod 7 = 17 \mod 7 = 3 \\
+        x_4 &= (4 \cdot 3 + 1) \mod 7 = 13 \mod 7 = 6 \\
+        \text{重复}
+    \end{aligned}
+    \]
+
+    所以，伪随机数序列为：
+    \[
+    3, 6, 4, 3, 6, 4, \ldots
+    \]
+\end{solution}
+
+\section{习题 4.5.34}
+
+\begin{definition}
+    34. 一个 ISSN 的校验码是否能检测出 ISSN 中每个单错？用证明或反例来解释你的答案。
+\end{definition}
+
+\begin{solution}
+    ISSN 的校验码是通过加权和计算的，权重从 8 到 1。校验码公式为：
+    \[
+    \sum_{i=1}^{8} i \cdot d_i \equiv 0 \pmod{11}
+    \]
+
+    假设有一个单错，即某一位数字 \( d_i \) 变为 \( d_i' \)，则校验和变为：
+    \[
+    \sum_{i=1}^{8} i \cdot d_i' \equiv 0 \pmod{11}
+    \]
+
+    由于 \( d_i \neq d_i' \)，因此 \( i \cdot (d_i - d_i') \equiv 0 \pmod{11} \)，这意味着 \( i \cdot k \equiv 0 \pmod{11} \)，其中 \( k = d_i - d_i' \)。
+
+    由于 \( i \) 的取值范围是 1 到 8，且 11 是质数，因此 \( i \cdot k \) 不可能为 11 的倍数。因此，ISSN 的校验码可以检测出每个单错。
+
+    综上所述，ISSN 的校验码能检测出 ISSN 中每个单错。
+\end{solution}
+
+
+\chapter{第五章习题}
+
+\section{习题 5.1.4}
+4. 设 $P(n)$ 是命题：对正整数 $n$ 而言，$1^3 + 2^3 + \cdots + n^3 = \left(\frac{n(n+1)}{2}\right)^2$。
+\begin{enumerate}
+    \item 命题 $P(1)$ 是什么?
+    \item 证明 $P(1)$ 为真，完成基础步骤的证明。
+    \item 归纳假设是什么?
+    \item 在归纳步骤中你需要证明什么?
+    \item 完成归纳步骤。
+    \item 解释为什么只要 $n$ 是一个正整数，则上述步骤就可以证明公式为真。
+\end{enumerate}
+
+\textbf{解答:}
+\begin{enumerate}
+    \item 命题 $P(1)$ 是：$1^3 = \left(\frac{1(1+1)}{2}\right)^2$。
+    \item 证明 $P(1)$ 为真：
+    \[
+    1^3 = 1 = \left(\frac{1 \cdot 2}{2}\right)^2 = 1
+    \]
+    因此，$P(1)$ 为真。
+    \item 归纳假设是：假设对于某个正整数 $k$，命题 $P(k)$ 为真，即 $1^3 + 2^3 + \cdots + k^3 = \left(\frac{k(k+1)}{2}\right)^2$。
+    \item 在归纳步骤中需要证明：$P(k+1)$ 为真，即 $1^3 + 2^3 + \cdots + k^3 + (k+1)^3 = \left(\frac{(k+1)(k+2)}{2}\right)^2$。
+    \item 完成归纳步骤：
+    \[
+    1^3 + 2^3 + \cdots + k^3 + (k+1)^3 = \left(\frac{k(k+1)}{2}\right)^2 + (k+1)^3
+    \]
+    \[
+    = \left(\frac{k(k+1)}{2}\right)^2 + (k+1)^3 = (k+1)^2 \left(\frac{k^2}{4} + k + 1\right)
+    \]
+    \[
+    = (k+1)^2 \left(\frac{k^2 + 4k + 4}{4}\right) = (k+1)^2 \left(\frac{(k+2)^2}{4}\right)
+    \]
+    \[
+    = \left(\frac{(k+1)(k+2)}{2}\right)^2
+    \]
+    因此，$P(k+1)$ 为真。
+    \item 解释：通过数学归纳法，我们已经证明了 $P(1)$ 为真，并且如果 $P(k)$ 为真，则 $P(k+1)$ 也为真。因此，对于所有正整数 $n$，命题 $P(n)$ 都为真。
+\end{enumerate}
+
+\section{习题 5.1.14}
+14. 证明：对所有正整数 $n$ 而言，都有 $\sum_{k=1}^{n} k 2^k = (n-1) 2^{n+1} + 2$。
+
+\textbf{解答:}
+\begin{enumerate}
+    \item 基础步骤：当 $n=1$ 时，
+    \[
+    \sum_{k=1}^{1} k 2^k = 1 \cdot 2^1 = 2
+    \]
+    \[
+    (1-1) 2^{1+1} + 2 = 0 \cdot 4 + 2 = 2
+    \]
+    因此，命题对 $n=1$ 成立。
+    \item 归纳假设：假设对于某个正整数 $k$，命题成立，即
+    \[
+    \sum_{k=1}^{k} k 2^k = (k-1) 2^{k+1} + 2
+    \]
+    \item 归纳步骤：证明对于 $k+1$，命题也成立。
+    \[
+    \sum_{k=1}^{k+1} k 2^k = \sum_{k=1}^{k} k 2^k + (k+1) 2^{k+1}
+    \]
+    根据归纳假设，
+    \[
+    = (k-1) 2^{k+1} + 2 + (k+1) 2^{k+1}
+    \]
+    \[
+    = (k-1+ k+1) 2^{k+1} + 2 = (2k) 2^{k+1} + 2 = (k+1-1) 2^{(k+1)+1} + 2
+    \]
+    因此，命题对 $k+1$ 也成立。
+    \item 结论：通过数学归纳法，我们证明了命题对所有正整数 $n$ 成立。
+\end{enumerate}
+
+\section{习题 5.1.32}
+32. 证明：只要 $n$ 是一个正整数，则 $n^2 + 2n$ 可被 3 整除。
+
+\textbf{解答:}
+\begin{enumerate}
+    \item 基础步骤：当 $n=1$ 时，
+    \[
+    1^2 + 2 \cdot 1 = 1 + 2 = 3
+    \]
+    3 可被 3 整除，因此命题对 $n=1$ 成立。
+    \item 归纳假设：假设对于某个正整数 $k$，命题成立，即 $k^2 + 2k$ 可被 3 整除。
+    \item 归纳步骤：证明对于 $k+1$，命题也成立。
+    \[
+    (k+1)^2 + 2(k+1) = k^2 + 2k + 1 + 2 = k^2 + 2k + 3
+    \]
+    根据归纳假设，$k^2 + 2k$ 可被 3 整除，因此 $k^2 + 2k + 3$ 也可被 3 整除。
+    \item 结论：通过数学归纳法，我们证明了命题对所有正整数 $n$ 成立。
+\end{enumerate}
+
+\section{习题 5.1.60}
+60. 用数学归纳法证明：当 $p_1, p_2, \ldots, p_n$ 都是命题时，则 $\neg(p_1 \vee p_2 \vee \cdots \vee p_n)$ 等价于 $\neg p_1 \wedge \neg p_2 \wedge \neg p_3 \wedge \cdots \wedge \neg p_n$。
+
+\textbf{解答:}
+\begin{enumerate}
+    \item 基础步骤：当 $n=1$ 时，
+    \[
+    \neg(p_1) = \neg p_1
+    \]
+    因此，命题对 $n=1$ 成立。
+    \item 归纳假设：假设对于某个正整数 $k$，命题成立，即
+    \[
+    \neg(p_1 \vee p_2 \vee \cdots \vee p_k) = \neg p_1 \wedge \neg p_2 \wedge \cdots \wedge \neg p_k
+    \]
+    \item 归纳步骤：证明对于 $k+1$，命题也成立。
+    \[
+    \neg(p_1 \vee p_2 \vee \cdots \vee p_k \vee p_{k+1}) = \neg((p_1 \vee p_2 \vee \cdots \vee p_k) \vee p_{k+1})
+    \]
+    根据德摩根定律，
+    \[
+    = \neg(p_1 \vee p_2 \vee \cdots \vee p_k) \wedge \neg p_{k+1}
+    \]
+    根据归纳假设，
+    \[
+    = (\neg p_1 \wedge \neg p_2 \wedge \cdots \wedge \neg p_k) \wedge \neg p_{k+1}
+    \]
+    \[
+    = \neg p_1 \wedge \neg p_2 \wedge \cdots \wedge \neg p_k \wedge \neg p_{k+1}
+    \]
+    因此，命题对 $k+1$ 也成立。
+    \item 结论：通过数学归纳法，我们证明了命题对所有正整数 $n$ 成立。
+\end{enumerate}
+
+
+\section{习题 5.2.6}
+6.
+\begin{enumerate}
+    \item 确定只用 3 分和 10 分的邮票可以构成多少数量的邮资。
+    \item 用数学归纳法原理证明你对 a 的回答。注意必须明确陈述归纳步骤中的归纳假设。
+    \item 用强归纳法证明你对 a 的回答。在该证明中，归纳假设与用数学归纳法原理证明中的归纳假设有什么不同?
+\end{enumerate}
+
+\begin{solution}
+    \begin{enumerate}
+        \item 只用 3 分和 10 分的邮票可以构成的邮资是所有大于等于 8 的整数。
+        
+        \item 用数学归纳法原理证明：
+        
+        \textbf{基例}：当邮资为 8 分时，可以用两个 3 分邮票和一个 10 分邮票构成，即 \( 8 = 3 \times 2 + 10 - 10 \)。
+        
+        \textbf{归纳假设}：假设对于某个 \( k \geq 8 \)，邮资 \( k \) 可以用 3 分和 10 分的邮票构成。
+        
+        \textbf{归纳步骤}：考虑邮资 \( k+1 \)。如果 \( k+1 \) 是 3 的倍数，则可以直接用 3 分邮票构成。如果 \( k+1 \) 不是 3 的倍数，则 \( k+1 \) 可以表示为 \( k+1 = k + 3 \)，根据归纳假设，\( k \) 可以用 3 分和 10 分的邮票构成，再加上一个 3 分邮票即可构成 \( k+1 \)。
+        
+        因此，根据数学归纳法，所有大于等于 8 的邮资都可以用 3 分和 10 分的邮票构成。
+        
+        \item 用强归纳法证明：
+        
+        \textbf{基例}：当邮资为 8 分时，可以用两个 3 分邮票和一个 10 分邮票构成，即 \( 8 = 3 \times 2 + 10 - 10 \)。
+        
+        \textbf{归纳假设}：假设对于所有 \( n \) 满足 \( 8 \leq n \leq k \)，邮资 \( n \) 可以用 3 分和 10 分的邮票构成。
+        
+        \textbf{归纳步骤}：考虑邮资 \( k+1 \)。根据归纳假设，\( k-2 \) 可以用 3 分和 10 分的邮票构成，再加上一个 3 分邮票即可构成 \( k+1 \)。
+        
+        因此，根据强归纳法，所有大于等于 8 的邮资都可以用 3 分和 10 分的邮票构成。
+        
+        \textbf{区别}：在数学归纳法中，归纳假设只考虑 \( k \) 的情况，而在强归纳法中，归纳假设考虑了所有小于等于 \( k \) 的情况。
+    \end{enumerate}
+\end{solution}
+
+\section{习题 5.2.12}
+12. 用强归纳法证明：任意正整数 $n$ 都可以写成 2 的不同幂次之和，即可以写成整数的一个子集 $\{2^0=1, 2^1=2, 2^2=4, \ldots\}$ 的和。[提示：对归纳步骤，分别考虑 $k+1$ 是偶数和奇数时的情况。当 $k+1$ 是偶数时，注意 $(k+1)/2$ 是整数。]
+
+\begin{solution}
+    \textbf{基例}：当 \( n = 1 \) 时，1 可以表示为 \( 2^0 \)。
+    
+    \textbf{归纳假设}：假设对于所有 \( n \leq k \)，\( n \) 可以表示为 2 的不同幂次之和。
+    
+    \textbf{归纳步骤}：考虑 \( k+1 \) 的情况。
+    \begin{itemize}
+        \item 如果 \( k+1 \) 是偶数，则 \( k+1 = 2m \)，根据归纳假设，\( m \) 可以表示为 2 的不同幂次之和，再乘以 2 即可表示 \( k+1 \)。
+        \item 如果 \( k+1 \) 是奇数，则 \( k+1 = 2m + 1 \)，根据归纳假设，\( m \) 可以表示为 2 的不同幂次之和，再加上 \( 2^0 \) 即可表示 \( k+1 \)。
+    \end{itemize}
+    
+    因此，根据强归纳法，任意正整数 \( n \) 都可以写成 2 的不同幂次之和。
+\end{solution}
+
+\section{习题 5.2.26}
+26. 设 $P(n)$ 是命题函数。确定对哪些非负整数 $n$，命题 $P(n)$ 必为真，如果
+\begin{enumerate}
+    \item $P(0)$ 为真；对所有的非负整数 $n$，如果 $P(n)$ 为真，那么 $P(n+2)$ 为真。
+    \item $P(0)$ 为真；对所有的非负整数 $n$，如果 $P(n)$ 为真，那么 $P(n+3)$ 为真。
+    \item $P(0)$ 和 $P(1)$ 为真；对所有的非负整数 $n$，如果 $P(n)$ 和 $P(n+1)$ 为真，那么 $P(n+2)$ 为真。
+    \item $P(0)$ 为真；对所有的非负整数 $n$，如果 $P(n)$ 为真，那么 $P(n+2)$ 和 $P(n+3)$ 为真。
+\end{enumerate}
+
+\begin{solution}
+    \begin{enumerate}
+        \item 对于所有的偶数 \( n \)，命题 \( P(n) \) 必为真。
+        \item 对于所有的 \( n \equiv 0 \pmod{3} \)，命题 \( P(n) \) 必为真。
+        \item 对于所有的非负整数 \( n \)，命题 \( P(n) \) 必为真。
+        \item 对于所有的非负整数 \( n \)，命题 \( P(n) \) 必为真。
+    \end{enumerate}
+\end{solution}
+
+\section{习题 5.2.34}
+34. 证明：对所有的正整数 $n$ 和 $k$，
+\[
+\sum_{j=1}^{n} j(j+1)(j+2) \cdots (j+k-1) = \frac{n(n+1)(n+2) \cdots (n+k)}{k+1}
+\]
+[提示：利用练习 33 中的技巧。]
+
+\begin{solution}
+    我们利用数学归纳法来证明这个命题。
+
+    \textbf{基例}：当 \( n = 1 \) 时，
+    \[
+    \sum_{j=1}^{1} j(j+1)(j+2) \cdots (j+k-1) = 1 \cdot 2 \cdot 3 \cdots k = \frac{1 \cdot 2 \cdot 3 \cdots (k+1)}{k+1}
+    \]
+    该等式成立。
+
+    \textbf{归纳假设}：假设对于某个 \( n \)，
+    \[
+    \sum_{j=1}^{n} j(j+1)(j+2) \cdots (j+k-1) = \frac{n(n+1)(n+2) \cdots (n+k)}{k+1}
+    \]
+
+    \textbf{归纳步骤}：考虑 \( n+1 \) 的情况，
+    \[
+    \sum_{j=1}^{n+1} j(j+1)(j+2) \cdots (j+k-1) = \sum_{j=1}^{n} j(j+1)(j+2) \cdots (j+k-1) + (n+1)(n+2) \cdots (n+k)
+    \]
+    根据归纳假设，
+    \[
+    \sum_{j=1}^{n} j(j+1)(j+2) \cdots (j+k-1) = \frac{n(n+1)(n+2) \cdots (n+k)}{k+1}
+    \]
+    因此，
+    \[
+    \sum_{j=1}^{n+1} j(j+1)(j+2) \cdots (j+k-1) = \frac{n(n+1)(n+2) \cdots (n+k)}{k+1} + (n+1)(n+2) \cdots (n+k)
+    \]
+    提取公因子 \( (n+1)(n+2) \cdots (n+k) \)，
+    \[
+    \sum_{j=1}^{n+1} j(j+1)(j+2) \cdots (j+k-1) = (n+1)(n+2) \cdots (n+k) \left( \frac{n}{k+1} + 1 \right)
+    \]
+    化简，
+    \[
+    \sum_{j=1}^{n+1} j(j+1)(j+2) \cdots (j+k-1) = (n+1)(n+2) \cdots (n+k) \left( \frac{n+k+1}{k+1} \right)
+    \]
+    因此，
+    \[
+    \sum_{j=1}^{n+1} j(j+1)(j+2) \cdots (j+k-1) = \frac{(n+1)(n+2) \cdots (n+k+1)}{k+1}
+    \]
+
+    综上所述，命题对所有的正整数 \( n \) 和 \( k \) 成立。
+\end{solution}
+
+\section{习题 5.3.8}
+8. 给出序列 $\{a_n\}$ 的递归定义，$n=1,2,3,\ldots$，若
+\begin{enumerate}
+    \item $a_n = 4n-2$
+    \item $a_n = 1 + (-1)^n$
+    \item $a_n = n(n+1)$
+    \item $a_n = n^2$
+\end{enumerate}
+
+\begin{solution}
+    \begin{enumerate}
+        \item $a_n = 4n-2$
+        \[
+        \begin{cases}
+            a_1 = 2 \\
+            a_n = a_{n-1} + 4, \quad n > 1
+        \end{cases}
+        \]
+
+        \item $a_n = 1 + (-1)^n$
+        \[
+        \begin{cases}
+            a_1 = 0 \\
+            a_n = 2 - a_{n-1}, \quad n > 1
+        \end{cases}
+        \]
+
+        \item $a_n = n(n+1)$
+        \[
+        \begin{cases}
+            a_1 = 2 \\
+            a_n = a_{n-1} + 2n, \quad n > 1
+        \end{cases}
+        \]
+
+        \item $a_n = n^2$
+        \[
+        \begin{cases}
+            a_1 = 1 \\
+            a_n = a_{n-1} + 2n - 1, \quad n > 1
+        \end{cases}
+        \]
+    \end{enumerate}
+\end{solution}
+
+\section{习题 5.3.18}
+18. 设
+\[
+A = \begin{bmatrix}
+    1 & 1 \\
+    1 & 0
+\end{bmatrix}
+\]
+
+证明当 $n$ 是正整数时，有
+
+\[
+A^n = \begin{bmatrix}
+    f_{n+1} & f_n \\
+    f_n & f_{n-1}
+\end{bmatrix}
+\]
+
+\begin{proof}
+    我们使用数学归纳法来证明这个命题。
+
+    \textbf{基例}：当 $n = 1$ 时，
+    \[
+    A^1 = A = \begin{bmatrix}
+        1 & 1 \\
+        1 & 0
+    \end{bmatrix}
+    \]
+    而
+    \[
+    \begin{bmatrix}
+        f_{2} & f_1 \\
+        f_1 & f_0
+    \end{bmatrix}
+    = \begin{bmatrix}
+        1 & 1 \\
+        1 & 0
+    \end{bmatrix}
+    \]
+    该等式成立。
+
+    \textbf{归纳假设}：假设对于某个正整数 $k$，有
+    \[
+    A^k = \begin{bmatrix}
+        f_{k+1} & f_k \\
+        f_k & f_{k-1}
+    \end{bmatrix}
+    \]
+
+    \textbf{归纳步骤}：考虑 $n = k+1$ 的情况，
+    \[
+    A^{k+1} = A^k \cdot A = \begin{bmatrix}
+        f_{k+1} & f_k \\
+        f_k & f_{k-1}
+    \end{bmatrix} \cdot \begin{bmatrix}
+        1 & 1 \\
+        1 & 0
+    \end{bmatrix}
+    \]
+    计算得，
+    \[
+    A^{k+1} = \begin{bmatrix}
+        f_{k+1} + f_k & f_{k+1} \\
+        f_k + f_{k-1} & f_k
+    \end{bmatrix}
+    \]
+    根据斐波那契数列的定义，
+    \[
+    f_{k+2} = f_{k+1} + f_k
+    \]
+    因此，
+    \[
+    A^{k+1} = \begin{bmatrix}
+        f_{k+2} & f_{k+1} \\
+        f_{k+1} & f_k
+    \end{bmatrix}
+    \]
+
+    综上所述，命题对所有的正整数 $n$ 成立。
+\end{proof}
+
+\section{习题 5.3.24}
+24. 给出下述集合的递归定义：
+\begin{enumerate}
+    \item 正奇数集合
+    \item 3 的正整数次幂的集合
+    \item 整系数多项式的集合
+\end{enumerate}
+
+\begin{solution}
+    \begin{enumerate}
+        \item 正奇数集合
+        \begin{itemize}
+            \item 基础步骤：1 是正奇数。
+            \item 归纳步骤：如果 $n$ 是正奇数，则 $n+2$ 也是正奇数。
+        \end{itemize}
+
+        \item 3 的正整数次幂的集合
+        \begin{itemize}
+            \item 基础步骤：3 是 3 的正整数次幂。
+            \item 归纳步骤：如果 $n$ 是 3 的正整数次幂，则 $3n$ 也是 3 的正整数次幂。
+        \end{itemize}
+
+        \item 整系数多项式的集合
+        \begin{itemize}
+            \item 基础步骤：常数多项式 $0$ 和 $1$ 是整系数多项式。
+            \item 归纳步骤：如果 $p(x)$ 和 $q(x)$ 是整系数多项式，则 $p(x) + q(x)$ 和 $p(x) \cdot q(x)$ 也是整系数多项式。
+        \end{itemize}
+    \end{enumerate}
+\end{solution}
+
+\section{习题 5.3.26}
+26. 设 $S$ 是一个正整数集合，定义如下：
+\begin{itemize}
+    \item 基础步骤：$1 \in S$。
+    \item 归纳步骤：如果 $n \in S$，则 $3n+2 \in S$ 且 $n^2 \in S$。
+\end{itemize}
+\begin{enumerate}
+    \item 证明如果 $n \in S$，则 $n \equiv 1 \pmod{4}$。
+    \item 证明存在一个整数 $m \equiv 1 \pmod{4}$ 不属于 $S$。
+\end{enumerate}
+
+\begin{solution}
+    \begin{enumerate}
+        \item 证明如果 $n \in S$，则 $n \equiv 1 \pmod{4}$。
+
+        我们使用数学归纳法来证明这个命题。
+
+        \textbf{基例}：当 $n = 1$ 时，
+        \[
+        1 \equiv 1 \pmod{4}
+        \]
+        该等式成立。
+
+        \textbf{归纳假设}：假设对于某个正整数 $k$，$k \in S$ 且 $k \equiv 1 \pmod{4}$。
+
+        \textbf{归纳步骤}：考虑 $3k+2$ 和 $k^2$ 的情况，
+        \[
+        3k+2 \equiv 3 \cdot 1 + 2 \equiv 5 \equiv 1 \pmod{4}
+        \]
+        \[
+        k^2 \equiv 1^2 \equiv 1 \pmod{4}
+        \]
+
+        因此，根据数学归纳法，如果 $n \in S$，则 $n \equiv 1 \pmod{4}$。
+
+        \item 证明存在一个整数 $m \equiv 1 \pmod{4}$ 不属于 $S$。
+
+        假设 $m = 5$，我们证明 $5 \notin S$。
+
+        根据集合 $S$ 的定义，$S$ 中的元素只能通过基础步骤和归纳步骤生成。基础步骤中只有 $1 \in S$。归纳步骤中，如果 $n \in S$，则 $3n+2 \in S$ 且 $n^2 \in S$。
+
+        我们可以验证，$5$ 不能通过基础步骤和归纳步骤生成：
+        \begin{itemize}
+            \item $1 \in S$，$3 \cdot 1 + 2 = 5 \in S$，但 $5$ 不能通过 $n^2$ 生成。
+            \item $3 \cdot 1 + 2 = 5 \in S$，但 $5$ 不能通过 $n^2$ 生成。
+        \end{itemize}
+
+        因此，$5 \notin S$，即存在一个整数 $m \equiv 1 \pmod{4}$ 不属于 $S$。
+    \end{enumerate}
+\end{solution}
+
+\section{习题 5.3.46}
+46. 用结构归纳法证明：满二叉树 $T$ 的树叶数 $l(T)$ 比 $T$ 的内点数 $i(T)$ 多 1。
+
+\begin{proof}
+    我们使用结构归纳法来证明这个命题。
+
+    \textbf{基例}：当 $T$ 是只有一个节点的满二叉树时，
+    \[
+    l(T) = 1, \quad i(T) = 0
+    \]
+    因此，
+    \[
+    l(T) = i(T) + 1
+    \]
+    该等式成立。
+
+    \textbf{归纳假设}：假设对于任意满二叉树 $T$，如果 $T$ 的树叶数 $l(T)$ 比 $T$ 的内点数 $i(T)$ 多 1，则 $T$ 的子树也满足该性质。
+
+    \textbf{归纳步骤}：考虑一个有两个子树 $T_1$ 和 $T_2$ 的满二叉树 $T$，
+    \[
+    l(T) = l(T_1) + l(T_2)
+    \]
+    \[
+    i(T) = i(T_1) + i(T_2) + 1
+    \]
+
+    根据归纳假设，
+    \[
+    l(T_1) = i(T_1) + 1
+    \]
+    \[
+    l(T_2) = i(T_2) + 1
+    \]
+
+    因此，
+    \[
+    l(T) = (i(T_1) + 1) + (i(T_2) + 1) = i(T_1) + i(T_2) + 2
+    \]
+    \[
+    i(T) = i(T_1) + i(T_2) + 1
+    \]
+
+    所以，
+    \[
+    l(T) = i(T) + 1
+    \]
+
+    综上所述，命题对所有的满二叉树 $T$ 成立。
+\end{proof}
+
+
+\section{习题 5.4.32}
+32. 设计求一个序列的第 $n$ 项的递归算法，该序列定义成：$a_0=1, a_1=2, a_2=3$，而且对 $n=3,4,5,\ldots$ 来说有 $a_n = a_{n-1} + a_{n-2} + a_{n-3}$。
+
+\begin{solution}
+    递归算法如下：
+    \begin{algorithm}
+        \caption{递归求序列第 $n$ 项}
+        \begin{algorithmic}[1]
+            \Function{sequence}{$n$}
+                \If{$n = 0$}
+                    \State \Return 1
+                \ElsIf{$n = 1$}
+                    \State \Return 2
+                \ElsIf{$n = 2$}
+                    \State \Return 3
+                \Else
+                    \State \Return \Call{sequence}{$n-1$} + \Call{sequence}{$n-2$} + \Call{sequence}{$n-3$}
+                \EndIf
+            \EndFunction
+        \end{algorithmic}
+    \end{algorithm}
+\end{solution}
+
+\section{习题 5.4.34}
+34. 求练习 32 的序列的递归算法与迭代算法，哪个算法更有效?
+
+\begin{solution}
+    迭代算法如下：
+    \begin{algorithm}
+        \caption{迭代求序列第 $n$ 项}
+        \begin{algorithmic}[1]
+            \Function{sequence}{$n$}
+                \If{$n = 0$}
+                    \State \Return 1
+                \ElsIf{$n = 1$}
+                    \State \Return 2
+                \ElsIf{$n = 2$}
+                    \State \Return 3
+                \Else
+                    \State $a_0 := 1$
+                    \State $a_1 := 2$
+                    \State $a_2 := 3$
+                    \For{$i := 3$ \textbf{to} $n$}
+                        \State $a_n := a_2 + a_1 + a_0$
+                        \State $a_0 := a_1$
+                        \State $a_1 := a_2$
+                        \State $a_2 := a_n$
+                    \EndFor
+                    \State \Return $a_n$
+                \EndIf
+            \EndFunction
+        \end{algorithmic}
+    \end{algorithm}
+
+    递归算法的时间复杂度是指数级的，因为每次递归调用会产生三个新的递归调用。而迭代算法的时间复杂度是线性的，因为它只需要一个循环。因此，迭代算法更有效。
+\end{solution}
+
+\section{习题 5.4.44}
+44. 用归并排序来排序 $4, 3, 2, 5, 1, 8, 7, 6$，说明算法所用的所有步骤。
+
+\begin{solution}
+    归并排序的步骤如下：
+
+    \textbf{初始序列}：$[4, 3, 2, 5, 1, 8, 7, 6]$
+
+    \textbf{第一步}：将序列分成两半
+    \[
+    [4, 3, 2, 5] \quad [1, 8, 7, 6]
+    \]
+
+    \textbf{第二步}：继续分割
+    \[
+    [4, 3] \quad [2, 5] \quad [1, 8] \quad [7, 6]
+    \]
+
+    \textbf{第三步}：继续分割
+    \[
+    [4] \quad [3] \quad [2] \quad [5] \quad [1] \quad [8] \quad [7] \quad [6]
+    \]
+
+    \textbf{第四步}：合并排序
+    \[
+    [3, 4] \quad [2, 5] \quad [1, 8] \quad [6, 7]
+    \]
+
+    \textbf{第五步}：继续合并排序
+    \[
+    [2, 3, 4, 5] \quad [1, 6, 7, 8]
+    \]
+
+    \textbf{第六步}：最终合并排序
+    \[
+    [1, 2, 3, 4, 5, 6, 7, 8]
+    \]
+
+    最终排序结果为 $[1, 2, 3, 4, 5, 6, 7, 8]$。
+\end{solution}
+%\nocite{*}
+
+%\bibliography{re}
+%\thispagestyle{fancy} 
+%\addcontentsline{toc}{chapter}{参考文献}
+
+
+% ------------------------------------------------------------ %
+% >> ------------------------ 附录 ------------------------ << %
+
+%\newpage
+%\appendix
+% chapter 标题自定义设置
+%\titleformat{\chapter}[hang]{\normalfont\huge\bfseries\centering}{}{20pt}{}
+%\titlespacing*{\chapter}{0pt}{-25pt}{8pt} % 控制上方空白的大小
+% section 标题自定义设置 
+%\titleformat{\section}[hang]{\normalfont\centering\Large\bfseries}{\thesection}{8pt}{}
+
+% 附录 A
+%\chapter*{附录 A. Matlab 代码}\addcontentsline{toc}{chapter}{附录 A. Matlab 代码}   
+%\thispagestyle{fancy} 
+%\setcounter{section}{0}   
+%\renewcommand\thesection{A.\arabic{section}}   
+%\renewcommand{\thefigure}{A.\arabic{figure}} 
+%\renewcommand{\thetable}{A.\arabic{table}}
+
+
+% >> ------------------------ 附录 ------------------------ << %
+% ------------------------------------------------------------ %
+
+\end{document}
+
+% VScode 常用快捷键：
+
+% Ctrl + R:                 打开最近的文件夹
+% F2:                       变量重命名
+% Ctrl + Enter:             行中换行
+% Alt + up/down:            上下移行
+% 鼠标中键 + 移动:           快速多光标
+% Shift + Alt + up/down:    上下复制
+% Ctrl + left/right:        左右跳单词
+% Ctrl + Backspace/Delete:  左右删单词    
+% Shift + Delete:           删除此行
+% Ctrl + J:                 打开 VScode 下栏(输出栏)
+% Ctrl + B:                 打开 VScode 左栏(目录栏)
+% Ctrl + `:                 打开 VScode 终端栏
+% Ctrl + 0:                 定位文件
+% Ctrl + Tab:               切换已打开的文件(切标签)
+% Ctrl + Shift + P:         打开全局命令(设置)
+
+% Latex 常用快捷键
+
+% Ctrl + Alt + J:           由代码定位到PDF
+% 
+
+
+% Git提交规范：
+% update: Linear Algebra 2 notes
+% add: Linear Algebra 2 notes
+% import: Linear Algebra 2 notes
+% delete: Linear Algebra 2 notes
